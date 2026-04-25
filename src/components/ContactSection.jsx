@@ -33,24 +33,28 @@ const ContactSection = () => {
             <div className="section-line mx-auto mb-6" aria-hidden="true" />
 
             <h2 className="text-4xl md:text-6xl font-black text-accent-dark mb-5 tracking-tight leading-tight">
-              Let's Build Something
+              Open to Work
               <br />
-              <span className="text-gradient">Amazing</span>
+              <span className="text-gradient">Let's Talk</span>
             </h2>
 
-            <p className="text-accent-gray text-lg max-w-xl mx-auto mb-12 leading-relaxed">
-              Whether you need a scalable e-commerce platform, performance optimization, or full-stack development — let's talk.
+            <p className="text-accent-gray text-lg max-w-xl mx-auto mb-4 leading-relaxed">
+              I'm actively looking for full-time roles in backend or full-stack development.
+            </p>
+            <p className="text-accent-gray/70 text-sm max-w-md mx-auto mb-12">
+              Django · React · AWS · Open to remote or on-site in India
             </p>
 
             <motion.a
               href={`mailto:${SITE.email}`}
               whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
               whileTap={reduced ? {} : { scale: 0.97 }}
-              className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-14"
+              className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-6"
             >
               <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              Start a Conversation
+              Email Me Directly
             </motion.a>
+            <p className="text-xs text-accent-gray/50 mb-10">{SITE.email}</p>
 
             <div className="flex justify-center items-center gap-4">
               {SOCIALS.map(({ href, Icon, label, hover }) => (

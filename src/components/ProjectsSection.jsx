@@ -44,6 +44,16 @@ const ProjectCard = ({ project, index }) => {
           <p className="text-accent-gray text-sm leading-relaxed">{project.description}</p>
         </div>
 
+        {/* Architecture flow */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {['React', 'Django', 'MySQL', 'Redis', 'AWS EC2'].map((node, i, arr) => (
+            <span key={node} className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold text-accent-dark bg-white border border-black/10 px-2.5 py-1 rounded-md">{node}</span>
+              {i < arr.length - 1 && <span className="text-accent-gray/40 text-xs">→</span>}
+            </span>
+          ))}
+        </div>
+
         <ul className="space-y-2">
           {project.features.map((f) => (
             <li key={f} className="flex items-start gap-2.5 text-sm text-accent-gray">
@@ -63,18 +73,20 @@ const ProjectCard = ({ project, index }) => {
 
         <div className="flex gap-3 pt-1">
           <a
-            href={project.github}
-            className="interactive flex items-center gap-2 text-sm font-medium text-accent-dark bg-white border border-black/10 px-4 py-2 rounded-lg hover:border-violet-400 hover:text-violet-600 transition-all"
-            aria-label={`View source code for ${project.title}`}
+            href={project.demo}
+            className="interactive flex items-center gap-2 text-sm font-semibold text-white bg-accent-dark px-5 py-2.5 rounded-lg hover:bg-accent-purple transition-colors shadow-sm"
+            aria-label={`View live demo for ${project.title}`}
+            target="_blank" rel="noopener noreferrer"
           >
-            <GithubIcon className="w-4 h-4" aria-hidden="true" /> Source
+            <ExternalLinkIcon className="w-4 h-4" aria-hidden="true" /> View Live Site
           </a>
           <a
-            href={project.demo}
-            className="interactive flex items-center gap-2 text-sm font-medium text-accent-dark bg-white border border-black/10 px-4 py-2 rounded-lg hover:border-blue-400 hover:text-blue-600 transition-all"
-            aria-label={`View live demo for ${project.title}`}
+            href={project.github}
+            className="interactive flex items-center gap-2 text-sm font-medium text-accent-dark bg-white border border-black/10 px-5 py-2.5 rounded-lg hover:border-violet-400 hover:text-violet-600 transition-all"
+            aria-label={`View source code for ${project.title}`}
+            target="_blank" rel="noopener noreferrer"
           >
-            <ExternalLinkIcon className="w-4 h-4" aria-hidden="true" /> Live Demo
+            <GithubIcon className="w-4 h-4" aria-hidden="true" /> Source Code
           </a>
         </div>
       </div>

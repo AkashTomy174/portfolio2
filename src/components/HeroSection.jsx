@@ -99,6 +99,16 @@ const HeroSection = () => {
                 </span>
               </motion.div>
 
+              {/* Stack line — answers "what do you use?" in 5 seconds */}
+              <motion.div variants={item} className="flex items-center gap-2 flex-wrap justify-center lg:justify-start mb-8">
+                {['Django', 'React', 'MySQL', 'Redis', 'AWS'].map((t, i, arr) => (
+                  <span key={t} className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-accent-dark bg-white border border-black/10 px-3 py-1 rounded-full">{t}</span>
+                    {i < arr.length - 1 && <span className="text-accent-gray/40 text-xs">→</span>}
+                  </span>
+                ))}
+              </motion.div>
+
               <motion.p variants={item} className="text-base md:text-lg text-accent-gray leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
                 Backend-focused developer specializing in Django and scalable system design. Built and deployed a production-grade e-commerce platform on AWS — 42% DB query reduction, concurrent-safe payments, and sub-300ms order responses.
               </motion.p>
