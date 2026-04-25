@@ -1,20 +1,25 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { MailIcon, LinkedinIcon, GithubIcon, MessageSquareIcon } from './Icons';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
-
 import { SITE } from '../siteConfig';
 
 const SOCIALS = [
   { href: SITE.linkedin, Icon: LinkedinIcon, label: 'LinkedIn', hover: 'hover:border-blue-400 hover:text-blue-500' },
   { href: SITE.github, Icon: GithubIcon, label: 'GitHub', hover: 'hover:border-violet-400 hover:text-violet-600' },
-  { href: `mailto:${SITE.email}`, Icon: MailIcon, label: 'Email', hover: 'hover:border-pink-400 hover:text-pink-500' },
 ];
 
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(SITE.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <section id="contact" className="py-32 relative z-10">
@@ -45,22 +50,38 @@ const ContactSection = () => {
               Django · React · AWS · Open to remote or on-site in India
             </p>
 
+            {/* Primary CTA — opens Gmail compose */}
             <motion.a
-              href={`mailto:${SITE.email}`}
+              href={`https://mail.google.com/mail/?view=cm&to=${SITE.email}&su=Hiring Inquiry&body=Hi Akash,`}
+              target="_blank"
+              rel="noopener noreferrer"
               whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
               whileTap={reduced ? {} : { scale: 0.97 }}
-              className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-6"
+              className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-4"
             >
               <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              Email Me Directly
+              Email Me
             </motion.a>
-            <p className="text-xs text-accent-gray/50 mb-10">{SITE.email}</p>
+
+            {/* Fallback — copy email */}
+            <div className="mb-10">
+              <button
+                onClick={handleCopy}
+                className="interactive inline-flex items-center gap-2 text-xs font-medium text-accent-gray hover:text-accent-dark transition-colors"
+                aria-label="Copy email address"
+              >
+                <MailIcon className="w-3.5 h-3.5" aria-hidden="true" />
+                {copied ? '✓ Copied!' : `Copy email — ${SITE.email}`}
+              </button>
+            </div>
 
             <div className="flex justify-center items-center gap-4">
               {SOCIALS.map(({ href, Icon, label, hover }) => (
                 <motion.a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   whileHover={reduced ? {} : { y: -3 }}
                   className={`interactive p-4 rounded-full bg-white border border-black/8 text-accent-gray transition-all duration-200 ${hover}`}
                   aria-label={label}
