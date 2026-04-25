@@ -1,48 +1,10 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useCallback } from 'react';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
 import profilePhoto from '../assets/portfolioimage.jpeg';
 
-const ROLES = ['Full-Stack Developer', 'Django Architect', 'React Engineer', 'E-Commerce Builder'];
-
-const useTypewriter = (words) => {
-  const [display, setDisplay] = useState('');
-  const [wordIdx, setWordIdx] = useState(0);
-  const [charIdx, setCharIdx] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-  // Keep words stable via ref so the effect never needs it as a dep
-  const wordsRef = useRef(words);
-
-  useEffect(() => {
-    const current = wordsRef.current[wordIdx];
-    const speed = 80;
-    const pause = 1800;
-    const delay = deleting ? speed / 2 : charIdx === current.length ? pause : speed;
-
-    const t = setTimeout(() => {
-      if (!deleting && charIdx < current.length) {
-        setDisplay(current.slice(0, charIdx + 1));
-        setCharIdx((c) => c + 1);
-      } else if (!deleting && charIdx === current.length) {
-        setDeleting(true);
-      } else if (deleting && charIdx > 0) {
-        setDisplay(current.slice(0, charIdx - 1));
-        setCharIdx((c) => c - 1);
-      } else {
-        setDeleting(false);
-        setWordIdx((i) => (i + 1) % wordsRef.current.length);
-      }
-    }, delay);
-
-    return () => clearTimeout(t);
-  }, [charIdx, deleting, wordIdx]);
-
-  return display;
-};
-
 const HeroSection = () => {
   const ref = useRef(null);
-  const role = useTypewriter(ROLES);
   const prefersReducedMotion = useReducedMotion();
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -91,15 +53,14 @@ const HeroSection = () => {
                 Platforms.
               </motion.h1>
 
-              <motion.div variants={item} className="flex items-center gap-3 justify-center lg:justify-start mb-8 h-8">
+              <motion.div variants={item} className="flex items-center gap-3 justify-center lg:justify-start mb-6 h-8">
                 <span className="w-6 h-px bg-accent-dark/30" aria-hidden="true" />
-                <span className="text-base md:text-lg font-medium text-accent-gray tracking-wide" aria-live="polite">
-                  {role}
-                  <span className="cursor-blink ml-0.5 text-accent-purple" aria-hidden="true">|</span>
+                <span className="text-base md:text-lg font-medium text-accent-gray tracking-wide">
+                  Backend-Focused Full-Stack Developer
                 </span>
               </motion.div>
 
-              {/* Stack line — answers "what do you use?" in 5 seconds */}
+              {/* Stack flow */}
               <motion.div variants={item} className="flex items-center gap-2 flex-wrap justify-center lg:justify-start mb-8">
                 {['Django', 'React', 'MySQL', 'Redis', 'AWS'].map((t, i, arr) => (
                   <span key={t} className="flex items-center gap-2">
@@ -110,7 +71,7 @@ const HeroSection = () => {
               </motion.div>
 
               <motion.p variants={item} className="text-base md:text-lg text-accent-gray leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
-                Backend-focused developer specializing in Django and scalable system design. Built and deployed a production-grade e-commerce platform on AWS — 42% DB query reduction, concurrent-safe payments, and sub-300ms order responses.
+                Full-stack developer building scalable web platforms with Django, React, MySQL, Redis, and AWS. Built and deployed a production-grade e-commerce platform with optimized database access, secure payment flows, and production-ready backend architecture.
               </motion.p>
 
               <motion.div variants={item} className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
