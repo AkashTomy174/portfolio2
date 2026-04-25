@@ -50,11 +50,9 @@ const ContactSection = () => {
               Django · React · AWS · Open to remote or on-site in India
             </p>
 
-            {/* Primary CTA — opens Gmail compose */}
+            {/* Primary CTA — mailto opens default email client */}
             <motion.a
-              href={`https://mail.google.com/mail/?view=cm&to=${SITE.email}&su=Hiring Inquiry&body=Hi Akash,`}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`mailto:${SITE.email}?subject=Hiring Inquiry&body=Hi Akash,`}
               whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
               whileTap={reduced ? {} : { scale: 0.97 }}
               className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-4"
