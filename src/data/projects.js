@@ -1,52 +1,21 @@
 export const projects = [
   {
-    title: 'EasyBuy — Multi-Vendor Marketplace',
+    title: 'EasyBuy — Full Stack E-Commerce Platform',
     description:
-      'Complete e-commerce platform with seller onboarding, real-time inventory, dynamic pricing, and coupon system. Production deployment on AWS with MySQL, Redis caching, and AI-powered chatbot.',
-    tech: ['Django 6.0', 'React', 'Tailwind CSS', 'MySQL', 'Redis', 'Razorpay', 'Twilio', 'OpenAI'],
+      'Multi-role e-commerce platform (Customer, Seller, Admin) deployed on AWS. Built with a focus on payment consistency, concurrency safety, and performance — cutting DB queries by 42% and keeping order responses under 300ms.',
+    tech: ['Python', 'Django', 'React.js', 'Tailwind CSS', 'MySQL', 'AWS EC2/RDS/S3', 'Redis', 'Celery', 'Razorpay', 'Cloudflare Workers', 'OpenAI API', 'GitHub Actions'],
     features: [
-      'Multi-vendor marketplace with inventory management',
-      'Payment gateway (12+ payment methods)',
-      'AI shopping assistant (GPT-4 with persistence)',
-      'Notification system (Email, WhatsApp, In-app)',
-      'Admin dashboard with analytics',
+      'Concurrent-safe payments using select_for_update — zero duplicate transactions',
+      'Cut DB queries by 42% (36 → 21) via Redis caching + ORM optimisation',
+      'Celery async workers for notifications keeping order responses under 300ms',
+      'Razorpay integration with HMAC webhook signature verification',
+      'Product-aware AI chatbot using OpenAI API + Cloudflare Workers',
+      'Zero-downtime CI/CD via GitHub Actions → AWS EC2 with Gunicorn + Nginx',
     ],
     image:
       'https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    github: '#',
+    github: 'https://github.com/AkashTomy174/easybuy',
     demo: 'https://easybuy.akashtomy.com/',
     featured: true,
-  },
-  {
-    title: 'Django Performance Suite',
-    description:
-      'Internal optimization suite managing Redis caching architectures, database query profiling, and high-throughput signal-driven events across production Django applications.',
-    tech: ['Python', 'Django', 'Redis', 'Celery', 'MySQL'],
-    features: [
-      'Namespace versioning for cache invalidation',
-      'Query optimization & profiling tools',
-      'Asynchronous background task workers',
-    ],
-    image:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    github: '#',
-    demo: '#',
-    featured: false,
-  },
-  {
-    title: 'Redis Caching Architecture',
-    description:
-      'Sophisticated caching layer with namespace versioning, TTL management, and connection pooling for high-traffic Django applications serving 10K+ active users.',
-    tech: ['Redis', 'Python', 'Django', 'Cloudflare'],
-    features: [
-      'Namespace-based cache versioning',
-      'Connection pooling & TTL strategies',
-      'Performance monitoring dashboard',
-    ],
-    image:
-      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
-    github: '#',
-    demo: '#',
-    featured: false,
   },
 ];

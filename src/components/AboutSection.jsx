@@ -26,11 +26,11 @@ const AboutSection = () => {
             <h2 className="text-3xl md:text-4xl font-black text-accent-dark mb-5 tracking-tight leading-tight">
               Full-Stack Developer
               <br />
-              <span className="text-gradient-static">Scaling Django E-Commerce</span>
+              <span className="text-gradient-static">Django · React · AWS</span>
             </h2>
 
             <p className="text-accent-gray text-lg leading-relaxed mb-12 max-w-3xl">
-              With over 5 years of backend experience, I architect and deploy robust multi-vendor marketplaces. My strength lies in bridging complex Django ecosystems—Celery, Redis caching, integrated AI services—with highly interactive React frontends. I build platforms that look premium and perform flawlessly under heavy traffic.
+              Backend-focused Full Stack Developer from Alappuzha, Kerala. I specialize in Django and scalable system design — building and deploying production-grade platforms on AWS. My focus is on solving real engineering problems: payment consistency, concurrency control, and performance at scale. Currently interning at SMEC Technologies while actively seeking full-time opportunities.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-8 border-t border-black/5">

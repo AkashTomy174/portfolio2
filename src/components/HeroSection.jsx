@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
+import profilePhoto from '../assets/portfolioimage.jpeg';
 
 const ROLES = ['Full-Stack Developer', 'Django Architect', 'React Engineer', 'E-Commerce Builder'];
 
@@ -99,7 +100,7 @@ const HeroSection = () => {
               </motion.div>
 
               <motion.p variants={item} className="text-base md:text-lg text-accent-gray leading-relaxed mb-10 max-w-xl mx-auto lg:mx-0">
-                Specializing in high-performance Django architectures and modern React interfaces that drive real revenue.
+                Backend-focused developer specializing in Django and scalable system design. Built and deployed a production-grade e-commerce platform on AWS — 42% DB query reduction, concurrent-safe payments, and sub-300ms order responses.
               </motion.p>
 
               <motion.div variants={item} className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
@@ -123,7 +124,7 @@ const HeroSection = () => {
               </motion.div>
 
               <motion.div variants={item} className="flex items-center gap-8 mt-14 justify-center lg:justify-start">
-                {[['5+', 'Years exp.'], ['12+', 'Integrations'], ['10K+', 'Users served']].map(([num, label]) => (
+                {[['42%', 'DB Query Reduction'], ['300ms', 'Order Response'], ['3', 'User Roles']].map(([num, label]) => (
                   <div key={label} className="text-center lg:text-left">
                     <div className="text-2xl font-black text-accent-dark">{num}</div>
                     <div className="text-xs text-accent-gray tracking-wider uppercase mt-0.5">{label}</div>
@@ -167,7 +168,7 @@ const HeroSection = () => {
                 className="relative w-full h-full rounded-full overflow-hidden border-4 border-white/80 shadow-[0_20px_60px_rgba(109,40,217,0.2),0_4px_16px_rgba(0,0,0,0.1)]"
               >
                 <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                  src={profilePhoto}
                   alt="Akash Tomy — Full-Stack Developer"
                   className="w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-700"
                 />
