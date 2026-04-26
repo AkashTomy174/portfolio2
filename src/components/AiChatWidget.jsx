@@ -13,7 +13,7 @@ const SUGGESTED_PROMPTS = [
   'What makes you different from other developers?',
   'Are you open to full-time roles?',
   "What's your strongest technical skill?",
-  'Can I download your resume?',
+  'Can I download your CV or resume?',
 ];
 
 const INITIAL_MESSAGES = [

@@ -77,6 +77,14 @@ async def ai_chat(payload: ChatRequest, request: Request):
   if cached:
     return ChatResponse(**{**cached, "cached": True})
 
+  # Direct CV/resume shortcut — bypass RAG
+  msg_lower = payload.message.lower()
+  if any(kw in msg_lower for kw in ["cv", "resume", "curriculum", "download"]):
+    text = "You can download Akash's resume here: https://akashtomy.com/AkashTomy-Resume.pdf"
+    response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
+
   chunks = rag.search(payload.message, top_k=3)
   text = llm.answer(payload.message, chunks)
   audio_url = await tts.generate(text) if payload.voice else None
