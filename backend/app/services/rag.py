@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from openai import OpenAI, OpenAIError
-
 
 logger = logging.getLogger("ai-akash")
 
@@ -30,7 +28,7 @@ class RagService:
     self.knowledge_file = knowledge_file
     self.chroma_dir = chroma_dir
     self.embedding_model = embedding_model
-    self.client = OpenAI(api_key=openai_api_key) if openai_api_key else None
+    self.client = None
     self.chunks = self._load_chunks()
     self.collection = None
 
@@ -39,9 +37,6 @@ class RagService:
     return bool(self.chunks)
 
   def initialize(self) -> None:
-    if not self.client:
-      return
-
     try:
       import chromadb
     except ImportError:
@@ -73,28 +68,6 @@ class RagService:
     )
 
   def search(self, query: str, top_k: int = 3) -> list[RetrievedChunk]:
-    if self.collection and self.client:
-      try:
-        query_embedding = self._embed(query)
-        result = self.collection.query(query_embeddings=[query_embedding], n_results=top_k)
-      except OpenAIError as exc:
-        logger.warning("OpenAI embeddings failed during RAG search; using keyword search. error=%s", exc)
-        return self._keyword_search(query, top_k)
-
-      documents = result.get("documents", [[]])[0]
-      metadatas = result.get("metadatas", [[]])[0]
-      distances = result.get("distances", [[]])[0]
-
-      return [
-        RetrievedChunk(
-          text=document,
-          source=metadata.get("source", "knowledge_base"),
-          topic=metadata.get("topic", "general"),
-          score=1.0 - float(distance),
-        )
-        for document, metadata, distance in zip(documents, metadatas, distances)
-      ]
-
     return self._keyword_search(query, top_k)
 
   def _load_chunks(self) -> list[dict[str, Any]]:
