@@ -31,6 +31,28 @@ const normalizeAudioUrl = (audioUrl) => {
   return audioUrl.startsWith('/') ? audioUrl : `/${audioUrl}`;
 };
 
+const linkify = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+|(?:www\.)[^\s]+|github\.com\/[^\s]+|linkedin\.com\/[^\s]+|easybuy\.akashtomy\.com[^\s]*)/gi;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (urlRegex.test(part)) {
+      const href = part.startsWith('http') ? part : `https://${part}`;
+      return (
+        <a
+          key={i}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-violet-600 underline underline-offset-2 hover:text-violet-800 transition-colors"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
+
 const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
   const isUser = message.role === 'user';
 
@@ -43,7 +65,7 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
             : 'bg-white border border-black/8 text-accent-dark rounded-bl-md'
         }`}
       >
-        <p>{message.text}</p>
+        <p>{isUser ? message.text : linkify(message.text)}</p>
         {message.audioUrl && !isUser && (
           <button
             type="button"
