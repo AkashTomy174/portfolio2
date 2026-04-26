@@ -1,0 +1,130 @@
+{
+  "chunks": [
+    {
+      "id": "profile-summary",
+      "source": "about",
+      "topic": "profile",
+      "text": "Akash Tomy is a Backend-Focused Full Stack Developer from Alappuzha, Kerala, India. He specializes in Django and scalable system design. He built and deployed a production-grade e-commerce platform on AWS, achieving 42% DB query reduction through Redis caching, and solving real-world challenges in payment consistency and concurrency control. He is actively looking for full-time backend or full-stack roles and is open to remote or on-site roles in India."
+    },
+    {
+      "id": "contact-info",
+      "source": "about",
+      "topic": "contact",
+      "text": "Akash Tomy's contact details: Email: akashtomy174@gmail.com, Phone: +91 9497634775, Location: Alappuzha, Kerala, India. LinkedIn: linkedin.com/in/akash-tomy-8b51a737b, GitHub: github.com/AkashTomy174, Portfolio: akashtomy.com, EasyBuy live demo: easybuy.akashtomy.com."
+    },
+    {
+      "id": "location-availability",
+      "source": "about",
+      "topic": "availability",
+      "text": "Akash Tomy is based in Alappuzha, Kerala, India. He is open to full-time roles, both remote and on-site within India. He is actively seeking opportunities as a Backend Developer, Full Stack Developer, or Django Developer."
+    },
+    {
+      "id": "education",
+      "source": "education",
+      "topic": "education",
+      "text": "Akash Tomy completed his Bachelor of Computer Application (BCA) from Christ College Pulliyanmala, Kattapana, Idukki, Kerala from 2022 to 2025. His CGPA is 7.48. Relevant coursework includes Data Structures, DBMS, Cloud Computing Basics, and Design and Analysis of Algorithms."
+    },
+    {
+      "id": "internship-smec",
+      "source": "experience",
+      "topic": "internship",
+      "text": "Akash Tomy worked as a Python Full Stack Developer Intern at SMEC Technologies from July 2024 to present. He reduced database queries by 41.7% on high-traffic pages by adding caching for catalog, header, wishlist, and auth-related lookups. He developed reusable React components across multiple views, designed normalized relational schemas in MySQL with foreign key constraints and indexing, deployed a Django application to AWS EC2 with Nginx and Gunicorn, and participated in daily code reviews using feature branch workflow and pull requests."
+    },
+    {
+      "id": "easybuy-overview",
+      "source": "projects",
+      "topic": "easybuy",
+      "text": "EasyBuy is Akash Tomy's featured full-stack e-commerce platform with Customer, Seller, and Admin roles. It is live at easybuy.akashtomy.com and the source code is at github.com/AkashTomy174/easybuy. It is built with Python, Django, React.js, Tailwind CSS, MySQL, AWS EC2/RDS/S3, Redis, Celery, Razorpay, GitHub Actions, Cloudflare Workers, and OpenAI API."
+    },
+    {
+      "id": "easybuy-performance",
+      "source": "projects",
+      "topic": "performance",
+      "text": "In EasyBuy, Akash reduced database queries by 42%, from 36 queries to 21, using Redis caching and Django ORM optimization with select_related and prefetch_related patterns. Celery async workers handle notifications and email delivery with a DB fallback, keeping order responses under 300ms by moving work out of the request path."
+    },
+    {
+      "id": "easybuy-payments",
+      "source": "projects",
+      "topic": "payments",
+      "text": "EasyBuy handles payments with Razorpay. Akash designed a concurrent-safe payment system using database locking with select_for_update to prevent duplicate transactions. He also prevented overselling under concurrent load using atomic DB transactions and select_for_update, ensuring inventory accuracy across simultaneous orders. HMAC webhook signature verification protects payment callbacks across all 3 user roles."
+    },
+    {
+      "id": "easybuy-ai-chatbot",
+      "source": "projects",
+      "topic": "ai-chatbot",
+      "text": "EasyBuy includes a product-aware AI chatbot built using the OpenAI API and Cloudflare Workers. Live catalog context is injected per request so the chatbot always has up-to-date product information when answering customer questions."
+    },
+    {
+      "id": "easybuy-deployment",
+      "source": "projects",
+      "topic": "deployment",
+      "text": "EasyBuy is deployed on AWS EC2 with automated CI/CD via GitHub Actions. Zero-downtime reloads are achieved using Gunicorn and Nginx with pre-flight migration checks before each deployment. The database runs on Amazon RDS and static files are served from AWS S3 via Cloudflare CDN."
+    },
+    {
+      "id": "backend-skills",
+      "source": "skills",
+      "topic": "backend",
+      "text": "Akash's backend skills include Python, Django, Django REST Framework (DRF), REST APIs, WebSockets, Celery async workers, JWT authentication, OAuth 2.0 with Google, Razorpay payment integration with HMAC webhooks, OpenAI API integration, and concurrency control with select_for_update and atomic transactions."
+    },
+    {
+      "id": "frontend-skills",
+      "source": "skills",
+      "topic": "frontend",
+      "text": "Akash's frontend skills include React.js with hooks and context, JavaScript ES6+, Tailwind CSS, HTML5, and CSS3. His portfolio is built with React, Tailwind CSS, Vite, and Framer Motion."
+    },
+    {
+      "id": "cloud-devops",
+      "source": "skills",
+      "topic": "cloud",
+      "text": "Akash works with AWS EC2, S3, and RDS, Linux (Ubuntu), Nginx, Gunicorn, GitHub Actions CI/CD, Cloudflare CDN and Cloudflare Workers. EasyBuy uses zero-downtime CI/CD through GitHub Actions to AWS EC2 with Gunicorn and Nginx."
+    },
+    {
+      "id": "database-cache",
+      "source": "skills",
+      "topic": "database",
+      "text": "Akash works with MySQL, Amazon RDS, Redis caching, Django ORM optimization using prefetch_related and select_related, database locking with select_for_update, and atomic transactions. He uses Redis for practical performance improvements, not just simple key-value storage."
+    },
+    {
+      "id": "tools",
+      "source": "skills",
+      "topic": "tools",
+      "text": "Akash's tools include Git, GitHub, Postman, Linux (Ubuntu), and feature branch workflow with pull requests. He maintains clean Git history and participates in code reviews."
+    },
+    {
+      "id": "languages-spoken",
+      "source": "about",
+      "topic": "languages",
+      "text": "Akash Tomy speaks English, Malayalam, Hindi, and Tamil."
+    },
+    {
+      "id": "qa-different",
+      "source": "qa",
+      "topic": "recruiter-fit",
+      "text": "Q: What makes Akash different from other developers? A: Akash focuses on production details that matter: concurrency-safe payments, measurable query reduction (42%), async job handling under 300ms, zero-downtime deployment pipelines, and real performance numbers. He thinks beyond making features work and focuses on reliability, speed, and maintainability in production."
+    },
+    {
+      "id": "qa-strongest-skill",
+      "source": "qa",
+      "topic": "strengths",
+      "text": "Q: What is Akash's strongest technical skill? A: Akash's strongest area is backend engineering with Django — designing REST APIs, optimizing ORM queries, using Redis and Celery for performance, handling payments safely with concurrency control, and deploying production services on AWS with Nginx and Gunicorn."
+    },
+    {
+      "id": "qa-experience",
+      "source": "qa",
+      "topic": "experience",
+      "text": "Q: How much experience does Akash have? A: Akash has been building with Django and React since 2022. He is currently interning at SMEC Technologies as a Python Full Stack Developer since July 2024, and independently built and deployed EasyBuy, a production-grade e-commerce platform on AWS."
+    },
+    {
+      "id": "qa-hire",
+      "source": "qa",
+      "topic": "recruiter-fit",
+      "text": "Q: Why should we hire Akash? A: Akash has hands-on production experience — he built, deployed, and optimized a real e-commerce platform on AWS with measurable results: 42% query reduction, sub-300ms order responses, concurrent-safe payments, and automated CI/CD. He is a fast learner, writes clean code, and is actively looking for full-time backend or full-stack roles."
+    },
+    {
+      "id": "qa-salary-availability",
+      "source": "qa",
+      "topic": "availability",
+      "text": "Q: When is Akash available? A: Akash is actively looking for full-time opportunities and can discuss availability directly. Reach out to him at akashtomy174@gmail.com or on LinkedIn at linkedin.com/in/akash-tomy-8b51a737b."
+    }
+  ]
+}

@@ -18,6 +18,17 @@ npm install
 npm run dev
 ```
 
+## AI Akash Widget
+
+The chat widget posts to `/api/ai-chat` by default. Override it locally with:
+
+```bash
+VITE_AI_CHAT_ENDPOINT=http://localhost:8001/api/ai-chat
+VITE_AI_CHAT_VOICE=true
+```
+
+Voice requests are off by default so the backend can skip TTS costs until enabled.
+
 ## Project Structure
 
 ```

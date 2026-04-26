@@ -4,6 +4,7 @@ import CustomCursor from './components/CustomCursor';
 import AnimatedBackground from './components/AnimatedBackground';
 import NavBar from './components/NavBar';
 import HeroSection from './components/HeroSection';
+import AiChatWidget from './components/AiChatWidget';
 
 const AboutSection = lazy(() => import('./components/AboutSection'));
 const SkillsSection = lazy(() => import('./components/SkillsSection'));
@@ -80,6 +81,7 @@ function App() {
               <ContactSection />
             </Suspense>
           </main>
+          <AiChatWidget />
         </ErrorBoundary>
       </div>
     </MotionPrefsContext.Provider>
