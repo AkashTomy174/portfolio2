@@ -109,4 +109,4 @@ class RagService:
 
 
 def _terms(text: str) -> list[str]:
-  return [term for term in re.findall(r"[a-z0-9]+", text.lower()) if len(term) > 2]
+  return [term for term in re.findall(r"[a-z0-9]+", text.lower()) if len(term) >= 2]
