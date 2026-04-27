@@ -33,7 +33,7 @@ const normalizeAudioUrl = (audioUrl) => {
 };
 
 const linkify = (text) => {
-  const urlRegex = /(https?:\/\/[^\s]+|(?:www\.)[^\s]+|github\.com\/[^\s]+|linkedin\.com\/[^\s]+|easybuy\.akashtomy\.com[^\s]*)/gi;
+  const urlRegex = /(https?:\/\/[^\s.,;)]+|(?:www\.)[^\s.,;)]+|github\.com\/[^\s.,;)]+|linkedin\.com\/[^\s.,;)]+|easybuy\.akashtomy\.com[^\s.,;)]*)/gi;
   const parts = text.split(urlRegex);
   return parts.map((part, i) => {
     if (urlRegex.test(part)) {
@@ -44,7 +44,7 @@ const linkify = (text) => {
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-violet-600 underline underline-offset-2 hover:text-violet-800 transition-colors"
+          className="text-violet-600 underline underline-offset-2 hover:text-violet-800 transition-colors break-all"
         >
           {part}
         </a>
