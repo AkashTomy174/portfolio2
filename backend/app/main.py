@@ -84,8 +84,8 @@ async def ai_chat(payload: ChatRequest, request: Request):
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
     response_cache.set(cache_key, response.model_dump())
     return response
-  if any(kw in msg_lower for kw in ["github", "linkedin", "contact", "social", "reach", "email"]):
-    text = "You can reach Akash at:\nEmail: akashtomy174@gmail.com\nLinkedIn: https://linkedin.com/in/akash-tomy-8b51a737b\nGitHub: https://github.com/AkashTomy174"
+  if any(kw in msg_lower for kw in ["github", "linkedin", "contact", "social", "reach", "email", "hire", "connect", "phone", "whatsapp"]):
+    text = "You can reach Akash at: akashtomy174@gmail.com | LinkedIn: https://linkedin.com/in/akash-tomy-8b51a737b | GitHub: https://github.com/AkashTomy174"
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
     response_cache.set(cache_key, response.model_dump())
     return response
