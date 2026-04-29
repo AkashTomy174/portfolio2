@@ -21,14 +21,14 @@ const ProjectCard = ({ project, index }) => {
       <motion.div
         whileHover={reduced ? {} : { scale: 1.02 }}
         transition={{ duration: 0.4 }}
-        className="w-full lg:w-1/2 rounded-2xl overflow-hidden glass-card relative group shadow-lg"
+        className="w-full lg:w-1/2 aspect-[16/10] rounded-2xl overflow-hidden glass-card relative group shadow-lg bg-white"
       >
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10" aria-hidden="true" />
         <img
           src={project.image}
           alt={project.title}
           loading="lazy"
-          className="w-full h-64 md:h-96 object-contain bg-gray-50 p-2 group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700"
         />
       </motion.div>
 
