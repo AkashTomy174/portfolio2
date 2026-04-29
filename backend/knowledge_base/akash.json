@@ -10,7 +10,7 @@
       "id": "contact-info",
       "source": "about",
       "topic": "contact",
-      "text": "Akash Tomy's contact details: Email: akashtomy174@gmail.com, Phone: +91 9497634775, Location: Alappuzha, Kerala, India. LinkedIn: linkedin.com/in/akash-tomy-8b51a737b, GitHub: github.com/AkashTomy174, Portfolio: akashtomy.com, EasyBuy live demo: easybuy.akashtomy.com."
+      "text": "Akash Tomy's contact details: Email: akashtomy174@gmail.com, Phone: +91 9497634775, Location: Alappuzha, Kerala, India. LinkedIn: https://www.linkedin.com/in/akash-tomy-8b51a737b/, GitHub: https://github.com/AkashTomy174, Portfolio: https://akashtomy.com/, EasyBuy live demo: https://easybuy.akashtomy.com/."
     },
     {
       "id": "location-availability",
@@ -34,7 +34,7 @@
       "id": "easybuy-overview",
       "source": "projects",
       "topic": "easybuy",
-      "text": "EasyBuy is Akash Tomy's featured full-stack e-commerce platform with Customer, Seller, and Admin roles. It is live at easybuy.akashtomy.com and the source code is at github.com/AkashTomy174/easybuy. It is built with Python, Django, React.js, Tailwind CSS, MySQL, AWS EC2/RDS/S3, Redis, Celery, Razorpay, GitHub Actions, Cloudflare Workers, and OpenAI API."
+      "text": "EasyBuy is Akash Tomy's featured full-stack e-commerce platform with Customer, Seller, and Admin roles. It is live at https://easybuy.akashtomy.com/ and the source code is at https://github.com/AkashTomy174/easybuy. It is built with Python, Django, React.js, Tailwind CSS, MySQL, AWS EC2/RDS/S3, Redis, Celery, Razorpay, GitHub Actions, Cloudflare Workers, and OpenAI API."
     },
     {
       "id": "easybuy-performance",
@@ -124,7 +124,7 @@
       "id": "qa-salary-availability",
       "source": "qa",
       "topic": "availability",
-      "text": "Q: When is Akash available? A: Akash is actively looking for full-time opportunities and can discuss availability directly. Reach out to him at akashtomy174@gmail.com or on LinkedIn at linkedin.com/in/akash-tomy-8b51a737b."
+      "text": "Q: When is Akash available? A: Akash is actively looking for full-time opportunities and can discuss availability directly. Reach out to him at akashtomy174@gmail.com or on LinkedIn at https://www.linkedin.com/in/akash-tomy-8b51a737b/."
     },
     {
       "id": "cv-download",

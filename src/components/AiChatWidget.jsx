@@ -33,25 +33,50 @@ const normalizeAudioUrl = (audioUrl) => {
 };
 
 const linkify = (text) => {
-  const urlRegex = /(https?:\/\/[^\s.,;)]+|(?:www\.)[^\s.,;)]+|github\.com\/[^\s.,;)]+|linkedin\.com\/[^\s.,;)]+|easybuy\.akashtomy\.com[^\s.,;)]*)/gi;
-  const parts = text.split(urlRegex);
-  return parts.map((part, i) => {
-    if (urlRegex.test(part)) {
-      const href = part.startsWith('http') ? part : `https://${part}`;
-      return (
-        <a
-          key={i}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-violet-600 underline underline-offset-2 hover:text-violet-800 transition-colors break-all"
-        >
-          {part}
-        </a>
-      );
+  const linkRegex = /\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|(?:https?:\/\/|www\.)[^\s<>()]+|(?:github|linkedin)\.com\/[^\s<>()]+|easybuy\.akashtomy\.com[^\s<>()]*)/gi;
+  const parts = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
     }
-    return part;
-  });
+
+    const rawLink = match[0];
+    const linkText = rawLink.replace(/[.,;:!?]+$/g, '');
+    const trailingText = rawLink.slice(linkText.length);
+    const isEmail = linkText.includes('@') && !linkText.startsWith('http');
+    const href = isEmail
+      ? `mailto:${linkText}`
+      : linkText.startsWith('http')
+        ? linkText
+        : `https://${linkText}`;
+
+    parts.push(
+      <a
+        key={`${match.index}-${linkText}`}
+        href={href}
+        target={isEmail ? undefined : '_blank'}
+        rel={isEmail ? undefined : 'noopener noreferrer'}
+        className="text-violet-600 underline underline-offset-2 transition-colors break-words hover:text-violet-800"
+      >
+        {linkText}
+      </a>
+    );
+
+    if (trailingText) {
+      parts.push(trailingText);
+    }
+
+    lastIndex = match.index + rawLink.length;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
 };
 
 const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
