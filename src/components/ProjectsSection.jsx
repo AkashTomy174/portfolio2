@@ -28,7 +28,7 @@ const ProjectCard = ({ project, index }) => {
           src={project.image}
           alt={project.title}
           loading="lazy"
-          className="w-full h-56 md:h-72 object-cover group-hover:scale-105 transition-transform duration-700"
+          className="w-full h-64 md:h-96 object-contain bg-gray-50 p-2 group-hover:scale-105 transition-transform duration-700"
         />
       </motion.div>
 
