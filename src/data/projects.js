@@ -1,3 +1,5 @@
+import projectImage from '../assets/project.png';
+
 export const projects = [
   {
     title: 'EasyBuy — Full Stack E-Commerce Platform',
@@ -12,8 +14,7 @@ export const projects = [
       'Product-aware AI chatbot using OpenAI API + Cloudflare Workers',
       'Zero-downtime CI/CD via GitHub Actions → AWS EC2 with Gunicorn + Nginx',
     ],
-    image:
-      'https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80',
+    image: projectImage,
     github: 'https://github.com/AkashTomy174/easybuy',
     demo: 'https://easybuy.akashtomy.com/',
     featured: true,
