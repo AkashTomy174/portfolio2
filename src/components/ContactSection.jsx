@@ -83,27 +83,27 @@ const ContactSection = () => {
               Django &middot; React &middot; AWS &middot; Open to remote or on-site in India
             </p>
 
-            <motion.button
-              type="button"
-              onClick={handleCopy}
+            <motion.a
+              href={EMAIL_LINK}
               whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
               whileTap={reduced ? {} : { scale: 0.97 }}
               className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-4"
-              aria-live="polite"
             >
               <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              {copyStatus === 'copied' ? 'Email Copied' : copyStatus === 'failed' ? 'Use Email Link Below' : 'Copy Email'}
-            </motion.button>
+              Email Me
+            </motion.a>
 
             <div className="mb-10">
-              <a
-                href={EMAIL_LINK}
+              <button
+                type="button"
+                onClick={handleCopy}
                 className="interactive inline-flex items-center gap-2 text-xs font-medium text-accent-gray hover:text-accent-dark transition-colors"
-                aria-label="Open email app"
+                aria-label="Copy email address"
+                aria-live="polite"
               >
                 <MailIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                Open email app &middot; {SITE.email}
-              </a>
+                {copyStatus === 'copied' ? 'Email copied' : copyStatus === 'failed' ? SITE.email : <>Copy email &middot; {SITE.email}</>}
+              </button>
             </div>
 
             <div className="flex justify-center items-center gap-4">
