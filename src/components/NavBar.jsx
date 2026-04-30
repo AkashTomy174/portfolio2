@@ -9,25 +9,39 @@ const NAV_LINKS = [
   { label: 'Contact', href: '#contact' },
 ];
 
+const NAV_OFFSET = 80;
+
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const scrollToSection = (href) => {
+  const scrollToSection = (href, attempt = 0) => {
     const target = document.querySelector(href);
-    setMenuOpen(false);
-    setActive(href);
 
     if (!target) {
-      window.location.hash = href;
+      if (attempt < 5) {
+        window.setTimeout(() => scrollToSection(href, attempt + 1), 100);
+      } else {
+        window.location.hash = href;
+      }
       return;
     }
 
-    window.history.pushState(null, '', href);
-    requestAnimationFrame(() => {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const top = target.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+
+    window.scrollTo({
+      top: Math.max(top, 0),
+      behavior: 'smooth',
     });
+  };
+
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    setActive(href);
+    window.history.pushState(null, '', href);
+    window.setTimeout(() => scrollToSection(href), 50);
   };
 
   useEffect(() => {
@@ -77,6 +91,7 @@ const NavBar = () => {
             <li key={href}>
               <a
                 href={href}
+                onClick={(e) => handleNavClick(e, href)}
                 aria-current={active === href ? 'page' : undefined}
                 className={`interactive relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
                   active === href
@@ -135,10 +150,7 @@ const NavBar = () => {
                 <li key={href}>
                   <a
                     href={href}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      scrollToSection(href);
-                    }}
+                    onClick={(e) => handleNavClick(e, href)}
                     aria-current={active === href ? 'page' : undefined}
                     className={`interactive block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                       active === href
