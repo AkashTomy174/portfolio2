@@ -11,19 +11,46 @@ const SOCIALS = [
 
 const EMAIL_LINK = `mailto:${SITE.email}?subject=${encodeURIComponent('Hiring Inquiry')}&body=${encodeURIComponent('Hi Akash,')}`;
 
+const copyText = async (text) => {
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.setAttribute('readonly', '');
+  textarea.style.position = 'fixed';
+  textarea.style.top = '0';
+  textarea.style.left = '0';
+  textarea.style.opacity = '0';
+  textarea.style.pointerEvents = 'none';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  textarea.setSelectionRange(0, text.length);
+
+  try {
+    return document.execCommand('copy');
+  } finally {
+    document.body.removeChild(textarea);
+  }
+};
+
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('idle');
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(SITE.email);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      const didCopy = await copyText(SITE.email);
+      setCopyStatus(didCopy ? 'copied' : 'failed');
+      setTimeout(() => setCopyStatus('idle'), 2500);
     } catch {
-      window.location.href = EMAIL_LINK;
+      setCopyStatus('failed');
+      setTimeout(() => setCopyStatus('idle'), 2500);
     }
   };
 
@@ -65,7 +92,7 @@ const ContactSection = () => {
               aria-live="polite"
             >
               <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              {copied ? 'Email Copied' : 'Copy Email'}
+              {copyStatus === 'copied' ? 'Email Copied' : copyStatus === 'failed' ? 'Use Email Link Below' : 'Copy Email'}
             </motion.button>
 
             <div className="mb-10">
