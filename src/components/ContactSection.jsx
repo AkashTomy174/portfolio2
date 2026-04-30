@@ -9,16 +9,22 @@ const SOCIALS = [
   { href: SITE.github, Icon: GithubIcon, label: 'GitHub', hover: 'hover:border-violet-400 hover:text-violet-600' },
 ];
 
+const EMAIL_LINK = `mailto:${SITE.email}?subject=${encodeURIComponent('Hiring Inquiry')}&body=${encodeURIComponent('Hi Akash,')}`;
+
 const ContactSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(SITE.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(SITE.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = EMAIL_LINK;
+    }
   };
 
   return (
@@ -47,30 +53,30 @@ const ContactSection = () => {
               I'm actively looking for full-time roles in backend or full-stack development.
             </p>
             <p className="text-accent-gray/70 text-sm max-w-md mx-auto mb-12">
-              Django · React · AWS · Open to remote or on-site in India
+              Django &middot; React &middot; AWS &middot; Open to remote or on-site in India
             </p>
 
-            {/* Primary CTA — mailto opens default email client */}
-            <motion.a
-              href={`mailto:${SITE.email}?subject=Hiring Inquiry&body=Hi Akash,`}
+            <motion.button
+              type="button"
+              onClick={handleCopy}
               whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
               whileTap={reduced ? {} : { scale: 0.97 }}
               className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-4"
+              aria-live="polite"
             >
               <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              Email Me
-            </motion.a>
+              {copied ? 'Email Copied' : 'Copy Email'}
+            </motion.button>
 
-            {/* Fallback — copy email */}
             <div className="mb-10">
-              <button
-                onClick={handleCopy}
+              <a
+                href={EMAIL_LINK}
                 className="interactive inline-flex items-center gap-2 text-xs font-medium text-accent-gray hover:text-accent-dark transition-colors"
-                aria-label="Copy email address"
+                aria-label="Open email app"
               >
                 <MailIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                {copied ? '✓ Copied!' : `Copy email — ${SITE.email}`}
-              </button>
+                Open email app &middot; {SITE.email}
+              </a>
             </div>
 
             <div className="flex justify-center items-center gap-4">
@@ -92,7 +98,7 @@ const ContactSection = () => {
         </motion.div>
 
         <div className="mt-14 text-accent-gray/50 text-xs font-medium tracking-widest uppercase">
-          © {new Date().getFullYear()} {SITE.name} · Designed & Built with React & Tailwind
+          &copy; {new Date().getFullYear()} {SITE.name} &middot; Designed & Built with React & Tailwind
         </div>
       </div>
     </section>
