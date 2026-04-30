@@ -14,6 +14,22 @@ const NavBar = () => {
   const [active, setActive] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const scrollToSection = (href) => {
+    const target = document.querySelector(href);
+    setMenuOpen(false);
+    setActive(href);
+
+    if (!target) {
+      window.location.hash = href;
+      return;
+    }
+
+    window.history.pushState(null, '', href);
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -119,7 +135,10 @@ const NavBar = () => {
                 <li key={href}>
                   <a
                     href={href}
-                    onClick={() => setMenuOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSection(href);
+                    }}
                     aria-current={active === href ? 'page' : undefined}
                     className={`interactive block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                       active === href
