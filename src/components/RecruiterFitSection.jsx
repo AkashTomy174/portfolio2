@@ -9,6 +9,17 @@ const FIT_POINTS = [
   ['If you want someone junior but serious', 'I ask why, read the boring docs, and try not to hide behind buzzwords.'],
 ];
 
+const SYSTEM_SIGNALS = [
+  'race conditions',
+  'select_for_update',
+  'Redis TTLs',
+  'stale cache risk',
+  'N+1 queries',
+  'inventory consistency',
+  'webhook signatures',
+  'Gunicorn/Nginx',
+];
+
 const RecruiterFitSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
@@ -30,8 +41,15 @@ const RecruiterFitSection = () => {
           <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
             <div>
               <h2 className="text-4xl font-extralight leading-none tracking-tight text-accent-dark md:text-6xl">
-                Hire me for <span className="font-black">the backend bits.</span>
+                I am trying to become the person who notices <span className="font-black">the backend trapdoor.</span>
               </h2>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {SYSTEM_SIGNALS.map((signal) => (
+                  <span key={signal} className="border border-accent-dark bg-primary-dark px-2.5 py-1 font-mono text-[11px] font-black text-accent-dark shadow-[3px_3px_0_rgba(21,21,18,0.16)]">
+                    {signal}
+                  </span>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-4">

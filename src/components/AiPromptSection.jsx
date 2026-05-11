@@ -5,9 +5,25 @@ import { useReducedMotion } from '../contexts/MotionPrefsContext';
 
 const PROMPTS = [
   'What broke while building EasyBuy?',
-  'Explain the payment locking in plain English.',
-  'What would Akash improve next?',
-  'Is he better for backend or frontend work?',
+  'Explain payment locking in plain English.',
+  'What should Akash improve in the AI backend?',
+  'Where does Akash show backend judgment?',
+];
+
+const AI_FLOW = [
+  ['UI', 'React chat widget sends the recruiter question'],
+  ['API', 'FastAPI validates request, rate limits, checks cache'],
+  ['Retrieve', 'Curated JSON knowledge chunks are scored by keyword/topic overlap'],
+  ['Prompt', 'Only retrieved context is passed into the system prompt'],
+  ['Model', 'Gemini answers with a strict “do not invent” instruction'],
+  ['Fallback', 'If LLM/API fails, the backend returns the best retrieved chunk'],
+];
+
+const NEXT = [
+  'replace keyword scoring with real embeddings + vector search',
+  'add chunk versioning so resume/project updates are traceable',
+  'add source citations in the UI instead of hiding them in the payload',
+  'evaluate bad answers with a small regression prompt set',
 ];
 
 const AiPromptSection = () => {
@@ -36,10 +52,10 @@ const AiPromptSection = () => {
                 <BotIcon className="h-6 w-6" aria-hidden="true" />
               </div>
               <h2 className="mt-6 text-4xl font-extralight leading-tight tracking-tight md:text-6xl">
-                I gave the site a <span className="font-black text-accent-purple">tiny backend brain.</span>
+                The chatbot is a backend feature, <span className="font-black text-accent-purple">not a sticker.</span>
               </h2>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-primary-dark/70">
-                AI Akash is not here to be cute. It is a FastAPI endpoint with a small knowledge base so a reviewer can ask about my work instead of hunting for the right paragraph.
+                I am being honest about the implementation: today it is FastAPI, cached responses, rate limiting, curated knowledge chunks, retrieval, and a guarded Gemini prompt. It is not pretending to be a full vector-memory system yet.
               </p>
               <button
                 type="button"
@@ -47,30 +63,50 @@ const AiPromptSection = () => {
                 className="interactive mt-8 inline-flex items-center gap-3 border border-accent-purple bg-accent-purple px-6 py-3 text-sm font-black uppercase tracking-widest text-accent-dark shadow-[6px_6px_0_#f4f1e8] transition hover:-translate-y-1"
               >
                 <MessageSquareIcon className="h-4 w-4" aria-hidden="true" />
-                wake it up
+                test the assistant
               </button>
             </div>
 
-            <div className="border border-primary-dark/20 bg-black/30 p-5 font-mono text-xs leading-relaxed">
-              <div className="text-accent-purple"># sample conversation</div>
-              <div className="mt-3 text-primary-dark">$ ask "why should I trust your backend work?"</div>
-              <div className="mt-3 text-primary-dark/65">
-                Because I can point to actual decisions: row locks for payment updates, HMAC webhook verification, query reduction from 36 to 21, Celery for async notifications, and AWS deployment instead of screenshots only.
+            <div className="space-y-5">
+              <div className="border border-primary-dark/20 bg-black/30 p-5 font-mono text-xs leading-relaxed">
+                <div className="text-accent-purple"># current request path</div>
+                <div className="mt-4 grid gap-2">
+                  {AI_FLOW.map(([label, text], index) => (
+                    <div key={label} className="grid grid-cols-[5rem_1fr] gap-3 border-b border-primary-dark/10 pb-2">
+                      <div className="text-accent-purple">{String(index + 1).padStart(2, '0')} {label}</div>
+                      <div className="text-primary-dark/72">{text}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="mt-6 grid gap-2">
-                {PROMPTS.map((prompt) => (
-                  <button
-                    key={prompt}
-                    type="button"
-                    onClick={openChat}
-                    className="interactive border border-primary-dark/20 px-3 py-2 text-left text-primary-dark/80 transition hover:border-accent-purple hover:bg-accent-purple hover:text-accent-dark"
-                  >
-                    {prompt}
-                  </button>
-                ))}
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="border border-primary-dark/20 bg-black/30 p-5 font-mono text-xs leading-relaxed">
+                  <div className="text-accent-purple"># ask it this</div>
+                  <div className="mt-3 grid gap-2">
+                    {PROMPTS.map((prompt) => (
+                      <button
+                        key={prompt}
+                        type="button"
+                        onClick={openChat}
+                        className="interactive border border-primary-dark/20 px-3 py-2 text-left text-primary-dark/80 transition hover:border-accent-purple hover:bg-accent-purple hover:text-accent-dark"
+                      >
+                        {prompt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border border-primary-dark/20 bg-black/30 p-5 font-mono text-xs leading-relaxed">
+                  <div className="text-accent-purple"># next version</div>
+                  <ul className="mt-3 space-y-2 text-primary-dark/72">
+                    {NEXT.map((item) => (
+                      <li key={item}>- {item}</li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 text-primary-dark/40">psst: this panel is draggable.</div>
+                </div>
               </div>
-              <div className="mt-4 text-primary-dark/40">psst: this panel is draggable.</div>
             </div>
           </div>
         </motion.div>

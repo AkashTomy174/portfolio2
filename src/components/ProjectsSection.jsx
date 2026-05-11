@@ -14,22 +14,40 @@ const ARCHITECTURE = ['React', 'Django', 'MySQL/RDS', 'Redis', 'Celery', 'Razorp
 
 const DECISIONS = [
   {
-    label: 'Payment Race Conditions',
-    problem: 'Two payment callbacks or fast repeated actions can try to mutate the same order state.',
-    decision: 'Wrapped the payment update path in a database transaction and used select_for_update for row-level locking.',
-    evidence: 'The order state changes once, even if the outside world gets noisy.',
+    label: 'Preventing Overselling',
+    problem: 'Two customers can try to buy the same limited stock at almost the same time.',
+    decision: 'I used transactional row locking with Django ORM so inventory is checked and updated inside one protected database operation.',
+    evidence: 'Stock changes stop being a hopeful frontend assumption and become a database-backed state transition.',
   },
   {
-    label: 'Slow Order Path',
-    problem: 'Notifications and side effects do not need to block the order response.',
-    decision: 'Moved notification work into Celery background workers and kept the request path focused.',
-    evidence: 'The user gets the response; Celery does the chores.',
+    label: 'Payment Integrity',
+    problem: 'Payment callbacks can be retried, duplicated, or arrive after the user has already moved on.',
+    decision: 'I wrapped payment mutation in a transaction, used select_for_update on the order row, and verified Razorpay webhook signatures.',
+    evidence: 'A payment success path can run without creating duplicate transaction updates.',
   },
   {
-    label: 'Database Pressure',
-    problem: 'Product and order pages were doing more repeated reads than necessary.',
-    decision: 'Combined Redis caching with select_related/prefetch_related and tighter queryset planning.',
-    evidence: 'The optimized flow went from 36 queries to 21.',
+    label: 'Redis Cache Boundaries',
+    problem: 'Caching everything is how stale data quietly wins.',
+    decision: 'I cached read-heavy product data, kept order/payment state uncached, and used TTLs where freshness mattered less than speed.',
+    evidence: 'The cache helps browsing paths without becoming the source of truth for money or inventory.',
+  },
+  {
+    label: 'N+1 Query Cleanup',
+    problem: 'Product/order pages were doing repeated reads that looked harmless until counted.',
+    decision: 'I used select_related, prefetch_related, and tighter queryset planning instead of just throwing hardware at it.',
+    evidence: 'One optimized path dropped from 36 queries to 21, a 42% reduction.',
+  },
+  {
+    label: 'Async Order Side Effects',
+    problem: 'Notifications and other side effects do not need to sit inside the customer-facing response path.',
+    decision: 'I moved those jobs to Celery workers and kept the order request focused on the state change.',
+    evidence: 'The order response stayed under 300ms while background work continued separately.',
+  },
+  {
+    label: 'Deployment Shape',
+    problem: 'A project that only works on localhost has not met reality yet.',
+    decision: 'I deployed with EC2, Gunicorn, Nginx, RDS, S3/static handling, GitHub Actions, and environment-based config.',
+    evidence: 'Deployment decisions forced me to handle SSL, CORS, media/static files, secrets, process management, and server restarts.',
   },
 ];
 
@@ -42,9 +60,9 @@ const FLOW = [
 ];
 
 const EngineeringDecisionGrid = () => (
-  <div className="grid gap-4 lg:grid-cols-3">
+  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
     {DECISIONS.map(({ label, problem, decision, evidence }) => (
-      <div key={label} className="rounded-2xl border border-black/8 bg-[#fbfbfb] p-5">
+      <div key={label} className="hard-panel bg-primary-dark p-5">
         <div className="text-xs font-black uppercase tracking-widest text-accent-dark">{label}</div>
         <div className="mt-4 space-y-4">
           <div>
@@ -97,15 +115,15 @@ const ProjectCaseStudy = ({ project }) => {
       initial={{ opacity: 0, y: reduced ? 0 : 48 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: reduced ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-[2rem] border border-black/8 bg-white/80 p-5 md:p-8 shadow-[0_24px_80px_rgba(17,17,17,0.08)]"
+      className="hard-panel bg-primary-dark p-5 md:p-8"
     >
       <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
         <div className="space-y-8">
           <div>
-            <span className="inline-block rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-widest text-emerald-700">
-              the project I would actually defend in an interview
+            <span className="inline-block rotate-[-2deg] border border-accent-dark bg-accent-purple px-3 py-1 text-xs font-black uppercase tracking-widest text-accent-dark shadow-[4px_4px_0_#151512]">
+              flagship project / not a toy clone
             </span>
-            <h3 className="mt-5 text-3xl md:text-5xl font-black tracking-tight text-accent-dark">
+            <h3 className="mt-5 text-5xl font-extralight leading-none tracking-tight text-accent-dark md:text-8xl">
               {project.title}
             </h3>
             <p className="mt-5 text-base md:text-lg leading-relaxed text-accent-gray">
@@ -115,7 +133,7 @@ const ProjectCaseStudy = ({ project }) => {
 
           <div className="grid gap-3 sm:grid-cols-3">
             {IMPACT.map(([value, label]) => (
-              <div key={label} className="rounded-2xl border border-black/8 bg-[#fbfbfb] p-4">
+              <div key={label} className="border border-accent-dark bg-primary-dark p-4 shadow-[5px_5px_0_rgba(21,21,18,0.16)]">
                 <div className="text-3xl font-black text-accent-dark">{value}</div>
                 <p className="mt-2 text-xs font-medium leading-relaxed text-accent-gray">{label}</p>
               </div>
@@ -136,7 +154,7 @@ const ProjectCaseStudy = ({ project }) => {
           <div className="flex flex-wrap gap-3">
             <a
               href={project.demo}
-              className="interactive inline-flex items-center gap-2 rounded-xl bg-accent-dark px-5 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-accent-purple"
+            className="interactive hover-scrape inline-flex items-center gap-2 border border-accent-dark bg-accent-dark px-5 py-3 text-sm font-black text-primary-dark"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -171,12 +189,12 @@ const ProjectCaseStudy = ({ project }) => {
 
           <ArchitectureDiagram />
 
-          <div className="rounded-2xl border border-black/8 bg-[#fbfbfb] p-5">
-            <h4 className="text-sm font-black uppercase tracking-widest text-accent-dark">What I Built</h4>
+          <div className="border border-accent-dark bg-primary-dark p-5">
+            <h4 className="text-sm font-black uppercase tracking-widest text-accent-dark">What I actually built</h4>
             <ul className="mt-4 space-y-3">
               {project.features.map((feature) => (
                 <li key={feature} className="flex items-start gap-3 text-sm leading-relaxed text-accent-gray">
-                  <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" aria-hidden="true" />
+                  <CheckCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-accent-dark" aria-hidden="true" />
                   {feature}
                 </li>
               ))}
@@ -197,7 +215,7 @@ const ProjectCaseStudy = ({ project }) => {
         <div className="mb-5">
           <h4 className="text-2xl font-black tracking-tight text-accent-dark">Where I had to think</h4>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-accent-gray">
-            These are the parts I care about most. They are not flashy, but they decide whether the product feels reliable when real users start poking it.
+            This is the section I wish more junior portfolios had. I am showing the constraints, tradeoffs, and boring production choices, because that is where backend work becomes visible.
           </p>
         </div>
         <EngineeringDecisionGrid />
