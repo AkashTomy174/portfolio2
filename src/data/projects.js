@@ -2,9 +2,63 @@ import projectImage from '../assets/project.png';
 
 export const projects = [
   {
+    slug: 'easybuy',
     title: 'EasyBuy - Full Stack E-Commerce Platform',
     description:
       'I built EasyBuy because I wanted a real e-commerce project with the messy parts left in: customers, sellers, admins, orders, payments, webhooks, caching, background jobs, and deployment. The interesting work was not the product grid. It was making checkout, order state, and database access behave.',
+    status: 'Built and deployed',
+    badge: 'flagship project / not a toy clone',
+    impact: [
+      ['42%', 'fewer queries after I stopped letting the ORM improvise'],
+      ['<300ms', 'order response after moving noisy work to Celery'],
+      ['0', 'duplicate payment updates after row-level locking'],
+    ],
+    architecture: ['React', 'Django', 'MySQL/RDS', 'Redis', 'Celery', 'Razorpay', 'AWS EC2', 'Nginx'],
+    flow: [
+      ['Client', 'React storefront and seller/admin dashboards'],
+      ['API', 'Django views, auth, validation, permissions'],
+      ['Data', 'MySQL/RDS, ORM optimization, row locks'],
+      ['Async', 'Celery workers, Redis cache, notifications'],
+      ['Edge', 'Nginx, Gunicorn, AWS EC2, S3 assets'],
+    ],
+    decisions: [
+      {
+        label: 'Preventing Overselling',
+        problem: 'Two customers can try to buy the same limited stock at almost the same time.',
+        decision: 'I used transactional row locking with Django ORM so inventory is checked and updated inside one protected database operation.',
+        evidence: 'Stock changes stop being a hopeful frontend assumption and become a database-backed state transition.',
+      },
+      {
+        label: 'Payment Integrity',
+        problem: 'Payment callbacks can be retried, duplicated, or arrive after the user has already moved on.',
+        decision: 'I wrapped payment mutation in a transaction, used select_for_update on the order row, and verified Razorpay webhook signatures.',
+        evidence: 'A payment success path can run without creating duplicate transaction updates.',
+      },
+      {
+        label: 'Redis Cache Boundaries',
+        problem: 'Caching everything is how stale data quietly wins.',
+        decision: 'I cached read-heavy product data, kept order/payment state uncached, and used TTLs where freshness mattered less than speed.',
+        evidence: 'The cache helps browsing paths without becoming the source of truth for money or inventory.',
+      },
+      {
+        label: 'N+1 Query Cleanup',
+        problem: 'Product/order pages were doing repeated reads that looked harmless until counted.',
+        decision: 'I used select_related, prefetch_related, and tighter queryset planning instead of just throwing hardware at it.',
+        evidence: 'One optimized path dropped from 36 queries to 21, a 42% reduction.',
+      },
+      {
+        label: 'Async Order Side Effects',
+        problem: 'Notifications and other side effects do not need to sit inside the customer-facing response path.',
+        decision: 'I moved those jobs to Celery workers and kept the order request focused on the state change.',
+        evidence: 'The order response stayed under 300ms while background work continued separately.',
+      },
+      {
+        label: 'Deployment Shape',
+        problem: 'A project that only works on localhost has not met reality yet.',
+        decision: 'I deployed with EC2, Gunicorn, Nginx, RDS, S3/static handling, GitHub Actions, and environment-based config.',
+        evidence: 'Deployment decisions forced me to handle SSL, CORS, media/static files, secrets, process management, and server restarts.',
+      },
+    ],
     tech: ['Python', 'Django', 'React.js', 'Tailwind CSS', 'MySQL', 'AWS EC2/RDS/S3', 'Redis', 'Celery', 'Razorpay', 'Cloudflare Workers', 'OpenAI API', 'GitHub Actions'],
     features: [
       'I guarded payment updates with select_for_update because duplicate success paths are not a fun surprise',
@@ -18,5 +72,78 @@ export const projects = [
     github: 'https://github.com/AkashTomy174/easybuy',
     demo: 'https://easybuy.akashtomy.com/',
     featured: true,
+  },
+  {
+    slug: 'ai-project-judge',
+    title: 'AI Project Judge - Hybrid Code Evaluation System',
+    description:
+      'This is the project I am planning/building next: a system that judges GitHub projects without blindly asking an LLM to “rate this repo.” The core idea is hybrid evaluation: deterministic static analysis first, AI interpretation second, then domain-aware scoring. I want it to answer the question senior engineers will ask immediately: why should anyone trust the score?',
+    status: 'Architecture planned / build roadmap ready',
+    badge: 'second project / systems design in public',
+    impact: [
+      ['15k', 'token budget cap per repo snapshot'],
+      ['6', 'parallel AI criteria planned per evaluation'],
+      ['80%', 'target cost reduction with prompt caching and batching'],
+    ],
+    architecture: ['React', 'FastAPI', 'Celery', 'Redis', 'PostgreSQL', 'GitHub API', 'Static Analysis', 'Claude API'],
+    flow: [
+      ['Ingest', 'GitHub URL, language detection, repo tree scan'],
+      ['Filter', 'remove node_modules, dist, build, binaries, lockfile noise'],
+      ['Measure', 'ruff/eslint, pytest-cov, radon, safety/npm audit, type checks'],
+      ['Judge', 'metrics-grounded AI prompts per criterion'],
+      ['Score', 'deterministic + AI aggregation with domain-aware weights'],
+      ['Export', 'streamed feedback, radar chart, PDF/JSON/shareable scorecard'],
+    ],
+    decisions: [
+      {
+        label: 'Hybrid Scoring',
+        problem: 'Pure LLM judging is inconsistent and can reward nice explanations over actual code quality.',
+        decision: 'Run deterministic tools first, then inject those metrics into the AI prompt so interpretation is grounded.',
+        evidence: 'A score can point to coverage, lint count, CVEs, complexity, and CI status instead of vibes.',
+      },
+      {
+        label: 'Smart Repo Ingestion',
+        problem: 'Naively sending a whole repo to an LLM is expensive, noisy, and unreliable.',
+        decision: 'Detect language, filter generated/noisy files, rank important files, and cap snapshots around 15k tokens.',
+        evidence: 'Large repos become bounded evaluations instead of surprise API bills.',
+      },
+      {
+        label: 'Domain-Aware Rubrics',
+        problem: 'A CLI tool, ML project, mobile app, and distributed system should not share identical weights.',
+        decision: 'Classify project type from README + file structure, then shift scoring weights by domain.',
+        evidence: 'A CLI can be judged differently from a web API without pretending one rubric fits everything.',
+      },
+      {
+        label: 'Batch Evaluation',
+        problem: 'Hackathons and classrooms need ranked comparisons, not one-off pretty reports.',
+        decision: 'Use Celery + Redis queues, job IDs, streaming progress, and batch leaderboard output.',
+        evidence: 'The architecture supports many repos without blocking one slow evaluation.',
+      },
+      {
+        label: 'Cost Control',
+        problem: 'AI evaluation can become too expensive to use at hackathon scale.',
+        decision: 'Use token budgeting, prompt caching, batch API paths, and static metrics to reduce repeated AI work.',
+        evidence: 'The planned estimate drops a 300-repo hackathon from roughly Rs 3,700 to about Rs 950 optimized.',
+      },
+      {
+        label: 'Trust And Auditability',
+        problem: 'Feedback like “we liked theirs more” helps nobody improve.',
+        decision: 'Return evidence-backed scorecards with deterministic metrics, AI reasoning, exports, and source traces.',
+        evidence: 'The reviewer can audit why a repo scored well or poorly.',
+      },
+    ],
+    features: [
+      'I designed the evaluator as two layers: static analysis for facts, AI interpretation for architecture and readability',
+      'I planned smart ingestion with language detection, file ranking, noise filtering, monorepo handling, and token budgeting',
+      'I included domain-aware rubrics so CLI tools, web APIs, ML projects, and distributed systems are not judged the same way',
+      'I planned SSE streaming so feedback can appear while background evaluation jobs run',
+      'I mapped the backend around FastAPI, Celery, Redis, PostgreSQL, GitHub API ingestion, and observability',
+      'I costed the system so the project is not just technically interesting, but usable for real hackathons',
+    ],
+    tech: ['Python', 'FastAPI', 'React', 'TypeScript', 'Celery', 'Redis', 'PostgreSQL', 'GitHub API', 'ruff', 'pytest-cov', 'radon', 'safety', 'eslint', 'Claude API', 'Docker'],
+    github: '#contact',
+    demo: '#contact',
+    visual: 'terminal',
+    featured: false,
   },
 ];
