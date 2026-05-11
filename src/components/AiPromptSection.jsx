@@ -4,8 +4,10 @@ import { BotIcon, MessageSquareIcon } from './Icons';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
 
 const PROMPTS = [
-  'What broke while building EasyBuy?',
-  'Explain payment locking in plain English.',
+  'What is AI Project Judge and why is it interesting?',
+  'How does the repo ingestion and token budget work?',
+  'Why mix static analysis with AI scoring?',
+  'How would Celery and Redis handle evaluations?',
   'What should Akash improve in the AI backend?',
   'Where does Akash show backend judgment?',
 ];
@@ -15,14 +17,14 @@ const AI_FLOW = [
   ['API', 'FastAPI validates request, rate limits, checks cache'],
   ['Retrieve', 'Curated JSON knowledge chunks are scored by keyword/topic overlap'],
   ['Prompt', 'Only retrieved context is passed into the system prompt'],
-  ['Model', 'Gemini answers with a strict “do not invent” instruction'],
+  ['Model', 'Gemini answers with a strict "do not invent" instruction'],
   ['Fallback', 'If LLM/API fails, the backend returns the best retrieved chunk'],
 ];
 
 const NEXT = [
   'replace keyword scoring with real embeddings + vector search',
   'add chunk versioning so resume/project updates are traceable',
-  'add source citations in the UI instead of hiding them in the payload',
+  'keep showing source citations in the UI',
   'evaluate bad answers with a small regression prompt set',
 ];
 
@@ -31,7 +33,7 @@ const AiPromptSection = () => {
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
 
-  const openChat = () => window.dispatchEvent(new CustomEvent('open-ai-akash'));
+  const openChat = (prompt) => window.dispatchEvent(new CustomEvent('open-ai-akash', { detail: { prompt } }));
 
   return (
     <section id="ai-akash" className="relative z-10 py-24">
@@ -59,7 +61,7 @@ const AiPromptSection = () => {
               </p>
               <button
                 type="button"
-                onClick={openChat}
+                onClick={() => openChat()}
                 className="interactive mt-8 inline-flex items-center gap-3 border border-accent-purple bg-accent-purple px-6 py-3 text-sm font-black uppercase tracking-widest text-accent-dark shadow-[6px_6px_0_#f4f1e8] transition hover:-translate-y-1"
               >
                 <MessageSquareIcon className="h-4 w-4" aria-hidden="true" />
@@ -88,7 +90,7 @@ const AiPromptSection = () => {
                       <button
                         key={prompt}
                         type="button"
-                        onClick={openChat}
+                        onClick={() => openChat(prompt)}
                         className="interactive border border-primary-dark/20 px-3 py-2 text-left text-primary-dark/80 transition hover:border-accent-purple hover:bg-accent-purple hover:text-accent-dark"
                       >
                         {prompt}

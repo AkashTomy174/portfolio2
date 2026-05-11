@@ -37,35 +37,7 @@ class RagService:
     return bool(self.chunks)
 
   def initialize(self) -> None:
-    try:
-      import chromadb
-    except ImportError:
-      return
-
-    self.chroma_dir.mkdir(parents=True, exist_ok=True)
-    chroma = chromadb.PersistentClient(path=str(self.chroma_dir))
-    self.collection = chroma.get_or_create_collection(name="ai_akash")
-
-    existing = self.collection.count()
-    if existing >= len(self.chunks):
-      return
-
-    ids = [chunk["id"] for chunk in self.chunks]
-    texts = [chunk["text"] for chunk in self.chunks]
-    metadatas = [{"source": chunk["source"], "topic": chunk["topic"]} for chunk in self.chunks]
-    try:
-      embeddings = self._embed_many(texts)
-    except OpenAIError as exc:
-      logger.warning("OpenAI embeddings failed during RAG initialization; using keyword search. error=%s", exc)
-      self.collection = None
-      return
-
-    self.collection.upsert(
-      ids=ids,
-      documents=texts,
-      metadatas=metadatas,
-      embeddings=embeddings,
-    )
+    logger.info("RAG initialized with curated keyword/topic retrieval. chunks=%s", len(self.chunks))
 
   def search(self, query: str, top_k: int = 3) -> list[RetrievedChunk]:
     return self._keyword_search(query, top_k)
@@ -87,14 +59,18 @@ class RagService:
 
   def _keyword_search(self, query: str, top_k: int) -> list[RetrievedChunk]:
     query_terms = set(_terms(query))
+    query_text = query.lower()
     scored: list[RetrievedChunk] = []
 
     for chunk in self.chunks:
+      searchable = f"{chunk['id']} {chunk['source']} {chunk['topic']} {chunk['text']}"
+      searchable_lower = searchable.lower()
       chunk_terms = set(_terms(chunk["text"]))
-      metadata_terms = set(_terms(f"{chunk['source']} {chunk['topic']}"))
+      metadata_terms = set(_terms(f"{chunk['id']} {chunk['source']} {chunk['topic']}"))
       overlap = len(query_terms & chunk_terms)
       metadata_overlap = len(query_terms & metadata_terms)
-      score = (overlap / math.sqrt(max(len(chunk_terms), 1))) + (metadata_overlap * 2)
+      phrase_boost = sum(3 for phrase in _phrases(query_text) if phrase in searchable_lower)
+      score = (overlap / math.sqrt(max(len(chunk_terms), 1))) + (metadata_overlap * 2) + phrase_boost
       scored.append(
         RetrievedChunk(
           text=chunk["text"],
@@ -110,3 +86,23 @@ class RagService:
 
 def _terms(text: str) -> list[str]:
   return [term for term in re.findall(r"[a-z0-9]+", text.lower()) if len(term) >= 2]
+
+
+def _phrases(text: str) -> list[str]:
+  aliases = {
+    "ai judge": ["ai project judge", "project judge", "evaluation system"],
+    "project judge": ["ai project judge", "repository evaluation"],
+    "token budget": ["token budgeting", "15k token", "ranked file selection"],
+    "repo ingestion": ["repository ingestion", "github ingestion", "monorepo"],
+    "static analysis": ["deterministic static analysis", "ruff", "eslint", "radon"],
+    "celery": ["async worker", "queue", "long-running"],
+    "redis": ["cache", "broker", "ttl"],
+    "backend judgment": ["select_for_update", "race condition", "query optimization"],
+    "easybuy": ["payment", "overselling", "e-commerce"],
+  }
+
+  phrases = [text.strip()]
+  for key, values in aliases.items():
+    if key in text:
+      phrases.extend(values)
+  return [phrase for phrase in phrases if phrase]

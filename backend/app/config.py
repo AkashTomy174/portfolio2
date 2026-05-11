@@ -28,7 +28,10 @@ class Settings:
   elevenlabs_voice_id: str | None = os.getenv("ELEVENLABS_VOICE_ID")
   enable_tts: bool = _bool("ENABLE_TTS", False)
 
-  allowed_origins: list[str] = _csv("ALLOWED_ORIGINS", "http://localhost:5173,https://akashtomy.com")
+  allowed_origins: list[str] = _csv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174,https://akashtomy.com",
+  )
   max_requests_per_ip: int = int(os.getenv("MAX_REQUESTS_PER_IP", "10"))
   rate_limit_window_seconds: int = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "86400"))
   response_cache_max_items: int = int(os.getenv("RESPONSE_CACHE_MAX_ITEMS", "256"))

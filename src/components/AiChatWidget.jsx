@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BotIcon, MessageSquareIcon, PauseIcon, PlayIcon, SendIcon, XIcon, LinkedinIcon, GithubIcon } from './Icons';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
 import { SITE } from '../siteConfig';
@@ -8,11 +8,11 @@ const AI_ENDPOINT = import.meta.env.VITE_AI_CHAT_ENDPOINT || '/api/ai-chat';
 const VOICE_ENABLED = import.meta.env.VITE_AI_CHAT_VOICE === 'true';
 
 const SUGGESTED_PROMPTS = [
-  'What is EasyBuy and what did you build?',
-  "What's your experience with Django and AWS?",
-  'What makes you different from other developers?',
-  'Are you open to full-time roles?',
-  "What's your strongest technical skill?",
+  'What is AI Project Judge and why is it interesting?',
+  'How does the repo ingestion and token budget work?',
+  'Why mix static analysis with AI scoring?',
+  'How would Celery and Redis handle evaluations?',
+  'Where does EasyBuy show backend judgment?',
   'Can I download your CV or resume?',
 ];
 
@@ -20,7 +20,7 @@ const INITIAL_MESSAGES = [
   {
     id: 'intro',
     role: 'assistant',
-    text: "Hi, I'm AI Akash. Ask me about Akash's projects, backend work, AWS experience, or role fit.",
+    text: "Hi, I'm AI Akash. Ask me about Akash's backend systems, AI Judge architecture, EasyBuy tradeoffs, or role fit.",
   },
 ];
 
@@ -92,6 +92,11 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
         }`}
       >
         <p>{isUser ? message.text : linkify(message.text)}</p>
+        {!isUser && message.sources?.length > 0 && (
+          <p className="mt-3 border-t border-accent-dark/10 pt-2 font-mono text-[10px] uppercase tracking-widest text-accent-gray">
+            sources: {message.sources.join(', ')}
+          </p>
+        )}
         {message.audioUrl && !isUser && (
           <button
             type="button"
@@ -130,6 +135,7 @@ const AiChatWidget = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [playingUrl, setPlayingUrl] = useState(null);
+  const [pendingPrompt, setPendingPrompt] = useState('');
   const audioRef = useRef(null);
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
@@ -141,7 +147,12 @@ const AiChatWidget = () => {
   }, [isOpen]);
 
   useEffect(() => {
-    const openChat = () => setIsOpen(true);
+    const openChat = (event) => {
+      setIsOpen(true);
+      if (event.detail?.prompt) {
+        setPendingPrompt(event.detail.prompt);
+      }
+    };
     window.addEventListener('open-ai-akash', openChat);
     return () => window.removeEventListener('open-ai-akash', openChat);
   }, []);
@@ -153,7 +164,7 @@ const AiChatWidget = () => {
     });
   }, [messages, isLoading, reduced]);
 
-  const submitMessage = async (value = input) => {
+  const submitMessage = useCallback(async (value = input) => {
     const text = value.trim();
     if (!text || isLoading) return;
 
@@ -197,7 +208,14 @@ const AiChatWidget = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [input, isLoading]);
+
+  useEffect(() => {
+    if (!isOpen || !pendingPrompt || isLoading) return;
+    const prompt = pendingPrompt;
+    setPendingPrompt('');
+    requestAnimationFrame(() => submitMessage(prompt));
+  }, [isOpen, pendingPrompt, isLoading, submitMessage]);
 
   const handlePlayAudio = (audioUrl) => {
     const audio = audioRef.current;

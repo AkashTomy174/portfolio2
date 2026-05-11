@@ -90,7 +90,7 @@ async def ai_chat(payload: ChatRequest, request: Request):
     response_cache.set(cache_key, response.model_dump())
     return response
 
-  chunks = rag.search(payload.message, top_k=3)
+  chunks = rag.search(payload.message, top_k=4)
   text = llm.answer(payload.message, chunks)
   audio_url = await tts.generate(text) if payload.voice else None
   sources = sorted({chunk.source for chunk in chunks})
