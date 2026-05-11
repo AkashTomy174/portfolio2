@@ -9,6 +9,7 @@ import NotFoundPage from './components/NotFoundPage';
 
 const AboutSection = lazy(() => import('./components/AboutSection'));
 const NowSection = lazy(() => import('./components/NowSection'));
+const SystemArchitectureSection = lazy(() => import('./components/SystemArchitectureSection'));
 const RecruiterFitSection = lazy(() => import('./components/RecruiterFitSection'));
 const SkillsSection = lazy(() => import('./components/SkillsSection'));
 const ProjectsSection = lazy(() => import('./components/ProjectsSection'));
@@ -126,12 +127,13 @@ function App() {
               <main id="main" className="flex flex-col relative z-10">
                 <HeroSection />
                 <Suspense fallback={null}>
+                  <SystemArchitectureSection />
+                  <ProjectsSection />
+                  <EngineeringNotesSection />
                   <NowSection />
                   <AboutSection />
                   <RecruiterFitSection />
                   <SkillsSection />
-                  <ProjectsSection />
-                  <EngineeringNotesSection />
                   <AiPromptSection />
                   <ContactSection />
                 </Suspense>

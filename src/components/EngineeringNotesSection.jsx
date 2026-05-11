@@ -5,25 +5,25 @@ import { useReducedMotion } from '../contexts/MotionPrefsContext';
 
 const NOTES = [
   {
-    title: 'Query Reduction Log',
-    Icon: DatabaseIcon,
-    before: '36 repeated reads in a product/order-heavy flow',
-    after: '21 queries after caching and ORM planning',
-    lesson: 'I do not treat optimization as a vibe. I compare the before and after, then keep the change if it improves the path that users actually touch.',
-  },
-  {
-    title: 'Payment Consistency Log',
+    title: 'Why pure LLM scoring is unreliable',
     Icon: LinkIcon,
-    before: 'Payment callbacks can arrive twice or be retried',
-    after: 'Order mutation guarded by transaction + row lock',
-    lesson: 'In payment systems, a success response is not enough. The backend needs a deterministic state transition that survives retries and timing issues.',
+    premise: 'A model can sound confident while missing failing tests, weak coverage, or dependency CVEs.',
+    systemChoice: 'AI Judge starts with deterministic metrics, then asks the model to interpret code with those facts injected into the prompt.',
+    takeaway: 'The AI layer becomes an interpreter of evidence, not the only judge in the room.',
   },
   {
-    title: 'Deployment Reality Log',
+    title: 'Designing token-aware repo ingestion',
+    Icon: DatabaseIcon,
+    premise: 'A large repo can contain thousands of files, generated output, lockfiles, builds, and unrelated packages.',
+    systemChoice: 'The ingestion plan ranks files by usefulness, filters noise, chunks large files, and caps the snapshot around 15k tokens.',
+    takeaway: 'The system controls cost and context quality before the model ever sees the repo.',
+  },
+  {
+    title: 'Scaling evaluations without blocking HTTP',
     Icon: CloudIcon,
-    before: 'Local app behavior is not production behavior',
-    after: 'EC2, Gunicorn, Nginx, RDS, S3, GitHub Actions',
-    lesson: 'I like building with the deployment target in mind early, because infrastructure decisions shape file storage, environment config, CORS, SSL, and background jobs.',
+    premise: 'Repository analysis can take too long for a normal request/response cycle, especially in batch mode.',
+    systemChoice: 'FastAPI accepts the job, Celery workers process repo analysis, Redis coordinates queues/cache, and SSE streams progress.',
+    takeaway: 'The UI feels live while the backend handles slow, failure-prone work asynchronously.',
   },
 ];
 
@@ -33,8 +33,8 @@ const EngineeringNotesSection = () => {
   const reduced = useReducedMotion();
 
   return (
-    <section id="notes" className="py-24 relative z-10">
-      <div className="container mx-auto px-6 max-w-6xl">
+    <section id="notes" className="relative z-10 py-24">
+      <div className="container mx-auto max-w-6xl px-6">
         <div ref={ref} className="mb-14">
           <motion.div
             initial={{ scaleX: 0 }}
@@ -48,48 +48,48 @@ const EngineeringNotesSection = () => {
             initial={{ opacity: 0, y: reduced ? 0 : 24 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: reduced ? 0 : 0.6, delay: reduced ? 0 : 0.1 }}
-            className="text-4xl md:text-5xl font-black tracking-tight text-accent-dark"
+            className="text-5xl font-extralight leading-none tracking-tight text-accent-dark md:text-8xl"
           >
-            Engineering <span className="text-gradient">Notes</span>
+            Technical notes I should probably <span className="font-black">write fully.</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: reduced ? 0 : 16 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: reduced ? 0 : 0.6, delay: reduced ? 0 : 0.2 }}
-            className="mt-3 max-w-2xl text-lg leading-relaxed text-accent-gray"
+            className="mt-5 max-w-2xl text-lg leading-relaxed text-accent-gray"
           >
-            A few short notes that show how I think about backend work when the site visitor does not have time to read the full codebase.
+            These are not blog posts yet, but they show where my thinking is going: reliability, cost control, queues, and making AI output more auditable.
           </motion.p>
         </div>
 
         <div className="grid gap-5 lg:grid-cols-3">
-          {NOTES.map(({ title, Icon, before, after, lesson }, index) => (
+          {NOTES.map(({ title, Icon, premise, systemChoice, takeaway }, index) => (
             <motion.article
               key={title}
               initial={{ opacity: 0, y: reduced ? 0 : 28 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: reduced ? 0 : 0.55, delay: reduced ? 0 : 0.08 * index }}
-              className="rounded-[1.5rem] border border-black/8 bg-white/80 p-6 shadow-[0_14px_46px_rgba(17,17,17,0.05)]"
+              className="hard-panel bg-primary-dark p-6"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-dark text-white">
+                <div className="flex h-11 w-11 items-center justify-center border border-accent-dark bg-accent-purple text-accent-dark">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <h3 className="text-lg font-black tracking-tight text-accent-dark">{title}</h3>
               </div>
 
               <div className="mt-6 space-y-3">
-                <div className="rounded-2xl border border-rose-100 bg-rose-50/60 p-4">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-rose-600">Before</div>
-                  <p className="mt-1 text-sm font-medium leading-relaxed text-accent-gray">{before}</p>
+                <div className="border border-accent-dark/15 p-4">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray">Premise</div>
+                  <p className="mt-1 text-sm font-medium leading-relaxed text-accent-gray">{premise}</p>
                 </div>
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700">After</div>
-                  <p className="mt-1 text-sm font-medium leading-relaxed text-accent-gray">{after}</p>
+                <div className="border border-accent-dark/15 bg-accent-purple p-4">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-accent-dark/60">System choice</div>
+                  <p className="mt-1 text-sm font-bold leading-relaxed text-accent-dark">{systemChoice}</p>
                 </div>
               </div>
 
-              <p className="mt-5 text-sm leading-relaxed text-accent-gray">{lesson}</p>
+              <p className="mt-5 text-sm leading-relaxed text-accent-gray">{takeaway}</p>
             </motion.article>
           ))}
         </div>

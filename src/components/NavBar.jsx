@@ -3,10 +3,11 @@ import { SITE } from '../siteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
+  { label: 'Architecture', href: '#architecture' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Notes', href: '#notes' },
   { label: 'Now', href: '#now' },
   { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Projects', href: '#projects' },
   { label: 'Contact', href: '#contact' },
 ];
 
