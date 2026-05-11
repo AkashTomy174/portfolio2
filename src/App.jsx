@@ -5,11 +5,18 @@ import AnimatedBackground from './components/AnimatedBackground';
 import NavBar from './components/NavBar';
 import HeroSection from './components/HeroSection';
 import AiChatWidget from './components/AiChatWidget';
+import NotFoundPage from './components/NotFoundPage';
 
 const AboutSection = lazy(() => import('./components/AboutSection'));
+const NowSection = lazy(() => import('./components/NowSection'));
+const RecruiterFitSection = lazy(() => import('./components/RecruiterFitSection'));
 const SkillsSection = lazy(() => import('./components/SkillsSection'));
 const ProjectsSection = lazy(() => import('./components/ProjectsSection'));
+const EngineeringNotesSection = lazy(() => import('./components/EngineeringNotesSection'));
+const AiPromptSection = lazy(() => import('./components/AiPromptSection'));
 const ContactSection = lazy(() => import('./components/ContactSection'));
+
+const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
 class ErrorBoundary extends Component {
   state = { error: null };
@@ -31,15 +38,39 @@ class ErrorBoundary extends Component {
 
 function App() {
   const progressRef = useRef(null);
+  const konamiRef = useRef([]);
+  const [booting, setBooting] = useState(true);
+  const [easterEgg, setEasterEgg] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
+  const isUnknownRoute = typeof window !== 'undefined' && !['/', '/index.html'].includes(window.location.pathname);
+
+  useEffect(() => {
+    console.log('Akash note: if you are reading this, ask me about the Razorpay webhook bug. That one taught me humility.');
+    const timer = window.setTimeout(() => setBooting(false), prefersReducedMotion ? 200 : 1050);
+    return () => window.clearTimeout(timer);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setPrefersReducedMotion(media.matches);
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (event) => {
+      const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+      konamiRef.current = [...konamiRef.current, key].slice(-KONAMI.length);
+      if (KONAMI.every((code, index) => code === konamiRef.current[index])) {
+        setEasterEgg(true);
+        window.setTimeout(() => setEasterEgg(false), 4200);
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
   }, []);
 
   useEffect(() => {
@@ -63,6 +94,22 @@ function App() {
   return (
     <MotionPrefsContext.Provider value={prefersReducedMotion}>
       <div className="relative w-full min-h-screen overflow-x-hidden">
+        {booting && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-accent-dark text-primary-dark">
+            <div className="terminal-scan border border-accent-purple px-8 py-6 text-center">
+              <div className="text-[10px] font-black uppercase tracking-[0.45em] text-accent-purple">booting portfolio</div>
+              <div className="mt-4 text-4xl font-black tracking-tight" style={{ animation: 'stamp-in 720ms cubic-bezier(0.16,1,0.3,1) both' }}>
+                AKASH.TOMY
+              </div>
+              <div className="mt-3 font-mono text-xs text-primary-dark/60">loading the unglamorous backend bits...</div>
+            </div>
+          </div>
+        )}
+        {easterEgg && (
+          <div className="fixed bottom-24 left-1/2 z-[9999] -translate-x-1/2 rotate-[-2deg] border border-accent-dark bg-accent-purple px-5 py-3 text-sm font-black text-accent-dark shadow-[8px_8px_0_#151512]">
+            You found the secret. Payment webhooks still scare me, respectfully.
+          </div>
+        )}
         <div id="scroll-progress" ref={progressRef} aria-hidden="true" />
         <CustomCursor />
         <AnimatedBackground />
@@ -72,16 +119,26 @@ function App() {
         </a>
         <NavBar />
         <ErrorBoundary>
-          <main id="main" className="flex flex-col relative z-10">
-            <HeroSection />
-            <Suspense fallback={null}>
-              <AboutSection />
-              <SkillsSection />
-              <ProjectsSection />
-              <ContactSection />
-            </Suspense>
-          </main>
-          <AiChatWidget />
+          {isUnknownRoute ? (
+            <NotFoundPage />
+          ) : (
+            <>
+              <main id="main" className="flex flex-col relative z-10">
+                <HeroSection />
+                <Suspense fallback={null}>
+                  <NowSection />
+                  <AboutSection />
+                  <RecruiterFitSection />
+                  <SkillsSection />
+                  <ProjectsSection />
+                  <EngineeringNotesSection />
+                  <AiPromptSection />
+                  <ContactSection />
+                </Suspense>
+              </main>
+              <AiChatWidget />
+            </>
+          )}
         </ErrorBoundary>
       </div>
     </MotionPrefsContext.Provider>

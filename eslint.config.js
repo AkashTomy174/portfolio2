@@ -23,7 +23,10 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', {
+        varsIgnorePattern: '^_|^[A-Z]|^motion$|^AnimatePresence$|^React$',
+        argsIgnorePattern: '^_|^[A-Z]',
+      }],
     },
   },
 ])

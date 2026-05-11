@@ -1,27 +1,11 @@
-import { useReducedMotion } from '../contexts/MotionPrefsContext';
-
-const AnimatedBackground = () => {
-  const reduced = useReducedMotion();
-
-  return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      <div className={`absolute top-[-15%] left-[-10%] w-[55vw] h-[55vw] rounded-full bg-violet-200/40 blur-[140px] ${!reduced ? 'animate-blob' : ''}`} />
-      <div className={`absolute top-[30%] right-[-15%] w-[45vw] h-[45vw] rounded-full bg-blue-200/35 blur-[120px] ${!reduced ? 'animate-blob delay-200' : ''}`} />
-      <div className={`absolute bottom-[-10%] left-[25%] w-[40vw] h-[40vw] rounded-full bg-pink-100/30 blur-[100px] ${!reduced ? 'animate-blob delay-400' : ''}`} />
-
-      {/* Fine dot grid */}
-      <div
-        className="absolute inset-0 opacity-[0.35]"
-        style={{
-          backgroundImage: 'radial-gradient(circle, #c4b5fd 1px, transparent 1px)',
-          backgroundSize: '36px 36px',
-        }}
-      />
-
-      {/* Vignette edges */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_60%,rgba(250,250,250,0.7)_100%)]" />
+const AnimatedBackground = () => (
+  <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" aria-hidden="true">
+    <div className="absolute left-0 top-24 h-px w-full bg-accent-dark/10" />
+    <div className="absolute left-8 top-0 h-full w-px bg-accent-dark/10" />
+    <div className="absolute bottom-10 right-8 rotate-[-8deg] border border-accent-dark/20 bg-primary-dark px-4 py-2 text-[10px] font-black uppercase tracking-[0.35em] text-accent-dark/35">
+      inspect the boring parts
     </div>
-  );
-};
+  </div>
+);
 
 export default AnimatedBackground;

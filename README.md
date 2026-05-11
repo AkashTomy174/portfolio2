@@ -1,6 +1,6 @@
-# Akash Tomy — Portfolio
+# Akash Tomy - Portfolio
 
-Personal portfolio website with an AI-powered chat assistant built with React, Tailwind CSS, Framer Motion, and a FastAPI backend powered by Google Gemini.
+Personal portfolio website for Akash Tomy, built with React, Tailwind CSS, Framer Motion, and a FastAPI backend for the AI portfolio assistant.
 
 Live: [akashtomy.com](https://akashtomy.com)
 
@@ -14,16 +14,17 @@ Live: [akashtomy.com](https://akashtomy.com)
 - Framer Motion 12
 - Vite
 
-### Backend (AI Chat)
+### Backend
 - FastAPI + Uvicorn
 - Google Gemini (`gemini-2.0-flash-lite`)
 - RAG with keyword search
-- ElevenLabs TTS (optional)
+- Optional ElevenLabs TTS
+- Response cache and IP rate limiting
 
 ### Infrastructure
 - Frontend: Vercel
 - Backend: AWS EC2 + Nginx
-- SSL: Certbot (Let's Encrypt)
+- SSL: Certbot / Let's Encrypt
 - CI/CD: GitHub Actions
 
 ---
@@ -42,10 +43,16 @@ npm run dev
 ```bash
 cd backend
 python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
+source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env             # fill in your API keys
+cp .env.example .env
 uvicorn app.main:app --reload --port 8001
+```
+
+On Windows, activate the virtual environment with:
+
+```powershell
+.venv\Scripts\activate
 ```
 
 ---
@@ -54,14 +61,14 @@ uvicorn app.main:app --reload --port 8001
 
 ### Frontend (`.env.local`)
 
-```
+```env
 VITE_AI_CHAT_ENDPOINT=http://localhost:8001/api/ai-chat
 VITE_AI_CHAT_VOICE=false
 ```
 
 ### Backend (`backend/.env`)
 
-```
+```env
 OPENAI_API_KEY=your-gemini-api-key
 OPENAI_CHAT_MODEL=gemini-2.0-flash-lite
 OPENAI_EMBEDDING_MODEL=text-embedding-3-small
@@ -79,116 +86,115 @@ CHROMA_DIR=./data/chroma
 AUDIO_DIR=./data/audio
 ```
 
-Get a free Gemini API key at [aistudio.google.com](https://aistudio.google.com).
-
 ---
 
 ## Project Structure
 
-```
-├── src/
-│   ├── components/
-│   │   ├── HeroSection.jsx
-│   │   ├── AboutSection.jsx
-│   │   ├── SkillsSection.jsx
-│   │   ├── ProjectsSection.jsx
-│   │   ├── ContactSection.jsx
-│   │   ├── NavBar.jsx
-│   │   ├── AiChatWidget.jsx
-│   │   ├── AnimatedBackground.jsx
-│   │   ├── CustomCursor.jsx
-│   │   └── Icons.jsx
-│   ├── contexts/
-│   │   └── MotionPrefsContext.js
-│   ├── data/
-│   │   ├── about.js
-│   │   ├── projects.js
-│   │   └── skills.js
-│   ├── siteConfig.js
-│   ├── App.jsx
-│   ├── index.css
-│   └── main.jsx
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── config.py
-│   │   ├── models.py
-│   │   └── services/
-│   │       ├── llm.py
-│   │       ├── rag.py
-│   │       ├── cache.py
-│   │       ├── rate_limit.py
-│   │       └── tts.py
-│   ├── knowledge_base/
-│   │   └── akash.json
-│   ├── requirements.txt
-│   └── .env.example
-├── public/
-│   └── AkashTomy-Resume.pdf     ← drop your CV here
-└── .github/
-    └── workflows/
-        └── deploy.yml
+```text
+src/
+  components/
+    HeroSection.jsx
+    AboutSection.jsx
+    SkillsSection.jsx
+    ProjectsSection.jsx
+    AiPromptSection.jsx
+    ContactSection.jsx
+    NavBar.jsx
+    AiChatWidget.jsx
+    AnimatedBackground.jsx
+    CustomCursor.jsx
+    Icons.jsx
+  contexts/
+    MotionPrefsContext.js
+  data/
+    about.js
+    projects.js
+    skills.js
+  siteConfig.js
+  App.jsx
+  index.css
+  main.jsx
+backend/
+  app/
+    main.py
+    config.py
+    models.py
+    services/
+      llm.py
+      rag.py
+      cache.py
+      rate_limit.py
+      tts.py
+  knowledge_base/
+    akash.json
+  requirements.txt
+public/
+  AkashTomy-Resume.pdf
+.github/
+  workflows/
+    deploy.yml
 ```
 
 ---
 
 ## Updating Content
 
-All personal data is in `src/data/` and `src/siteConfig.js`.
-
 | File | What it controls |
-|---|---|
+| --- | --- |
 | `src/siteConfig.js` | Name, email, GitHub, LinkedIn, site URL |
-| `src/data/about.js` | Stats (42% query reduction, etc.) |
-| `src/data/projects.js` | Project cards |
-| `src/data/skills.js` | Skill categories and levels |
+| `src/data/about.js` | Proof metrics |
+| `src/data/projects.js` | EasyBuy case study content |
+| `src/data/skills.js` | Capability cards |
 | `backend/knowledge_base/akash.json` | AI chatbot knowledge base |
 
 ---
 
 ## AI Chat Widget
 
-The chat widget (`AiChatWidget.jsx`) connects to the FastAPI backend and answers recruiter questions about Akash using RAG + Gemini.
+The chat widget in `src/components/AiChatWidget.jsx` connects to the FastAPI backend and answers recruiter questions about Akash using the local knowledge base plus Gemini.
 
-**Suggested prompts shown in widget:**
-- What is EasyBuy and what did you build?
-- What's your experience with Django and AWS?
-- What makes you different from other developers?
-- Are you open to full-time roles?
-- What's your strongest technical skill?
-- Can I download your CV or resume?
+The redesign also includes `src/components/AiPromptSection.jsx`, which opens the same chat widget through a browser event:
 
-**To add more knowledge:** edit `backend/knowledge_base/akash.json` and restart the backend.
+```js
+window.dispatchEvent(new CustomEvent('open-ai-akash'));
+```
+
+To add more knowledge, edit `backend/knowledge_base/akash.json` and restart the backend.
 
 ---
 
 ## CV / Resume
 
-Drop `AkashTomy-Resume.pdf` into the `public/` folder. The download button in the hero section and the chatbot link will both work automatically.
+Place `AkashTomy-Resume.pdf` in the `public/` folder. The download button in the hero section and the chatbot responses can link to it.
 
 ---
 
 ## Deployment
 
-### Frontend — Vercel
-Push to `main` → Vercel auto-deploys.
+### Frontend - Vercel
 
-Set environment variable in Vercel:
-```
-VITE_AI_CHAT_ENDPOINT = https://api.akashtomy.com/api/ai-chat
+Push to `main` and Vercel auto-deploys.
+
+Set this environment variable in Vercel:
+
+```env
+VITE_AI_CHAT_ENDPOINT=https://api.akashtomy.com/api/ai-chat
 ```
 
-### Backend — AWS EC2
-The GitHub Actions workflow (`.github/workflows/deploy.yml`) auto-deploys the backend on every push that changes `backend/`.
+### Backend - AWS EC2
+
+The GitHub Actions workflow in `.github/workflows/deploy.yml` can deploy the backend when files under `backend/` change.
 
 Required GitHub secrets:
+
 | Secret | Value |
-|---|---|
+| --- | --- |
 | `EC2_HOST` | EC2 public IP |
 | `EC2_USER` | `ubuntu` |
 | `EC2_SSH_KEY` | Contents of your `.pem` file |
 
-### Nginx config (`/etc/nginx/sites-available/api.akashtomy.com`)
+Example Nginx routes:
+
 ```nginx
 location /api/ai-chat {
     proxy_pass http://127.0.0.1:8001;
@@ -200,7 +206,8 @@ location /health {
 }
 ```
 
-### Systemd service
+Example systemd commands:
+
 ```bash
 sudo systemctl enable ai-akash
 sudo systemctl start ai-akash

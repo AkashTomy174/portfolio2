@@ -2,17 +2,17 @@ import projectImage from '../assets/project.png';
 
 export const projects = [
   {
-    title: 'EasyBuy — Full Stack E-Commerce Platform',
+    title: 'EasyBuy - Full Stack E-Commerce Platform',
     description:
-      'Multi-role e-commerce platform (Customer, Seller, Admin) deployed on AWS. Built with a focus on payment consistency, concurrency safety, and performance — cutting DB queries by 42% and keeping order responses under 300ms.',
+      'I built EasyBuy because I wanted a real e-commerce project with the messy parts left in: customers, sellers, admins, orders, payments, webhooks, caching, background jobs, and deployment. The interesting work was not the product grid. It was making checkout, order state, and database access behave.',
     tech: ['Python', 'Django', 'React.js', 'Tailwind CSS', 'MySQL', 'AWS EC2/RDS/S3', 'Redis', 'Celery', 'Razorpay', 'Cloudflare Workers', 'OpenAI API', 'GitHub Actions'],
     features: [
-      'Concurrent-safe payments using select_for_update — zero duplicate transactions',
-      'Cut DB queries by 42% (36 → 21) via Redis caching + ORM optimisation',
-      'Celery async workers for notifications keeping order responses under 300ms',
-      'Razorpay integration with HMAC webhook signature verification',
-      'Product-aware AI chatbot using OpenAI API + Cloudflare Workers',
-      'Zero-downtime CI/CD via GitHub Actions → AWS EC2 with Gunicorn + Nginx',
+      'I guarded payment updates with select_for_update because duplicate success paths are not a fun surprise',
+      'I reduced database queries by 42% through Redis caching and ORM cleanup',
+      'I moved notifications to Celery so the order response did not wait for side quests',
+      'I verified Razorpay webhooks with HMAC signatures instead of trusting happy-path payloads',
+      'I added a product-aware AI chatbot using OpenAI API and Cloudflare Workers',
+      'I deployed it with GitHub Actions, AWS EC2, Gunicorn, Nginx, RDS, and S3',
     ],
     image: projectImage,
     github: 'https://github.com/AkashTomy174/easybuy',

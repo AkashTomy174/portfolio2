@@ -4,6 +4,7 @@ import { useReducedMotion } from '../contexts/MotionPrefsContext';
 
 const CustomCursor = () => {
   const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [trail, setTrail] = useState([]);
   const [hovering, setHovering] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
@@ -11,12 +12,19 @@ const CustomCursor = () => {
     let raf;
     let raw = { x: 0, y: 0 };
 
-    const onMove = (e) => { raw = { x: e.clientX, y: e.clientY }; };
-    const tick = () => { setPos({ ...raw }); raf = requestAnimationFrame(tick); };
+    const onMove = (event) => {
+      raw = { x: event.clientX, y: event.clientY };
+      setTrail((items) => [{ ...raw, id: Date.now() }, ...items].slice(0, 5));
+    };
 
-    const onOver = (e) => {
-      const t = e.target;
-      setHovering(!!(t.closest('a') || t.closest('button') || t.classList.contains('interactive')));
+    const tick = () => {
+      setPos({ ...raw });
+      raf = requestAnimationFrame(tick);
+    };
+
+    const onOver = (event) => {
+      const target = event.target;
+      setHovering(Boolean(target.closest('a') || target.closest('button') || target.classList.contains('interactive')));
     };
 
     window.addEventListener('mousemove', onMove, { passive: true });
@@ -32,51 +40,28 @@ const CustomCursor = () => {
   const isCoarse = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
   if (isCoarse || prefersReducedMotion) return null;
 
-  const ringStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: 32,
-    height: 32,
-    marginLeft: -16,
-    marginTop: -16,
-    borderRadius: '50%',
-    border: '1.5px solid rgba(17,17,17,0.35)',
-    pointerEvents: 'none',
-    zIndex: 9999,
-  };
-
-  const dotStyle = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: 5,
-    height: 5,
-    marginLeft: -2.5,
-    marginTop: -2.5,
-    borderRadius: '50%',
-    backgroundColor: '#111111',
-    pointerEvents: 'none',
-    zIndex: 9999,
-  };
-
   return (
     <>
+      {trail.map((item, index) => (
+        <motion.div
+          key={item.id}
+          className="fixed left-0 top-0 z-[9998] h-2 w-2 rounded-full bg-accent-purple pointer-events-none"
+          initial={{ opacity: 0.4, scale: 1 }}
+          animate={{ x: item.x - 4, y: item.y - 4, opacity: 0, scale: 0.2 }}
+          transition={{ duration: 0.45 + index * 0.04 }}
+        />
+      ))}
       <motion.div
-        style={ringStyle}
+        className="fixed left-0 top-0 z-[9999] pointer-events-none border border-accent-dark bg-primary-dark"
+        style={{ width: 28, height: 28, marginLeft: -14, marginTop: -14 }}
         animate={{
           x: pos.x,
           y: pos.y,
-          scale: hovering ? 1.6 : 1,
-          borderColor: hovering ? 'rgba(109,40,217,0.7)' : 'rgba(17,17,17,0.35)',
-          backgroundColor: hovering ? 'rgba(109,40,217,0.08)' : 'transparent',
+          rotate: hovering ? -10 : 0,
+          scale: hovering ? 1.45 : 1,
+          backgroundColor: hovering ? '#ccff00' : '#f4f1e8',
         }}
-        transition={{ type: 'spring', stiffness: 600, damping: 32, mass: 0.4 }}
-      />
-      <motion.div
-        style={dotStyle}
-        animate={{ x: pos.x, y: pos.y, scale: hovering ? 0 : 1 }}
-        transition={{ type: 'spring', stiffness: 800, damping: 28, mass: 0.2 }}
+        transition={{ type: 'spring', stiffness: 650, damping: 31, mass: 0.35 }}
       />
     </>
   );

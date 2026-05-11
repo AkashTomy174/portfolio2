@@ -9,47 +9,41 @@ const AboutSection = () => {
   const reduced = useReducedMotion();
 
   return (
-    <section id="about" className="py-24 relative z-10">
-      <div className="container mx-auto px-6 max-w-5xl">
+    <section id="about" className="relative z-10 py-24">
+      <div className="container mx-auto max-w-6xl px-6">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: reduced ? 0 : 48 }}
+          initial={{ opacity: 0, y: reduced ? 0 : 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: reduced ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-card-elevated rounded-3xl p-8 md:p-14 relative overflow-hidden"
+          transition={{ duration: reduced ? 0 : 0.75, ease: [0.16, 1, 0.3, 1] }}
+          className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]"
         >
-          <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-bl from-violet-100/60 to-transparent rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-blue-100/40 to-transparent rounded-full blur-2xl pointer-events-none" aria-hidden="true" />
-
-          <div className="relative z-10">
+          <div className="hard-panel bg-primary-dark p-6 md:p-10">
             <div className="section-line" aria-hidden="true" />
-            <h2 className="text-3xl md:text-4xl font-black text-accent-dark mb-5 tracking-tight leading-tight">
-              Full-Stack Developer
-              <br />
-              <span className="text-gradient-static">Django · React · AWS</span>
+            <h2 className="text-4xl font-extralight leading-tight tracking-tight text-accent-dark md:text-6xl">
+              I like when software is <span className="font-black">boring for users</span> and interesting for me.
             </h2>
-
-            <p className="text-accent-gray text-lg leading-relaxed mb-12 max-w-3xl">
-              Backend-focused Full Stack Developer from Alappuzha, Kerala. I specialize in Django and scalable system design — building and deploying production-grade platforms on AWS. My focus is on solving real engineering problems: payment consistency, concurrency control, and performance at scale. Currently interning at SMEC Technologies while actively seeking full-time opportunities.
+            <p className="mt-7 text-lg leading-relaxed text-accent-gray">
+              I am from Alappuzha, Kerala. I mostly work with Django, React, MySQL, Redis, and AWS. The part I enjoy is not just making the page render. It is figuring out why a checkout can fail twice, why a page did 36 queries, or why a background job should not block a customer.
             </p>
+            <p className="mt-5 text-lg leading-relaxed text-accent-gray">
+              Weirdly specific opinion: skill bars should be banned from developer portfolios. Nobody is 87% Redis. Show me the bug, the tradeoff, and what changed after you touched it.
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-8 border-t border-black/5">
-              {aboutStats.map(({ num, label, accent }, i) => (
-                <motion.div
-                  key={label}
-                  initial={{ opacity: 0, y: reduced ? 0 : 24 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : 0.3 + i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={reduced ? {} : { y: -4 }}
-                  className="p-6 rounded-2xl bg-white/60 border border-black/5 hover:border-black/10 hover:shadow-md transition-all duration-300"
-                >
-                  <div className={`text-4xl font-black bg-gradient-to-br ${accent} bg-clip-text text-transparent mb-1`}>
-                    {num}
-                  </div>
-                  <div className="text-xs font-semibold text-accent-gray uppercase tracking-widest">{label}</div>
-                </motion.div>
-              ))}
-            </div>
+          <div className="space-y-4 lg:pt-16">
+            {aboutStats.map(({ num, label }, index) => (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, x: reduced ? 0 : 36 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: reduced ? 0 : 0.5, delay: reduced ? 0 : 0.15 + index * 0.08 }}
+                className={`hard-panel bg-primary-dark p-5 ${index === 1 ? 'md:ml-12 rotate-[1deg]' : index === 2 ? 'md:mr-10 rotate-[-1deg]' : 'rotate-[-0.5deg]'}`}
+              >
+                <div className="text-5xl font-black text-accent-dark">{num}</div>
+                <div className="mt-2 font-mono text-xs font-black uppercase tracking-widest text-accent-gray">{label}</div>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </div>

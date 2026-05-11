@@ -59,7 +59,7 @@ const linkify = (text) => {
         href={href}
         target={isEmail ? undefined : '_blank'}
         rel={isEmail ? undefined : 'noopener noreferrer'}
-        className="text-violet-600 underline underline-offset-2 transition-colors break-words hover:text-violet-800"
+        className="bg-accent-purple px-1 text-accent-dark underline underline-offset-2 transition-colors break-words hover:bg-accent-dark hover:text-primary-dark"
       >
         {linkText}
       </a>
@@ -85,10 +85,10 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
       <div
-        className={`max-w-[82%] rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
+        className={`max-w-[82%] border px-4 py-3 text-sm leading-relaxed shadow-sm ${
           isUser
-            ? 'bg-accent-dark text-white rounded-br-md'
-            : 'bg-white border border-black/8 text-accent-dark rounded-bl-md'
+            ? 'border-accent-dark bg-accent-dark text-primary-dark'
+            : 'border-accent-dark/20 bg-primary-dark text-accent-dark'
         }`}
       >
         <p>{isUser ? message.text : linkify(message.text)}</p>
@@ -96,7 +96,7 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
           <button
             type="button"
             onClick={() => onPlayAudio(message.audioUrl)}
-            className="interactive mt-3 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700 transition-colors hover:bg-violet-100"
+            className="interactive mt-3 inline-flex items-center gap-2 border border-accent-dark bg-accent-purple px-3 py-1.5 text-xs font-black text-accent-dark transition-colors hover:bg-primary-dark"
           >
             {isPlaying ? <PauseIcon className="h-3.5 w-3.5" /> : <PlayIcon className="h-3.5 w-3.5" />}
             {isPlaying ? 'Pause response' : 'Play response'}
@@ -109,7 +109,7 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
 
 const LoadingBubble = () => (
   <div className="flex justify-start">
-    <div className="rounded-2xl rounded-bl-md border border-black/8 bg-white px-4 py-3 shadow-sm">
+    <div className="border border-accent-dark/20 bg-primary-dark px-4 py-3 shadow-sm">
       <div className="flex items-center gap-1.5" aria-label="AI Akash is typing">
         {[0, 1, 2].map((dot) => (
           <span
@@ -139,6 +139,12 @@ const AiChatWidget = () => {
       requestAnimationFrame(() => inputRef.current?.focus());
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    const openChat = () => setIsOpen(true);
+    window.addEventListener('open-ai-akash', openChat);
+    return () => window.removeEventListener('open-ai-akash', openChat);
+  }, []);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({
@@ -221,17 +227,17 @@ const AiChatWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduced ? { opacity: 0 } : { opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: reduced ? 0 : 0.22, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-4 flex h-[min(640px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-[390px] flex-col overflow-hidden rounded-2xl border border-black/10 bg-[#f8f8f8]/95 shadow-[0_24px_80px_rgba(0,0,0,0.22)] backdrop-blur-2xl"
+            className="mb-4 flex h-[min(640px,calc(100vh-7rem))] w-[calc(100vw-2.5rem)] max-w-[390px] flex-col overflow-hidden border border-accent-dark bg-primary-dark shadow-[10px_10px_0_#151512]"
             aria-label="AI Akash chat"
           >
-            <header className="flex items-center justify-between border-b border-black/8 bg-white/80 px-4 py-3">
+            <header className="flex items-center justify-between border-b border-accent-dark bg-primary-dark px-4 py-3">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-dark text-white">
+                <span className="flex h-10 w-10 items-center justify-center border border-accent-dark bg-accent-purple text-accent-dark">
                   <BotIcon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <div>
                   <h2 className="text-sm font-black text-accent-dark">AI Akash</h2>
-                  <p className="text-xs font-medium text-accent-gray">Portfolio assistant</p>
+                  <p className="text-xs font-medium text-accent-gray">small backend brain</p>
                 </div>
               </div>
               <div className="flex items-center gap-1">
@@ -239,7 +245,7 @@ const AiChatWidget = () => {
                   href={SITE.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="interactive p-2 rounded-full text-accent-gray hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                  className="interactive p-2 text-accent-gray hover:bg-accent-purple hover:text-accent-dark transition-colors"
                   aria-label="LinkedIn"
                 >
                   <LinkedinIcon className="h-4 w-4" aria-hidden="true" />
@@ -248,7 +254,7 @@ const AiChatWidget = () => {
                   href={SITE.github}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="interactive p-2 rounded-full text-accent-gray hover:text-violet-600 hover:bg-violet-50 transition-colors"
+                  className="interactive p-2 text-accent-gray hover:bg-accent-purple hover:text-accent-dark transition-colors"
                   aria-label="GitHub"
                 >
                   <GithubIcon className="h-4 w-4" aria-hidden="true" />
@@ -256,7 +262,7 @@ const AiChatWidget = () => {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="interactive rounded-full p-2 text-accent-gray transition-colors hover:bg-black/5 hover:text-accent-dark"
+                  className="interactive p-2 text-accent-gray transition-colors hover:bg-accent-purple hover:text-accent-dark"
                   aria-label="Close AI Akash chat"
                 >
                   <XIcon className="h-4 w-4" aria-hidden="true" />
@@ -280,7 +286,7 @@ const AiChatWidget = () => {
                       key={prompt}
                       type="button"
                       onClick={() => submitMessage(prompt)}
-                      className="interactive rounded-full border border-black/10 bg-white px-3 py-1.5 text-left text-xs font-semibold text-accent-gray transition-all hover:border-violet-300 hover:text-violet-700"
+            className="interactive border border-accent-dark/20 bg-primary-dark px-3 py-1.5 text-left text-xs font-semibold text-accent-gray transition-all hover:border-accent-dark hover:bg-accent-purple hover:text-accent-dark"
                     >
                       {prompt}
                     </button>
@@ -291,13 +297,13 @@ const AiChatWidget = () => {
             </div>
 
             <form
-              className="border-t border-black/8 bg-white/90 p-3"
+              className="border-t border-accent-dark bg-primary-dark p-3"
               onSubmit={(event) => {
                 event.preventDefault();
                 submitMessage();
               }}
             >
-              <div className="flex items-end gap-2 rounded-2xl border border-black/10 bg-white p-2 shadow-sm focus-within:border-violet-300">
+              <div className="flex items-end gap-2 border border-accent-dark bg-primary-dark p-2 shadow-sm focus-within:border-accent-purple">
                 <textarea
                   ref={inputRef}
                   value={input}
@@ -317,7 +323,7 @@ const AiChatWidget = () => {
                 <button
                   type="submit"
                   disabled={!input.trim() || isLoading}
-                  className="interactive flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent-dark text-white transition-all hover:bg-accent-purple disabled:cursor-not-allowed disabled:bg-accent-light disabled:text-accent-gray"
+                  className="interactive flex h-10 w-10 shrink-0 items-center justify-center border border-accent-dark bg-accent-dark text-primary-dark transition-all hover:bg-accent-purple hover:text-accent-dark disabled:cursor-not-allowed disabled:bg-accent-light disabled:text-accent-gray"
                   aria-label="Send message"
                 >
                   <SendIcon className="h-4 w-4" aria-hidden="true" />
@@ -333,12 +339,12 @@ const AiChatWidget = () => {
         onClick={() => setIsOpen((open) => !open)}
         whileHover={reduced ? {} : { y: -2, scale: 1.03 }}
         whileTap={reduced ? {} : { scale: 0.96 }}
-        className="interactive flex items-center gap-3 rounded-full bg-accent-dark px-5 py-4 text-sm font-bold text-white shadow-[0_12px_40px_rgba(17,17,17,0.28)] transition-colors hover:bg-accent-purple"
+        className="interactive hover-scrape flex items-center gap-3 border border-accent-dark bg-accent-dark px-5 py-4 text-sm font-black uppercase tracking-wider text-primary-dark transition-colors hover:bg-accent-purple hover:text-accent-dark"
         aria-expanded={isOpen}
         aria-controls="ai-akash-chat"
       >
         <MessageSquareIcon className="h-5 w-5" aria-hidden="true" />
-        Ask AI Akash
+        ask ai akash
       </motion.button>
     </div>
   );

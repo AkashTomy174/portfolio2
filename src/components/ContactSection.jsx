@@ -1,15 +1,15 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { MailIcon, LinkedinIcon, GithubIcon, MessageSquareIcon } from './Icons';
+import { MailIcon, LinkedinIcon, GithubIcon } from './Icons';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
 import { SITE } from '../siteConfig';
 
 const SOCIALS = [
-  { href: SITE.linkedin, Icon: LinkedinIcon, label: 'LinkedIn', hover: 'hover:border-blue-400 hover:text-blue-500' },
-  { href: SITE.github, Icon: GithubIcon, label: 'GitHub', hover: 'hover:border-violet-400 hover:text-violet-600' },
+  { href: SITE.linkedin, Icon: LinkedinIcon, label: 'LinkedIn' },
+  { href: SITE.github, Icon: GithubIcon, label: 'GitHub' },
 ];
 
-const EMAIL_LINK = `mailto:${SITE.email}?subject=${encodeURIComponent('Hiring Inquiry')}&body=${encodeURIComponent('Hi Akash,')}`;
+const EMAIL_LINK = `mailto:${SITE.email}?subject=${encodeURIComponent('Backend / Full-stack role')}&body=${encodeURIComponent('Hi Akash,\n\nI saw your portfolio and wanted to talk about ')}`;
 
 const copyText = async (text) => {
   if (navigator.clipboard && window.isSecureContext) {
@@ -21,14 +21,10 @@ const copyText = async (text) => {
   textarea.value = text;
   textarea.setAttribute('readonly', '');
   textarea.style.position = 'fixed';
-  textarea.style.top = '0';
-  textarea.style.left = '0';
   textarea.style.opacity = '0';
-  textarea.style.pointerEvents = 'none';
   document.body.appendChild(textarea);
   textarea.focus();
   textarea.select();
-  textarea.setSelectionRange(0, text.length);
 
   try {
     return document.execCommand('copy');
@@ -42,6 +38,7 @@ const ContactSection = () => {
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
   const [copyStatus, setCopyStatus] = useState('idle');
+  const [clicks, setClicks] = useState(0);
 
   const handleCopy = async () => {
     try {
@@ -55,78 +52,73 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-32 relative z-10">
-      <div className="container mx-auto px-6 max-w-4xl text-center">
+    <section id="contact" className="relative z-10 py-32">
+      <div className="container mx-auto max-w-6xl px-6">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, y: reduced ? 0 : 60 }}
+          initial={{ opacity: 0, y: reduced ? 0 : 50 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: reduced ? 0 : 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="glass-card-elevated rounded-3xl p-12 md:p-20 relative overflow-hidden"
+          transition={{ duration: reduced ? 0 : 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="grid gap-10 border-t border-accent-dark pt-12 lg:grid-cols-[1.15fr_0.85fr]"
         >
-          <div className="absolute top-[-30%] left-[-20%] w-3/4 h-3/4 bg-violet-100/50 blur-3xl rounded-full pointer-events-none" aria-hidden="true" />
-          <div className="absolute bottom-[-30%] right-[-20%] w-2/3 h-2/3 bg-blue-100/40 blur-3xl rounded-full pointer-events-none" aria-hidden="true" />
-
-          <div className="relative z-10">
-            <div className="section-line mx-auto mb-6" aria-hidden="true" />
-
-            <h2 className="text-4xl md:text-6xl font-black text-accent-dark mb-5 tracking-tight leading-tight">
-              Open to Work
+          <div>
+            <h2 className="text-5xl font-extralight leading-none tracking-tight text-accent-dark md:text-8xl">
+              Send the email.
               <br />
-              <span className="text-gradient">Let's Talk</span>
+              <span className="font-black">I will read it.</span>
             </h2>
-
-            <p className="text-accent-gray text-lg max-w-xl mx-auto mb-4 leading-relaxed">
-              I'm actively looking for full-time roles in backend or full-stack development.
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-accent-gray">
+              If you have a backend/full-stack role, a Django problem, or a suspiciously slow page, I am interested. If your message starts with “quick call?”, I will still be brave.
             </p>
-            <p className="text-accent-gray/70 text-sm max-w-md mx-auto mb-12">
-              Django &middot; React &middot; AWS &middot; Open to remote or on-site in India
-            </p>
+          </div>
 
-            <motion.a
+          <div className="hard-panel rotate-[1deg] bg-primary-dark p-6">
+            <a
               href={EMAIL_LINK}
-              whileHover={reduced ? {} : { scale: 1.04, y: -3 }}
-              whileTap={reduced ? {} : { scale: 0.97 }}
-              className="interactive inline-flex items-center gap-3 px-10 py-5 rounded-full bg-accent-dark text-white font-bold text-base tracking-wide shadow-[0_8px_32px_rgba(17,17,17,0.2)] hover:shadow-[0_12px_40px_rgba(109,40,217,0.3)] hover:bg-gradient-to-r hover:from-accent-purple hover:to-accent-blue transition-all duration-300 mb-4"
+              onClick={() => setClicks((value) => value + 1)}
+              className="interactive hover-scrape flex items-center justify-center gap-3 border border-accent-dark bg-accent-dark px-6 py-4 text-sm font-black uppercase tracking-widest text-primary-dark"
             >
-              <MessageSquareIcon className="w-5 h-5" aria-hidden="true" />
-              Email Me
-            </motion.a>
+              <MailIcon className="h-4 w-4" aria-hidden="true" />
+              write to me
+            </a>
 
-            <div className="mb-10">
-              <button
-                type="button"
-                onClick={handleCopy}
-                className="interactive inline-flex items-center gap-2 text-xs font-medium text-accent-gray hover:text-accent-dark transition-colors"
-                aria-label="Copy email address"
-                aria-live="polite"
-              >
-                <MailIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                {copyStatus === 'copied' ? 'Email copied' : copyStatus === 'failed' ? SITE.email : <>Copy email &middot; {SITE.email}</>}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="interactive mt-4 w-full border border-accent-dark/20 px-4 py-3 text-left font-mono text-xs font-bold text-accent-gray transition hover:bg-accent-purple hover:text-accent-dark"
+              aria-live="polite"
+            >
+              {copyStatus === 'copied' ? 'copied. tiny victory.' : copyStatus === 'failed' ? SITE.email : `copy email: ${SITE.email}`}
+            </button>
 
-            <div className="flex justify-center items-center gap-4">
-              {SOCIALS.map(({ href, Icon, label, hover }) => (
-                <motion.a
+            <div className="mt-5 flex gap-3">
+              {SOCIALS.map(({ href, Icon, label }) => (
+                <a
                   key={label}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  whileHover={reduced ? {} : { y: -3 }}
-                  className={`interactive p-4 rounded-full bg-white border border-black/8 text-accent-gray transition-all duration-200 ${hover}`}
+                  className="interactive hover-scrape flex h-12 w-12 items-center justify-center border border-accent-dark bg-primary-dark text-accent-dark"
                   aria-label={label}
+                  title={`${label}, but make it useful`}
                 >
-                  <Icon className="w-5 h-5" aria-hidden="true" />
-                </motion.a>
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </a>
               ))}
+            </div>
+
+            <div className="mt-6 border-t border-accent-dark/20 pt-4 font-mono text-xs text-accent-gray">
+              email button clicked: {clicks}
+              <br />
+              footer confession: I overthink button labels.
             </div>
           </div>
         </motion.div>
 
-        <div className="mt-14 text-accent-gray/50 text-xs font-medium tracking-widest uppercase">
-          &copy; {new Date().getFullYear()} {SITE.name} &middot; Designed & Built with React & Tailwind
-        </div>
+        <footer className="mt-16 flex flex-col gap-3 border-t border-accent-dark/20 pt-6 font-mono text-xs font-bold uppercase tracking-widest text-accent-gray md:flex-row md:items-center md:justify-between">
+          <span>{new Date().getFullYear()} / {SITE.name} / built by hand, then argued with</span>
+          <span>konami code works because why not</span>
+        </footer>
       </div>
     </section>
   );

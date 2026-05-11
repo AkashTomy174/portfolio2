@@ -3,6 +3,7 @@ import { SITE } from '../siteConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
+  { label: 'Now', href: '#now' },
   { label: 'About', href: '#about' },
   { label: 'Skills', href: '#skills' },
   { label: 'Projects', href: '#projects' },
@@ -23,7 +24,7 @@ const NavBar = () => {
       if (attempt < 5) {
         window.setTimeout(() => scrollToSection(href, attempt + 1), 100);
       } else {
-        window.location.hash = href;
+        window.history.replaceState(null, '', href);
       }
       return;
     }
@@ -82,7 +83,7 @@ const NavBar = () => {
           href="#"
           className="interactive text-sm font-black tracking-tight text-accent-dark hover:text-accent-purple transition-colors"
         >
-          {SITE.initials}<span className="text-accent-purple">.</span>
+          {SITE.initials}<span className="text-accent-purple">_</span>
         </a>
 
         {/* Desktop links */}
@@ -95,7 +96,7 @@ const NavBar = () => {
                 aria-current={active === href ? 'page' : undefined}
                 className={`interactive relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${
                   active === href
-                    ? 'text-accent-purple'
+                    ? 'text-accent-dark'
                     : 'text-accent-gray hover:text-accent-dark'
                 }`}
               >
@@ -103,7 +104,7 @@ const NavBar = () => {
                 {active === href && (
                   <motion.span
                     layoutId="nav-pill"
-                    className="absolute inset-0 rounded-full bg-violet-50 border border-violet-100 -z-10"
+                    className="absolute inset-0 bg-accent-purple border border-accent-dark -z-10"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -117,7 +118,7 @@ const NavBar = () => {
           href={`mailto:${SITE.email}`}
           className="interactive hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-accent-dark text-white text-sm font-semibold hover:bg-accent-purple transition-colors duration-200"
         >
-          Hire Me
+          email me
         </a>
 
         {/* Mobile hamburger */}
@@ -154,7 +155,7 @@ const NavBar = () => {
                     aria-current={active === href ? 'page' : undefined}
                     className={`interactive block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                       active === href
-                        ? 'text-accent-purple bg-violet-50'
+                        ? 'text-accent-dark bg-accent-purple'
                         : 'text-accent-gray hover:text-accent-dark hover:bg-black/4'
                     }`}
                   >
@@ -168,7 +169,7 @@ const NavBar = () => {
                   onClick={() => setMenuOpen(false)}
                   className="interactive block text-center px-4 py-3 rounded-xl bg-accent-dark text-white text-sm font-semibold"
                 >
-                  Hire Me
+                  email me
                 </a>
               </li>
             </ul>
