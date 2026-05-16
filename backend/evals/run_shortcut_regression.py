@@ -10,6 +10,7 @@ from app.main import (
   _is_availability_question,
   _is_greeting,
   _is_profile_identity_question,
+  _is_small_talk,
 )
 
 
@@ -21,6 +22,8 @@ def _classify(query: str) -> str:
   lowered = query.lower()
   if _is_greeting(lowered):
     return "greeting"
+  if _is_small_talk(lowered):
+    return "small_talk"
   if _is_assistant_identity_question(lowered):
     return "assistant_identity"
   if _is_profile_identity_question(lowered):

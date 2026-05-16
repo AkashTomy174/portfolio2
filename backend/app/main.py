@@ -84,6 +84,11 @@ async def ai_chat(payload: ChatRequest, request: Request):
     response = ChatResponse(text=text, audio_url=None, sources=[], cached=False)
     response_cache.set(cache_key, response.model_dump())
     return response
+  if _is_small_talk(msg_lower):
+    text = "I'm doing well, thanks. Ask me anything about Akash's projects, backend work, experience, skills, or contact details."
+    response = ChatResponse(text=text, audio_url=None, sources=[], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
   if _is_assistant_identity_question(msg_lower):
     text = "I'm AI Akash, the portfolio assistant for Akash Tomy. I answer questions about his projects, backend work, experience, skills, and contact details."
     response = ChatResponse(text=text, audio_url=None, sources=[], cached=False)
@@ -141,12 +146,19 @@ def _is_greeting(message: str) -> bool:
     "hi",
     "hello",
     "hey",
+  }
+  return normalized in greetings
+
+
+def _is_small_talk(message: str) -> bool:
+  normalized = " ".join(message.split())
+  small_talk = {
+    "how are you",
     "hi how are you",
     "hello how are you",
     "hey how are you",
-    "how are you",
   }
-  return normalized in greetings
+  return normalized in small_talk
 
 
 def _is_assistant_identity_question(message: str) -> bool:

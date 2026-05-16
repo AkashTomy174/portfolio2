@@ -5,7 +5,11 @@
   },
   {
     "query": "hello how are you",
-    "expected_intent": "greeting"
+    "expected_intent": "small_talk"
+  },
+  {
+    "query": "how are you",
+    "expected_intent": "small_talk"
   },
   {
     "query": "who are you",
