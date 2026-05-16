@@ -80,6 +80,14 @@
     "expected_top_topic": "ai project judge flagship evaluation system"
   },
   {
+    "query": "explain about ai judge",
+    "expected_top_topic": "ai project judge flagship evaluation system"
+  },
+  {
+    "query": "tell me about ai judge",
+    "expected_top_topic": "ai project judge flagship evaluation system"
+  },
+  {
     "query": "is ai project judge already shipped",
     "expected_top_topic": "ai judge roadmap status"
   },
