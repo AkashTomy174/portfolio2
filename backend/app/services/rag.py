@@ -246,6 +246,8 @@ def _normalize_query(query: str) -> str:
     "worth my time": "why should we hire akash",
     "main strengths": "strongest technical skill",
     "main strength": "strongest technical skill",
+    "free for a call": "availability",
+    "free for call": "availability",
   }
   for source, target in replacements.items():
     normalized = normalized.replace(source, target)

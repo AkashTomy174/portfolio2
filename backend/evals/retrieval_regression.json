@@ -38,5 +38,9 @@
   {
     "query": "where can I download the resume?",
     "expected_top_topic": "cv resume download curriculum vitae pdf"
+  },
+  {
+    "query": "will he be free for a call",
+    "expected_top_topic": "availability"
   }
 ]

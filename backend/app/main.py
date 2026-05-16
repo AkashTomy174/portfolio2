@@ -94,6 +94,11 @@ async def ai_chat(payload: ChatRequest, request: Request):
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
     response_cache.set(cache_key, response.model_dump())
     return response
+  if _is_availability_question(msg_lower):
+    text = "Akash is actively looking for full-time opportunities and can discuss availability directly. The easiest way to reach him is by email at akashtomy174@gmail.com or on LinkedIn at https://www.linkedin.com/in/akash-tomy-8b51a737b/."
+    response = ChatResponse(text=text, audio_url=None, sources=["qa"], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
   if any(kw in msg_lower for kw in ["cv", "resume", "curriculum", "download"]):
     text = "You can download Akash's resume here: https://akashtomy.com/AkashTomy-Resume.pdf"
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
@@ -164,3 +169,18 @@ def _is_profile_identity_question(message: str) -> bool:
     "tell me about akash tomy",
   }
   return normalized in profile_questions
+
+
+def _is_availability_question(message: str) -> bool:
+  normalized = " ".join(message.split())
+  availability_phrases = {
+    "available",
+    "availability",
+    "free for a call",
+    "free for call",
+    "open to work",
+    "open for work",
+    "looking for work",
+    "looking for a job",
+  }
+  return any(phrase in normalized for phrase in availability_phrases)
