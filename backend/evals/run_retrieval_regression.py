@@ -1,3 +1,4 @@
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -14,11 +15,19 @@ CASES_FILE = BASE_DIR / "retrieval_regression.json"
 
 
 def main() -> int:
+  parser = argparse.ArgumentParser(description="Run retrieval regression prompts.")
+  parser.add_argument(
+    "--keyword-only",
+    action="store_true",
+    help="Skip Gemini/Chroma initialization and test the offline keyword fallback only.",
+  )
+  args = parser.parse_args()
+
   cases = json.loads(CASES_FILE.read_text(encoding="utf-8"))
   rag = RagService(
     knowledge_file=settings.knowledge_file,
     chroma_dir=settings.chroma_dir,
-    gemini_api_key=settings.gemini_api_key,
+    gemini_api_key=None if args.keyword_only else settings.gemini_api_key,
     embedding_model=settings.gemini_embedding_model,
   )
   rag.initialize()

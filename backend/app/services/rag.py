@@ -248,6 +248,21 @@ def _normalize_query(query: str) -> str:
     "main strength": "strongest technical skill",
     "free for a call": "availability",
     "free for call": "availability",
+    "cloud tools": "aws nginx gunicorn github actions",
+    "databases and caching tools": "mysql postgres redis orm locking",
+    "where did he intern": "internship smec technologies",
+    "what did he study": "education bca coursework",
+    "where is akash based": "location alappuzha kerala",
+    "what is ai project judge": "ai project judge flagship evaluation system",
+    "is ai project judge already shipped": "ai judge roadmap status",
+    "how does ai judge ingest github repos": "ai judge ingestion token budget github monorepo",
+    "how does ai judge keep token cost under control": "ai judge ingestion token budget github monorepo",
+    "what is the architecture of ai judge": "ai judge architecture fastapi celery redis postgres sse",
+    "what is easybuy": "easybuy ecommerce django react aws",
+    "how did akash improve easybuy performance": "easybuy performance redis query optimization n 1",
+    "does easybuy have an ai chatbot": "easybuy ai chatbot openai catalog context",
+    "how is easybuy deployed": "easybuy deployment aws nginx gunicorn ci cd",
+    "how does the portfolio chatbot work": "portfolio chatbot rag fastapi gemini retrieval cache",
   }
   for source, target in replacements.items():
     normalized = normalized.replace(source, target)

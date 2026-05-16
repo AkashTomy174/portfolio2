@@ -1,0 +1,58 @@
+[
+  {
+    "query": "hi",
+    "expected_intent": "greeting"
+  },
+  {
+    "query": "hello how are you",
+    "expected_intent": "greeting"
+  },
+  {
+    "query": "who are you",
+    "expected_intent": "assistant_identity"
+  },
+  {
+    "query": "what is your name",
+    "expected_intent": "assistant_identity"
+  },
+  {
+    "query": "who is akash",
+    "expected_intent": "profile_identity"
+  },
+  {
+    "query": "tell me about akash tomy",
+    "expected_intent": "profile_identity"
+  },
+  {
+    "query": "will he be free for a call",
+    "expected_intent": "availability"
+  },
+  {
+    "query": "is akash available",
+    "expected_intent": "availability"
+  },
+  {
+    "query": "is he open to work",
+    "expected_intent": "availability"
+  },
+  {
+    "query": "can i download his resume",
+    "expected_intent": "resume"
+  },
+  {
+    "query": "where is the cv",
+    "expected_intent": "resume"
+  },
+  {
+    "query": "how can i contact him",
+    "expected_intent": "contact"
+  },
+  {
+    "query": "share his linkedin",
+    "expected_intent": "contact"
+  },
+  {
+    "query": "what is his email",
+    "expected_intent": "contact"
+  }
+]

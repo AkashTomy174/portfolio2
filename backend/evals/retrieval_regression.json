@@ -4,6 +4,10 @@
     "expected_top_topic": "projects portfolio overview easybuy ai project judge ai akash"
   },
   {
+    "query": "what has akash built",
+    "expected_top_topic": "projects portfolio overview easybuy ai project judge ai akash"
+  },
+  {
     "query": "he has only one project?",
     "expected_top_topic": "project count only one project portfolio breadth"
   },
@@ -16,6 +20,18 @@
     "expected_top_topic": "tools git github postman linux reviews"
   },
   {
+    "query": "what frontend stack does he know",
+    "expected_top_topic": "frontend react tailwind vite framer motion"
+  },
+  {
+    "query": "what cloud tools does he use",
+    "expected_top_topic": "cloud devops aws linux nginx gunicorn github actions"
+  },
+  {
+    "query": "what databases and caching tools does he know",
+    "expected_top_topic": "database cache mysql postgres redis orm locking"
+  },
+  {
     "query": "is he worth my time",
     "expected_top_topic": "hire recruiter fit backend"
   },
@@ -24,23 +40,103 @@
     "expected_top_topic": "hire recruiter fit backend"
   },
   {
+    "query": "what makes him different",
+    "expected_top_topic": "recruiter fit different"
+  },
+  {
     "query": "what are his main strengths",
     "expected_top_topic": "strengths backend systems"
   },
   {
-    "query": "how did Akash prevent overselling?",
-    "expected_top_topic": "easybuy payments concurrency select_for_update overselling"
+    "query": "what is his strongest technical skill",
+    "expected_top_topic": "strengths backend systems"
   },
   {
-    "query": "what is AI Project Judge?",
-    "expected_top_topic": "ai project judge flagship evaluation system"
+    "query": "how much experience does he have",
+    "expected_top_topic": "experience"
+  },
+  {
+    "query": "where did he intern",
+    "expected_top_topic": "internship django react mysql aws"
+  },
+  {
+    "query": "what did he study",
+    "expected_top_topic": "education"
+  },
+  {
+    "query": "which languages does he speak",
+    "expected_top_topic": "languages"
+  },
+  {
+    "query": "where is akash based",
+    "expected_top_topic": "availability roles"
   },
   {
     "query": "where can I download the resume?",
     "expected_top_topic": "cv resume download curriculum vitae pdf"
   },
   {
-    "query": "will he be free for a call",
-    "expected_top_topic": "availability"
+    "query": "what is AI Project Judge?",
+    "expected_top_topic": "ai project judge flagship evaluation system"
+  },
+  {
+    "query": "is ai project judge already shipped",
+    "expected_top_topic": "ai judge roadmap status"
+  },
+  {
+    "query": "how does ai judge ingest github repos",
+    "expected_top_topic": "ai judge ingestion token budget github monorepo"
+  },
+  {
+    "query": "how does ai judge keep token cost under control",
+    "expected_top_topic": "ai judge ingestion token budget github monorepo"
+  },
+  {
+    "query": "what static analysis does ai judge use",
+    "expected_top_topic": "ai judge static analysis deterministic scoring"
+  },
+  {
+    "query": "how does the ai scoring layer work",
+    "expected_top_topic": "ai judge llm scoring rubric prompt orchestration"
+  },
+  {
+    "query": "what is the architecture of ai judge",
+    "expected_top_topic": "ai judge architecture fastapi celery redis postgres sse"
+  },
+  {
+    "query": "how does ai judge handle retries and cost",
+    "expected_top_topic": "ai judge cost optimization reliability caching retries"
+  },
+  {
+    "query": "what is easybuy",
+    "expected_top_topic": "easybuy ecommerce django react aws"
+  },
+  {
+    "query": "how did akash improve easybuy performance",
+    "expected_top_topic": "easybuy performance redis query optimization n+1"
+  },
+  {
+    "query": "how did Akash prevent overselling?",
+    "expected_top_topic": "easybuy payments concurrency select_for_update overselling"
+  },
+  {
+    "query": "how are easybuy payments kept safe",
+    "expected_top_topic": "easybuy payments concurrency select_for_update overselling"
+  },
+  {
+    "query": "does easybuy have an ai chatbot",
+    "expected_top_topic": "easybuy ai chatbot openai catalog context"
+  },
+  {
+    "query": "how is easybuy deployed",
+    "expected_top_topic": "easybuy deployment aws nginx gunicorn ci cd"
+  },
+  {
+    "query": "how does the portfolio chatbot work",
+    "expected_top_topic": "portfolio chatbot rag fastapi gemini retrieval cache"
+  },
+  {
+    "query": "what should the chatbot improve next",
+    "expected_top_topic": "portfolio chatbot next version embeddings vector search citations"
   }
 ]
