@@ -37,6 +37,12 @@
       "text": "AI Project Judge is Akash's upcoming flagship engineering project. It is designed as an AI-assisted repository evaluation system for hackathons, portfolios, and hiring screens. The goal is not to ask an LLM to guess a score from a repo. The system combines deterministic static analysis, repository ingestion, token budgeting, project-type classification, and LLM interpretation to produce more grounded, auditable evaluations."
     },
     {
+      "id": "projects-overview",
+      "source": "projects",
+      "topic": "projects portfolio overview easybuy ai project judge ai akash",
+      "text": "Akash's highlighted projects are EasyBuy, AI Project Judge, and AI Akash. EasyBuy is a deployed full-stack e-commerce platform with production backend work around caching, payments, concurrency, and AWS deployment. AI Project Judge is an architecture-first repository evaluation system in progress. AI Akash is the portfolio chatbot built with FastAPI, Gemini, ChromaDB retrieval, caching, rate limiting, and optional voice output."
+    },
+    {
       "id": "ai-judge-ingestion",
       "source": "projects",
       "topic": "ai judge ingestion token budget github monorepo",
@@ -76,13 +82,13 @@
       "id": "portfolio-ai-chat-backend",
       "source": "projects",
       "topic": "portfolio chatbot rag fastapi gemini retrieval cache",
-      "text": "The AI Akash portfolio chatbot is a FastAPI backend connected to a React widget. It validates chat requests, rate limits by IP, caches repeated answers with an LRU cache, retrieves curated knowledge chunks from JSON using keyword and topic overlap, sends only retrieved context to a guarded Gemini prompt, and can optionally generate ElevenLabs voice audio. The current implementation is honest: it is retrieval-based but does not yet use real embeddings or vector search."
+      "text": "The AI Akash portfolio chatbot is a FastAPI backend connected to a React widget. It validates chat requests, rate limits by IP, caches repeated answers with an LRU cache, retrieves curated knowledge chunks with Gemini embeddings plus keyword and topic overlap, stores vectors in ChromaDB, sends only retrieved context to a guarded Gemini prompt, and can optionally generate ElevenLabs voice audio."
     },
     {
       "id": "portfolio-ai-chat-next",
       "source": "projects",
       "topic": "portfolio chatbot next version embeddings vector search citations",
-      "text": "The next version of the AI Akash chatbot should add embeddings, vector search, chunk versioning, stronger source citations, and a regression prompt set to catch bad answers. That would make the chatbot feel less like a portfolio accessory and more like a small RAG system with measurable behavior."
+      "text": "The next version of the AI Akash chatbot should add chunk versioning, stronger source citations, and a regression prompt set to catch bad answers. That would make the chatbot feel less like a portfolio accessory and more like a small RAG system with measurable behavior."
     },
     {
       "id": "easybuy-overview",
@@ -145,6 +151,12 @@
       "text": "Akash's tools include Git, GitHub, Postman, Linux Ubuntu, and feature branch workflow with pull requests. He maintains clean Git history and participates in code reviews."
     },
     {
+      "id": "ai-tools",
+      "source": "skills",
+      "topic": "ai tools gemini openai chromadb elevenlabs",
+      "text": "Akash has worked with AI tooling including Gemini API, OpenAI API, ChromaDB for vector retrieval, and ElevenLabs for optional voice output. His portfolio chatbot uses Gemini for generation and embeddings, ChromaDB for retrieval, and ElevenLabs when voice mode is enabled."
+    },
+    {
       "id": "languages-spoken",
       "source": "about",
       "topic": "languages",
@@ -154,31 +166,37 @@
       "id": "qa-different",
       "source": "qa",
       "topic": "recruiter fit different",
-      "text": "Q: What makes Akash different from other developers? A: Akash focuses on production details that matter: concurrency-safe payments, measurable query reduction, async job handling, zero-downtime deployment pipelines, token budgeting for AI systems, and tradeoffs around caching and consistency. He thinks beyond making features work and focuses on reliability, speed, and maintainability."
+      "text": "What stands out about Akash is that he thinks past the happy path. He pays attention to things like safe payments under concurrency, measurable query reduction, async work, zero-downtime deployment, token budgeting, and the tradeoffs behind caching and consistency. He is not just trying to make features work; he is trying to make them hold up in production."
     },
     {
       "id": "qa-strongest-skill",
       "source": "qa",
       "topic": "strengths backend systems",
-      "text": "Q: What is Akash's strongest technical skill? A: Akash's strongest area is backend engineering with systems awareness: designing Django and FastAPI APIs, optimizing ORM queries, using Redis and Celery, handling payments safely with concurrency control, deploying on AWS, and planning AI evaluation systems with cost and reliability constraints."
+      "text": "Akash's strongest area is backend engineering with systems awareness. He is comfortable designing Django and FastAPI APIs, tightening ORM queries, using Redis and Celery, handling payments safely under concurrency, deploying on AWS, and thinking through AI systems with cost and reliability in mind."
     },
     {
       "id": "qa-experience",
       "source": "qa",
       "topic": "experience",
-      "text": "Q: How much experience does Akash have? A: Akash has been building with Django and React since 2022. He is currently interning at SMEC Technologies as a Python Full Stack Developer since July 2024, independently built and deployed EasyBuy on AWS, and is now designing AI Project Judge as a systems-heavy AI evaluation pipeline."
+      "text": "Akash has been building with Django and React since 2022. Since July 2024, he has been working as a Python Full Stack Developer Intern at SMEC Technologies. He also independently built and deployed EasyBuy on AWS and is now developing AI Project Judge as a systems-heavy AI evaluation pipeline."
     },
     {
       "id": "qa-hire",
       "source": "qa",
       "topic": "hire recruiter fit backend",
-      "text": "Q: Why should we hire Akash? A: Akash has hands-on production experience from EasyBuy and a clear systems direction through AI Project Judge. He can talk concretely about query reduction, Redis caching, stale cache risk, select_for_update, payment safety, async workers, token budgeting, static analysis, and deployment. He is a fast learner and is actively looking for full-time backend or full-stack roles."
+      "text": "Akash is worth considering because he already has hands-on production experience from EasyBuy and a clear systems direction through AI Project Judge. He can speak concretely about query reduction, Redis caching, stale cache risk, select_for_update, payment safety, async workers, token budgeting, static analysis, and deployment. He learns quickly and is actively looking for full-time backend or full-stack roles."
+    },
+    {
+      "id": "qa-project-count",
+      "source": "qa",
+      "topic": "project count only one project portfolio breadth",
+      "text": "No. Akash's portfolio highlights multiple projects: EasyBuy, a deployed full-stack e-commerce platform; AI Project Judge, an architecture-first repository evaluation system in progress; and AI Akash, the portfolio chatbot itself. EasyBuy is the shipped flagship product, while AI Project Judge shows his systems thinking and AI infrastructure direction."
     },
     {
       "id": "qa-salary-availability",
       "source": "qa",
       "topic": "availability",
-      "text": "Q: When is Akash available? A: Akash is actively looking for full-time opportunities and can discuss availability directly. Reach out to him at akashtomy174@gmail.com or on LinkedIn at https://www.linkedin.com/in/akash-tomy-8b51a737b/."
+      "text": "Akash is actively looking for full-time opportunities and can discuss availability directly. The easiest way to reach him is by email at akashtomy174@gmail.com or on LinkedIn at https://www.linkedin.com/in/akash-tomy-8b51a737b/."
     },
     {
       "id": "cv-download",

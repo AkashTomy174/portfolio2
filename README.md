@@ -17,7 +17,7 @@ Live: [akashtomy.com](https://akashtomy.com)
 ### Backend
 - FastAPI + Uvicorn
 - Google Gemini (`gemini-2.0-flash-lite`)
-- RAG with keyword search
+- Hybrid RAG with ChromaDB vector search plus keyword scoring
 - Optional ElevenLabs TTS
 - Response cache and IP rate limiting
 
@@ -69,9 +69,9 @@ VITE_AI_CHAT_VOICE=false
 ### Backend (`backend/.env`)
 
 ```env
-OPENAI_API_KEY=your-gemini-api-key
-OPENAI_CHAT_MODEL=gemini-2.0-flash-lite
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+GEMINI_API_KEY=your-gemini-api-key
+GEMINI_CHAT_MODEL=gemini-2.0-flash-lite
+GEMINI_EMBEDDING_MODEL=gemini-embedding-001
 
 ELEVENLABS_API_KEY=
 ELEVENLABS_VOICE_ID=
@@ -159,7 +159,7 @@ The redesign also includes `src/components/AiPromptSection.jsx`, which opens the
 window.dispatchEvent(new CustomEvent('open-ai-akash'));
 ```
 
-To add more knowledge, edit `backend/knowledge_base/akash.json` and restart the backend.
+To add more knowledge, edit `backend/knowledge_base/akash.json` and restart the backend. If ChromaDB is installed and `GEMINI_API_KEY` is configured, the backend re-embeds and upserts the curated chunks into its persistent collection on startup, then uses hybrid retrieval for chat answers.
 
 ---
 

@@ -20,9 +20,12 @@ def _csv(name: str, default: str) -> list[str]:
 
 
 class Settings:
-  openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
-  openai_chat_model: str = os.getenv("OPENAI_CHAT_MODEL", "gemini-1.5-flash")
-  openai_embedding_model: str = os.getenv("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small")
+  gemini_api_key: str | None = os.getenv("GEMINI_API_KEY") or os.getenv("OPENAI_API_KEY")
+  gemini_chat_model: str = os.getenv(
+    "GEMINI_CHAT_MODEL",
+    os.getenv("OPENAI_CHAT_MODEL", "gemini-2.0-flash-lite"),
+  )
+  gemini_embedding_model: str = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
 
   elevenlabs_api_key: str | None = os.getenv("ELEVENLABS_API_KEY")
   elevenlabs_voice_id: str | None = os.getenv("ELEVENLABS_VOICE_ID")

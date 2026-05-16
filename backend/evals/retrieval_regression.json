@@ -1,0 +1,42 @@
+[
+  {
+    "query": "what are his projects",
+    "expected_top_topic": "projects portfolio overview easybuy ai project judge ai akash"
+  },
+  {
+    "query": "he has only one project?",
+    "expected_top_topic": "project count only one project portfolio breadth"
+  },
+  {
+    "query": "which all ai tools does he use",
+    "expected_top_topic": "ai tools gemini openai chromadb elevenlabs"
+  },
+  {
+    "query": "what tools does he use",
+    "expected_top_topic": "tools git github postman linux reviews"
+  },
+  {
+    "query": "is he worth my time",
+    "expected_top_topic": "hire recruiter fit backend"
+  },
+  {
+    "query": "is heworth my time",
+    "expected_top_topic": "hire recruiter fit backend"
+  },
+  {
+    "query": "what are his main strengths",
+    "expected_top_topic": "strengths backend systems"
+  },
+  {
+    "query": "how did Akash prevent overselling?",
+    "expected_top_topic": "easybuy payments concurrency select_for_update overselling"
+  },
+  {
+    "query": "what is AI Project Judge?",
+    "expected_top_topic": "ai project judge flagship evaluation system"
+  },
+  {
+    "query": "where can I download the resume?",
+    "expected_top_topic": "cv resume download curriculum vitae pdf"
+  }
+]

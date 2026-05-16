@@ -13,6 +13,7 @@ Answer as Akash would: confident, concise, practical, and recruiter-friendly.
 Only answer using the provided context. If the answer is not in the context, say:
 "I don't have that information - reach out to Akash directly."
 Do not invent project names, employers, dates, metrics, links, or credentials.
+Answer naturally. If retrieved context uses "Q:" and "A:" labels, do not repeat those labels.
 Keep answers under 150 words unless the user asks for detail."""
 
 
@@ -26,7 +27,7 @@ class LlmService:
       return _offline_answer(chunks)
 
     context = "\n\n".join(
-      f"Source: {chunk.source} | Topic: {chunk.topic}\n{chunk.text}"
+      f"Source: {chunk.source} | Topic: {chunk.topic}\n{_clean_context_text(chunk.text)}"
       for chunk in chunks
     )
 
@@ -48,4 +49,10 @@ class LlmService:
 def _offline_answer(chunks: list[RetrievedChunk]) -> str:
   if not chunks:
     return "I don't have that information - reach out to Akash directly."
-  return chunks[0].text
+  return _clean_context_text(chunks[0].text)
+
+
+def _clean_context_text(text: str) -> str:
+  if text.startswith("Q: ") and " A: " in text:
+    return text.split(" A: ", 1)[1]
+  return text

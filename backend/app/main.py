@@ -22,10 +22,10 @@ logger = logging.getLogger("ai-akash")
 rag = RagService(
   knowledge_file=settings.knowledge_file,
   chroma_dir=settings.chroma_dir,
-  openai_api_key=settings.openai_api_key,
-  embedding_model=settings.openai_embedding_model,
+  gemini_api_key=settings.gemini_api_key,
+  embedding_model=settings.gemini_embedding_model,
 )
-llm = LlmService(api_key=settings.openai_api_key, model=settings.openai_chat_model)
+llm = LlmService(api_key=settings.gemini_api_key, model=settings.gemini_chat_model)
 tts = TtsService(
   enabled=settings.enable_tts,
   api_key=settings.elevenlabs_api_key,
@@ -79,12 +79,27 @@ async def ai_chat(payload: ChatRequest, request: Request):
 
   # Direct shortcuts — bypass RAG
   msg_lower = payload.message.lower()
+  if _is_greeting(msg_lower):
+    text = "Hi, I'm AI Akash. I can help with Akash's projects, backend work, experience, skills, or contact details."
+    response = ChatResponse(text=text, audio_url=None, sources=[], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
+  if _is_assistant_identity_question(msg_lower):
+    text = "I'm AI Akash, the portfolio assistant for Akash Tomy. I answer questions about his projects, backend work, experience, skills, and contact details."
+    response = ChatResponse(text=text, audio_url=None, sources=[], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
+  if _is_profile_identity_question(msg_lower):
+    text = "Akash Tomy is a backend-focused full stack developer from Alappuzha, Kerala. He works with Django, FastAPI, Redis, Celery, databases, AWS, and React, and is especially focused on reliable backend systems and AI infrastructure."
+    response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
+    response_cache.set(cache_key, response.model_dump())
+    return response
   if any(kw in msg_lower for kw in ["cv", "resume", "curriculum", "download"]):
     text = "You can download Akash's resume here: https://akashtomy.com/AkashTomy-Resume.pdf"
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
     response_cache.set(cache_key, response.model_dump())
     return response
-  if any(kw in msg_lower for kw in ["github", "git hub", "linkedin", "linkedln", "linked in", "contact", "social", "reach", "email", "hire", "connect", "phone", "whatsapp"]):
+  if any(kw in msg_lower for kw in ["github", "git hub", "linkedin", "linkedln", "linked in", "contact", "social", "reach", "email", "connect", "phone", "whatsapp"]):
     text = "You can reach Akash at: akashtomy174@gmail.com | LinkedIn: https://www.linkedin.com/in/akash-tomy-8b51a737b/ | GitHub: https://github.com/AkashTomy174"
     response = ChatResponse(text=text, audio_url=None, sources=["about"], cached=False)
     response_cache.set(cache_key, response.model_dump())
@@ -113,3 +128,39 @@ def _client_ip(request: Request) -> str:
   if forwarded:
     return forwarded.split(",")[0].strip()
   return request.client.host if request.client else "unknown"
+
+
+def _is_greeting(message: str) -> bool:
+  normalized = " ".join(message.split())
+  greetings = {
+    "hi",
+    "hello",
+    "hey",
+    "hi how are you",
+    "hello how are you",
+    "hey how are you",
+    "how are you",
+  }
+  return normalized in greetings
+
+
+def _is_assistant_identity_question(message: str) -> bool:
+  normalized = " ".join(message.split())
+  identity_questions = {
+    "who are you",
+    "what are you",
+    "what is your name",
+    "who am i talking to",
+  }
+  return normalized in identity_questions
+
+
+def _is_profile_identity_question(message: str) -> bool:
+  normalized = " ".join(message.split())
+  profile_questions = {
+    "who is akash",
+    "who is akash tomy",
+    "tell me about akash",
+    "tell me about akash tomy",
+  }
+  return normalized in profile_questions
