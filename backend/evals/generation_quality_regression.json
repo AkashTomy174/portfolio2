@@ -1,0 +1,22 @@
+[
+  {
+    "label": "complete sentence",
+    "text": "AI Project Judge is an architecture-first repository evaluation system.",
+    "expected_incomplete": false
+  },
+  {
+    "label": "short valid phrase",
+    "text": "I don't know.",
+    "expected_incomplete": false
+  },
+  {
+    "label": "abrupt cutoff",
+    "text": "AI Project Judge is Akash's upcoming flagship engineering project, designed",
+    "expected_incomplete": true
+  },
+  {
+    "label": "blank response",
+    "text": "",
+    "expected_incomplete": true
+  }
+]

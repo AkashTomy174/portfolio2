@@ -1,4 +1,5 @@
 import logging
+import re
 import time
 from contextlib import asynccontextmanager
 
@@ -25,7 +26,11 @@ rag = RagService(
   gemini_api_key=settings.gemini_api_key,
   embedding_model=settings.gemini_embedding_model,
 )
-llm = LlmService(api_key=settings.gemini_api_key, model=settings.gemini_chat_model)
+llm = LlmService(
+  api_key=settings.gemini_api_key,
+  fallback_api_key=settings.gemini_fallback_api_key,
+  model=settings.gemini_chat_model,
+)
 tts = TtsService(
   enabled=settings.enable_tts,
   api_key=settings.elevenlabs_api_key,
@@ -141,9 +146,10 @@ def _client_ip(request: Request) -> str:
 
 
 def _is_greeting(message: str) -> bool:
-  normalized = " ".join(message.split())
+  normalized = _normalize_shortcut_message(message)
   greetings = {
     "hi",
+    "hii",
     "hello",
     "hey",
   }
@@ -151,7 +157,7 @@ def _is_greeting(message: str) -> bool:
 
 
 def _is_small_talk(message: str) -> bool:
-  normalized = " ".join(message.split())
+  normalized = _normalize_shortcut_message(message)
   small_talk = {
     "how are you",
     "hi how are you",
@@ -162,7 +168,7 @@ def _is_small_talk(message: str) -> bool:
 
 
 def _is_assistant_identity_question(message: str) -> bool:
-  normalized = " ".join(message.split())
+  normalized = _normalize_shortcut_message(message)
   identity_questions = {
     "who are you",
     "what are you",
@@ -173,7 +179,7 @@ def _is_assistant_identity_question(message: str) -> bool:
 
 
 def _is_profile_identity_question(message: str) -> bool:
-  normalized = " ".join(message.split())
+  normalized = _normalize_shortcut_message(message)
   profile_questions = {
     "who is akash",
     "who is akash tomy",
@@ -184,7 +190,7 @@ def _is_profile_identity_question(message: str) -> bool:
 
 
 def _is_availability_question(message: str) -> bool:
-  normalized = " ".join(message.split())
+  normalized = _normalize_shortcut_message(message)
   availability_phrases = {
     "available",
     "availability",
@@ -196,3 +202,9 @@ def _is_availability_question(message: str) -> bool:
     "looking for a job",
   }
   return any(phrase in normalized for phrase in availability_phrases)
+
+
+def _normalize_shortcut_message(message: str) -> str:
+  lowered = message.lower()
+  without_punctuation = re.sub(r"[^\w\s]", " ", lowered)
+  return " ".join(without_punctuation.split())

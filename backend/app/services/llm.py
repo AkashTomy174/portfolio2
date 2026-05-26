@@ -16,14 +16,17 @@ Do not invent project names, employers, dates, metrics, links, or credentials.
 Answer naturally. If retrieved context uses "Q:" and "A:" labels, do not repeat those labels.
 Keep answers under 150 words unless the user asks for detail."""
 
+RETRY_SUFFIX = "The previous draft ended abruptly. Answer the question again with a complete final sentence."
+
 
 class LlmService:
-  def __init__(self, api_key: str | None, model: str) -> None:
+  def __init__(self, api_key: str | None, fallback_api_key: str | None, model: str) -> None:
     self.model = model
-    self.client = genai.Client(api_key=api_key) if api_key else None
+    keys = [key for key in [api_key, fallback_api_key] if key]
+    self.clients = [genai.Client(api_key=key) for key in dict.fromkeys(keys)]
 
   def answer(self, question: str, chunks: list[RetrievedChunk]) -> str:
-    if not self.client:
+    if not self.clients:
       return _offline_answer(chunks)
 
     context = "\n\n".join(
@@ -31,19 +34,36 @@ class LlmService:
       for chunk in chunks
     )
 
-    try:
-      response = self.client.models.generate_content(
-        model=self.model,
-        contents=f"{SYSTEM_PROMPT}\n\nContext:\n{context}\n\nQuestion: {question}",
-        config=types.GenerateContentConfig(
-          max_output_tokens=260,
-          temperature=0.4,
-        ),
-      )
-      return response.text.strip()
-    except Exception as exc:
-      logger.warning("Gemini chat failed; using offline answer. error=%s", exc)
-      return _offline_answer(chunks)
+    for client_index, client in enumerate(self.clients, start=1):
+      try:
+        answer = self._generate(client, question, context)
+        if _looks_incomplete(answer):
+          logger.warning("Gemini chat client %s returned an incomplete answer; retrying once.", client_index)
+          answer = self._generate(client, question, context, retry=True)
+        if _looks_incomplete(answer):
+          logger.warning("Gemini chat client %s returned another incomplete answer; using offline answer.", client_index)
+          return _offline_answer(chunks)
+        return answer
+      except Exception as exc:
+        logger.warning("Gemini chat client %s failed. error=%s", client_index, exc)
+
+    logger.warning("All Gemini chat clients failed; using offline answer.")
+    return _offline_answer(chunks)
+
+  def _generate(self, client, question: str, context: str, retry: bool = False) -> str:
+    prompt = f"{SYSTEM_PROMPT}\n\nContext:\n{context}\n\nQuestion: {question}"
+    if retry:
+      prompt = f"{prompt}\n\n{RETRY_SUFFIX}"
+
+    response = client.models.generate_content(
+      model=self.model,
+      contents=prompt,
+      config=types.GenerateContentConfig(
+        max_output_tokens=360,
+        temperature=0.4,
+      ),
+    )
+    return response.text.strip()
 
 
 def _offline_answer(chunks: list[RetrievedChunk]) -> str:
@@ -56,3 +76,12 @@ def _clean_context_text(text: str) -> str:
   if text.startswith("Q: ") and " A: " in text:
     return text.split(" A: ", 1)[1]
   return text
+
+
+def _looks_incomplete(text: str) -> bool:
+  stripped = text.strip()
+  if not stripped:
+    return True
+  if stripped.endswith((".", "!", "?", '"', "'")):
+    return False
+  return len(stripped.split()) >= 6

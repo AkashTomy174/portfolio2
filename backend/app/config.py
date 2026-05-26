@@ -21,6 +21,7 @@ def _csv(name: str, default: str) -> list[str]:
 
 class Settings:
   gemini_api_key: str | None = os.getenv("GEMINI_API_KEY") or os.getenv("OPENAI_API_KEY")
+  gemini_fallback_api_key: str | None = os.getenv("GEMINI_FALLBACK_API_KEY")
   gemini_chat_model: str = os.getenv(
     "GEMINI_CHAT_MODEL",
     os.getenv("OPENAI_CHAT_MODEL", "gemini-2.0-flash-lite"),
