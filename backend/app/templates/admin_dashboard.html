@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; background: #0f172a; color: #f8fafc; }
+      .card { background: #111827; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+      h1, h2 { margin-top: 0; }
+      .summary-row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 20px; }
+      .summary-card { text-align: center; }
+      .summary-card p { font-size: 2rem; margin: 8px 0 0; color: #f8fafc; }
+      form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+      label { color: #cbd5e1; font-size: 0.92rem; }
+      select, input { background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 8px; padding: 8px 10px; }
+      button { background: #2563eb; border: none; border-radius: 8px; color: white; padding: 8px 14px; cursor: pointer; }
+      button:hover { background: #1d4ed8; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #1f2937; }
+      th { color: #cbd5e1; font-size: 0.92rem; letter-spacing: 0.02em; }
+      td { color: #e2e8f0; font-size: 0.92rem; }
+      tr:hover { background: rgba(148, 163, 184, 0.08); }
+      .row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+      .pagination { display: flex; gap: 10px; margin-top: 12px; }
+      .pagination a { color: #cbd5e1; background: #0f172a; border: 1px solid #334155; padding: 8px 10px; border-radius: 8px; text-decoration: none; }
+      .muted { color: #94a3b8; }
+    </style>
+  </head>
+  <body>
+    <h1>Admin Dashboard</h1>
+    <p class="muted">Protected view for recent site visits and AI interactions.</p>
+
+    <div class="summary-row">
+      <div class="card summary-card">
+        <h3>Total visits</h3>
+        <p>{{ summary.visit_count }}</p>
+      </div>
+      <div class="card summary-card">
+        <h3>AI interactions</h3>
+        <p>{{ summary.interaction_count }}</p>
+      </div>
+      <div class="card summary-card">
+        <h3>Cached responses</h3>
+        <p>{{ summary.cached_count }}</p>
+      </div>
+      <div class="card summary-card">
+        <h3>Avg AI latency</h3>
+        <p>{{ summary.average_latency_ms or 'N/A' }} ms</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Filters</h2>
+      <form method="get">
+        <label>
+          Cached filter:
+          <select name="cached_filter">
+            <option value="all" {% if cached_filter == 'all' %}selected{% endif %}>All</option>
+            <option value="cached" {% if cached_filter == 'cached' %}selected{% endif %}>Cached only</option>
+            <option value="uncached" {% if cached_filter == 'uncached' %}selected{% endif %}>Uncached only</option>
+          </select>
+        </label>
+        <label>
+          Per page:
+          <input type="number" name="per_page" value="{{ per_page }}" min="1" max="100" />
+        </label>
+        <button type="submit">Apply</button>
+      </form>
+    </div>
+
+    <div class="row">
+      <div class="card">
+        <h2>Recent Visits</h2>
+        <p class="muted">Showing page {{ visits_page }} of {{ (total_visits // per_page) + (1 if total_visits % per_page else 0) }}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Path</th>
+              <th>IP</th>
+              <th>User Agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for visit in visits %}
+            <tr>
+              <td>{{ visit.timestamp }}</td>
+              <td>{{ visit.path }}</td>
+              <td>{{ visit.ip }}</td>
+              <td>{{ visit.user_agent or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="pagination">
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ max(1, visits_page - 1) }}&interactions_page={{ interactions_page }}">Previous</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page + 1 }}&interactions_page={{ interactions_page }}">Next</a>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Recent AI Interactions</h2>
+        <p class="muted">Showing page {{ interactions_page }} of {{ (total_interactions // per_page) + (1 if total_interactions % per_page else 0) }}</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Message</th>
+              <th>Cached</th>
+              <th>Sources</th>
+              <th>Latency ms</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for event in interactions %}
+            <tr>
+              <td>{{ event.timestamp }}</td>
+              <td>{{ event.message }}</td>
+              <td>{{ event.cached }}</td>
+              <td>{{ event.response_sources | join(', ') }}</td>
+              <td>{{ event.response_time_ms or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="pagination">
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ max(1, interactions_page - 1) }}">Previous</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ interactions_page + 1 }}">Next</a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

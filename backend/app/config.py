@@ -39,6 +39,7 @@ class Settings:
   max_requests_per_ip: int = int(os.getenv("MAX_REQUESTS_PER_IP", "10"))
   rate_limit_window_seconds: int = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "86400"))
   response_cache_max_items: int = int(os.getenv("RESPONSE_CACHE_MAX_ITEMS", "256"))
+  admin_access_token: str | None = os.getenv("ADMIN_ACCESS_TOKEN")
 
   chroma_dir: Path = (BASE_DIR / os.getenv("CHROMA_DIR", "./data/chroma")).resolve()
   audio_dir: Path = (BASE_DIR / os.getenv("AUDIO_DIR", "./data/audio")).resolve()
