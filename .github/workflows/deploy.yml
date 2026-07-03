@@ -31,19 +31,20 @@ jobs:
             python3 --version || true
             command -v python || true
             python --version || true
-            if [ ! -d "$HOME/portfolio2" ]; then
-              echo "Repository not found at $HOME/portfolio2, cloning fresh copy."
-              git clone https://github.com/AkashTomy174/portfolio2.git "$HOME/portfolio2"
+            if [ -d "$HOME/portfolio2" ]; then
+              echo "Removing stale repository checkout."
+              rm -rf "$HOME/portfolio2"
             fi
+            echo "Cloning repository fresh."
+            git clone https://github.com/AkashTomy174/portfolio2.git "$HOME/portfolio2"
             cd "$HOME/portfolio2"
-            git fetch origin main
-            git reset --hard origin/main
+            git checkout main
+            git pull origin main
             cd backend
             ls -la
-            if [ ! -x .venv/bin/python ]; then
-              echo "Creating backend virtual environment."
-              python3 -m venv .venv
-            fi
+            echo "Removing stale virtual environment if present."
+            rm -rf .venv
+            python3 -m venv .venv
             source .venv/bin/activate
             python3 -m pip install --upgrade pip setuptools wheel
             python3 -m pip install --no-cache-dir -r requirements.txt
