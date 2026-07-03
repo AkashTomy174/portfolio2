@@ -223,15 +223,31 @@ VITE_AI_CHAT_ENDPOINT=https://api.akashtomy.com/api/ai-chat
 
 ### Backend
 
-The backend is deployed to AWS EC2 behind Nginx. The GitHub Actions workflow in `.github/workflows/deploy.yml` deploys backend changes pushed to `main`.
+The backend is deployed to AWS EC2 behind Nginx. The GitHub Actions workflow in `.github/workflows/deploy.yml` deploys on every push to `main`.
 
 Required GitHub secrets:
 
 | Secret | Purpose |
 | --- | --- |
-| `EC2_HOST` | EC2 public IP |
-| `EC2_USER` | SSH username |
-| `EC2_SSH_KEY` | Private key contents |
+| `EC2_HOST` | EC2 public IP or hostname |
+| `EC2_USER` | SSH username for the EC2 instance |
+| `EC2_SSH_KEY` | Private key contents for that user |
+
+For a new EC2 target, ensure the instance is prepared with:
+
+- the application repository at `~/portfolio2`, or allow the workflow to clone it automatically
+- a Python environment capable of creating `backend/.venv`
+- a systemd service named `ai-akash` that can be restarted by the deploy user
+- GitHub secrets updated to point to the new host, user, and SSH key
+
+If the workflow still fails after updating secrets, check the EC2 instance manually for:
+
+- `git fetch origin main` and `git reset --hard origin/main`
+- `python3 -m venv backend/.venv`
+- `source backend/.venv/bin/activate`
+- `pip install -r backend/requirements.txt`
+- `sudo systemctl restart ai-akash`
+- `sudo systemctl status ai-akash --no-pager`
 
 ## Why This Project Is Interesting
 
