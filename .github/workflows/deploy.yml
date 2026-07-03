@@ -18,6 +18,19 @@ jobs:
           script: |
             set -euo pipefail
             echo "=== Deploying backend to EC2 ==="
+            echo "Debug: $(date)"
+            echo "Debug: whoami=$(whoami)"
+            echo "Debug: pwd=$(pwd)"
+            echo "Debug: HOME=$HOME"
+            uname -a
+            id
+            env | sort | grep -E 'HOME|USER|SHELL|PATH|GIT|PYTHON|VIRTUAL' || true
+            command -v git || true
+            git --version || true
+            command -v python3 || true
+            python3 --version || true
+            command -v python || true
+            python --version || true
             if [ ! -d "$HOME/portfolio2" ]; then
               echo "Repository not found at $HOME/portfolio2, cloning fresh copy."
               git clone https://github.com/AkashTomy174/portfolio2.git "$HOME/portfolio2"
@@ -26,6 +39,7 @@ jobs:
             git fetch origin main
             git reset --hard origin/main
             cd backend
+            ls -la
             if [ ! -d .venv ]; then
               echo "Creating backend virtual environment."
               if command -v python3 >/dev/null 2>&1; then
@@ -35,7 +49,11 @@ jobs:
               fi
             fi
             source .venv/bin/activate
-            pip install -r requirements.txt --quiet
+            if command -v pip >/dev/null 2>&1; then
+              pip install -r requirements.txt --quiet
+            else
+              python -m pip install -r requirements.txt --quiet
+            fi
             if sudo systemctl list-unit-files ai-akash.service >/dev/null 2>&1; then
               echo "Restarting ai-akash service."
               sudo systemctl daemon-reload || true
