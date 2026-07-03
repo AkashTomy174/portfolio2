@@ -40,20 +40,13 @@ jobs:
             git reset --hard origin/main
             cd backend
             ls -la
-            if [ ! -d .venv ]; then
+            if [ ! -x .venv/bin/python ]; then
               echo "Creating backend virtual environment."
-              if command -v python3 >/dev/null 2>&1; then
-                python3 -m venv .venv
-              else
-                python -m venv .venv
-              fi
+              python3 -m venv .venv
             fi
             source .venv/bin/activate
-            if command -v pip >/dev/null 2>&1; then
-              pip install -r requirements.txt --quiet
-            else
-              python -m pip install -r requirements.txt --quiet
-            fi
+            python3 -m pip install --upgrade pip setuptools wheel
+            python3 -m pip install --no-cache-dir -r requirements.txt
             if sudo systemctl list-unit-files ai-akash.service >/dev/null 2>&1; then
               echo "Restarting ai-akash service."
               sudo systemctl daemon-reload || true
