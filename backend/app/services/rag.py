@@ -50,7 +50,7 @@ class RagService:
 
     try:
       import chromadb
-    except ImportError as exc:
+    except Exception as exc:
       logger.warning("Vector retrieval unavailable; using keyword retrieval only. error=%s", exc)
       return
 
