@@ -19,6 +19,19 @@ jobs:
           script: |
             set -euo pipefail
 
+            dump_ai_akash_logs() {
+              exit_code=$?
+              if [ "$exit_code" -ne 0 ]; then
+                echo "====================================="
+                echo "ai-akash diagnostics"
+                echo "====================================="
+                sudo systemctl --no-pager --full status ai-akash || true
+                sudo journalctl -u ai-akash -n 120 --no-pager || true
+              fi
+              exit "$exit_code"
+            }
+            trap dump_ai_akash_logs EXIT
+
             echo "====================================="
             echo "Deploying AI Akash Backend"
             echo "====================================="
