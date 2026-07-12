@@ -52,14 +52,21 @@ class RagService:
       logger.warning("Vector retrieval unavailable; using keyword retrieval only. error=%s", exc)
       return
 
-    self.client = genai.Client(api_key=self.gemini_api_key)
-    self.chroma_dir.mkdir(parents=True, exist_ok=True)
-    chroma_client = chromadb.PersistentClient(path=str(self.chroma_dir))
-    self.collection = chroma_client.get_or_create_collection(
-      name="akash-knowledge-gemini",
-      metadata={"description": "Akash portfolio knowledge chunks using Gemini embeddings"},
-    )
-    self._sync_collection()
+    try:
+      self.client = genai.Client(api_key=self.gemini_api_key)
+      self.chroma_dir.mkdir(parents=True, exist_ok=True)
+      chroma_client = chromadb.PersistentClient(path=str(self.chroma_dir))
+      self.collection = chroma_client.get_or_create_collection(
+        name="akash-knowledge-gemini",
+        metadata={"description": "Akash portfolio knowledge chunks using Gemini embeddings"},
+      )
+      self._sync_collection()
+    except Exception:
+      logger.exception("Vector retrieval initialization failed; using keyword retrieval only.")
+      self.client = None
+      self.collection = None
+      return
+
     logger.info(
       "RAG initialized with hybrid retrieval. chunks=%s indexed=%s",
       len(self.chunks),
