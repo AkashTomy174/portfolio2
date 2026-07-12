@@ -61,23 +61,23 @@ jobs:
             SERVICE_FILE=/etc/systemd/system/ai-akash.service
 
             echo "Writing systemd service..."
-            sudo tee "$SERVICE_FILE" > /dev/null <<EOF
-[Unit]
-Description=AI Akash FastAPI Backend
-After=network.target
-
-[Service]
-User=ec2-user
-Group=ec2-user
-WorkingDirectory=/home/ec2-user/portfolio2/backend
-EnvironmentFile=/home/ec2-user/portfolio2/backend/.env
-ExecStart=/home/ec2-user/portfolio2/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-EOF
+            printf '%s\n' \
+              '[Unit]' \
+              'Description=AI Akash FastAPI Backend' \
+              'After=network.target' \
+              '' \
+              '[Service]' \
+              'User=ec2-user' \
+              'Group=ec2-user' \
+              'WorkingDirectory=/home/ec2-user/portfolio2/backend' \
+              'EnvironmentFile=/home/ec2-user/portfolio2/backend/.env' \
+              'ExecStart=/home/ec2-user/portfolio2/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000' \
+              'Restart=always' \
+              'RestartSec=5' \
+              '' \
+              '[Install]' \
+              'WantedBy=multi-user.target' \
+              | sudo tee "$SERVICE_FILE" > /dev/null
 
             sudo systemctl daemon-reload
             sudo systemctl enable ai-akash
