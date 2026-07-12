@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -10,7 +12,7 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
   text: str
-  audio_url: str | None = None
+  audio_url: Optional[str] = None
   sources: list[str] = []
   cached: bool = False
 

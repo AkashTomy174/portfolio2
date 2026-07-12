@@ -61,6 +61,9 @@ jobs:
             PYTHON_BIN="$(command -v python3)"
             echo "Using Python: $($PYTHON_BIN --version)"
 
+            echo "Stopping backend before rebuilding environment..."
+            sudo systemctl stop ai-akash || true
+
             echo "Creating Python virtual environment..."
             rm -rf .venv
             "$PYTHON_BIN" -m venv .venv
