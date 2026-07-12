@@ -2,7 +2,8 @@ name: Deploy Backend to EC2
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -17,44 +18,82 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             set -euo pipefail
-            echo "=== Deploying backend to EC2 ==="
-            echo "Debug: $(date)"
-            echo "Debug: whoami=$(whoami)"
-            echo "Debug: pwd=$(pwd)"
-            echo "Debug: HOME=$HOME"
-            uname -a
-            id
-            env | sort | grep -E 'HOME|USER|SHELL|PATH|GIT|PYTHON|VIRTUAL' || true
-            command -v git || true
-            git --version || true
-            command -v python3 || true
-            python3 --version || true
-            command -v python || true
-            python --version || true
-            if [ -d "$HOME/portfolio2" ]; then
-              echo "Removing stale repository checkout."
-              rm -rf "$HOME/portfolio2"
+
+            echo "====================================="
+            echo "Deploying AI Akash Backend"
+            echo "====================================="
+
+            cd /home/ec2-user
+
+            # Clone only if repository doesn't exist
+            if [ ! -d "portfolio2/.git" ]; then
+              echo "Cloning repository..."
+              git clone https://github.com/AkashTomy174/portfolio2.git
             fi
-            echo "Cloning repository fresh."
-            git clone https://github.com/AkashTomy174/portfolio2.git "$HOME/portfolio2"
-            cd "$HOME/portfolio2"
-            git checkout main
-            git pull origin main
+
+            cd portfolio2
+
+            echo "Updating repository..."
+            git fetch origin
+            git reset --hard origin/main
+
             cd backend
-            ls -la
-            echo "Removing stale virtual environment if present."
-            rm -rf .venv
-            python3 -m venv .venv
-            source .venv/bin/activate
-            python3 -m pip install --upgrade pip setuptools wheel
-            python3 -m pip install --no-cache-dir -r requirements.txt
-            if sudo systemctl list-unit-files ai-akash.service >/dev/null 2>&1; then
-              echo "Restarting ai-akash service."
-              sudo systemctl daemon-reload || true
-              sudo systemctl restart ai-akash
-              sudo systemctl status ai-akash --no-pager
-            else
-              echo "ERROR: ai-akash systemd service was not found on the target host."
-              sudo systemctl list-unit-files --all | grep -i ai-akash || true
+
+            if ! command -v python3 >/dev/null 2>&1; then
+              echo "ERROR: python3 is required on the EC2 instance but was not found."
+              echo "Install Python 3 before running deployment again."
               exit 1
             fi
+
+            PYTHON_BIN="$(command -v python3)"
+            echo "Using Python: $($PYTHON_BIN --version)"
+
+            echo "Creating Python virtual environment..."
+            rm -rf .venv
+            "$PYTHON_BIN" -m venv .venv
+
+            source .venv/bin/activate
+
+            echo "Installing dependencies..."
+            python -m pip install --upgrade pip setuptools wheel
+            python -m pip install --no-cache-dir -r requirements.txt
+
+            SERVICE_FILE=/etc/systemd/system/ai-akash.service
+
+            echo "Writing systemd service..."
+            sudo tee "$SERVICE_FILE" > /dev/null <<EOF
+[Unit]
+Description=AI Akash FastAPI Backend
+After=network.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/home/ec2-user/portfolio2/backend
+EnvironmentFile=/home/ec2-user/portfolio2/backend/.env
+ExecStart=/home/ec2-user/portfolio2/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+            sudo systemctl daemon-reload
+            sudo systemctl enable ai-akash
+
+            echo "Restarting backend..."
+            sudo systemctl daemon-reload
+            sudo systemctl restart ai-akash
+
+            sleep 5
+
+            echo "Checking service status..."
+            sudo systemctl --no-pager --full status ai-akash
+
+            echo "Checking backend health..."
+            curl http://127.0.0.1:8000/docs > /dev/null
+
+            echo "====================================="
+            echo "Deployment Successful!"
+            echo "====================================="

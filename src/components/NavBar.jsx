@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { SITE } from '../siteConfig';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
   { label: 'Architecture', href: '#architecture' },
@@ -53,17 +52,40 @@ const NavBar = () => {
   }, []);
 
   useEffect(() => {
-    const sections = NAV_LINKS.map(({ href }) => document.querySelector(href)).filter(Boolean);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
-        });
-      },
-      { threshold: 0.6 }
-    );
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
+    let sectionObserver;
+    let mutationObserver;
+    let observedSectionIds = '';
+
+    const observeSections = () => {
+      const sections = NAV_LINKS.map(({ href }) => document.querySelector(href)).filter(Boolean);
+      const nextObservedSectionIds = sections.map((section) => section.id).join(',');
+      if (nextObservedSectionIds === observedSectionIds) return;
+
+      observedSectionIds = nextObservedSectionIds;
+      sectionObserver?.disconnect();
+
+      if (sections.length === 0) return;
+
+      sectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+          });
+        },
+        { threshold: 0.6 }
+      );
+      sections.forEach((s) => sectionObserver.observe(s));
+    };
+
+    observeSections();
+
+    mutationObserver = new MutationObserver(observeSections);
+    mutationObserver.observe(document.body, { childList: true, subtree: true });
+
+    return () => {
+      sectionObserver?.disconnect();
+      mutationObserver?.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -103,11 +125,7 @@ const NavBar = () => {
               >
                 {label}
                 {active === href && (
-                  <motion.span
-                    layoutId="nav-pill"
-                    className="absolute inset-0 bg-accent-purple border border-accent-dark -z-10"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                  />
+                  <span className="absolute inset-0 border border-accent-dark bg-accent-purple -z-10" />
                 )}
               </a>
             </li>
@@ -117,7 +135,7 @@ const NavBar = () => {
         {/* CTA */}
         <a
           href={`mailto:${SITE.email}`}
-          className="interactive hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-accent-dark text-white text-sm font-semibold hover:bg-accent-purple transition-colors duration-200"
+          className="interactive hidden md:inline-flex items-center gap-2 px-5 py-2 rounded-full bg-accent-dark text-primary-dark text-sm font-semibold transition-colors duration-200 hover:bg-accent-purple hover:text-accent-dark"
         >
           email me
         </a>
@@ -137,46 +155,40 @@ const NavBar = () => {
       </nav>
 
       {/* Mobile menu */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden glass-card-elevated border-t border-black/5 overflow-hidden"
-          >
-            <ul className="flex flex-col px-6 py-4 gap-1">
-              {NAV_LINKS.map(({ label, href }) => (
-                <li key={href}>
-                  <a
-                    href={href}
-                    onClick={(e) => handleNavClick(e, href)}
-                    aria-current={active === href ? 'page' : undefined}
-                    className={`interactive block px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                      active === href
-                        ? 'text-accent-dark bg-accent-purple'
-                        : 'text-accent-gray hover:text-accent-dark hover:bg-black/4'
-                    }`}
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-              <li className="pt-2">
+      {menuOpen && (
+        <div
+          id="mobile-menu"
+          className="glass-card-elevated overflow-hidden border-t border-black/5 md:hidden"
+        >
+          <ul className="flex flex-col gap-1 px-6 py-4">
+            {NAV_LINKS.map(({ label, href }) => (
+              <li key={href}>
                 <a
-                  href={`mailto:${SITE.email}`}
-                  onClick={() => setMenuOpen(false)}
-                  className="interactive block text-center px-4 py-3 rounded-xl bg-accent-dark text-white text-sm font-semibold"
+                  href={href}
+                  onClick={(e) => handleNavClick(e, href)}
+                  aria-current={active === href ? 'page' : undefined}
+                  className={`interactive block rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                    active === href
+                      ? 'bg-accent-purple text-accent-dark'
+                      : 'text-accent-gray hover:bg-black/4 hover:text-accent-dark'
+                  }`}
                 >
-                  email me
+                  {label}
                 </a>
               </li>
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <li className="pt-2">
+              <a
+                href={`mailto:${SITE.email}`}
+                onClick={() => setMenuOpen(false)}
+                className="interactive block rounded-xl bg-accent-dark px-4 py-3 text-center text-sm font-semibold text-primary-dark"
+              >
+                email me
+              </a>
+            </li>
+          </ul>
+        </div>
+      )}
     </header>
   );
 };

@@ -1,5 +1,3 @@
-import projectImage from '../assets/project.png';
-
 export const projects = [
   {
     slug: 'ai-project-judge',
@@ -141,7 +139,13 @@ export const projects = [
       'I added a product-aware AI chatbot using OpenAI API and Cloudflare Workers',
       'I deployed it with GitHub Actions, AWS EC2, Gunicorn, Nginx, RDS, and S3',
     ],
-    image: projectImage,
+    image: {
+      avif: '/images/project-360.avif 360w, /images/project-595.avif 595w',
+      webp: '/images/project-360.webp 360w, /images/project-595.webp 595w',
+      fallback: '/images/project-595.webp',
+      width: 595,
+      height: 920,
+    },
     github: 'https://github.com/AkashTomy174/easybuy',
     demo: 'https://easybuy.akashtomy.com/',
     featured: false,

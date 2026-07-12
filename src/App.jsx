@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, Component, lazy, Suspense } from 'react';
 import { MotionPrefsContext } from './contexts/MotionPrefsContext';
-import CustomCursor from './components/CustomCursor';
 import AnimatedBackground from './components/AnimatedBackground';
 import NavBar from './components/NavBar';
 import HeroSection from './components/HeroSection';
-import AiChatWidget from './components/AiChatWidget';
 import NotFoundPage from './components/NotFoundPage';
 
+const CustomCursor = lazy(() => import('./components/CustomCursor'));
+const AiChatWidget = lazy(() => import('./components/AiChatWidget'));
 const AboutSection = lazy(() => import('./components/AboutSection'));
 const NowSection = lazy(() => import('./components/NowSection'));
 const SystemArchitectureSection = lazy(() => import('./components/SystemArchitectureSection'));
@@ -18,6 +18,7 @@ const AiPromptSection = lazy(() => import('./components/AiPromptSection'));
 const ContactSection = lazy(() => import('./components/ContactSection'));
 
 const KONAMI = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const HASH_SCROLL_OFFSET = 80;
 
 class ErrorBoundary extends Component {
   state = { error: null };
@@ -40,7 +41,10 @@ class ErrorBoundary extends Component {
 function App() {
   const progressRef = useRef(null);
   const konamiRef = useRef([]);
-  const [booting, setBooting] = useState(true);
+  const [showDeferredUi, setShowDeferredUi] = useState(false);
+  const [showDeferredSections, setShowDeferredSections] = useState(
+    () => typeof window !== 'undefined' && Boolean(window.location.hash)
+  );
   const [easterEgg, setEasterEgg] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -49,9 +53,55 @@ function App() {
 
   useEffect(() => {
     console.log('Akash note: if you are reading this, ask me about the Razorpay webhook bug. That one taught me humility.');
-    const timer = window.setTimeout(() => setBooting(false), prefersReducedMotion ? 200 : 1050);
-    return () => window.clearTimeout(timer);
   }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    const scheduleIdle = window.requestIdleCallback || ((callback) => window.setTimeout(callback, 1200));
+    const cancelIdle = window.cancelIdleCallback || window.clearTimeout;
+    const idleId = scheduleIdle(() => setShowDeferredUi(true));
+    return () => cancelIdle(idleId);
+  }, []);
+
+  useEffect(() => {
+    if (showDeferredSections) return;
+
+    const revealSections = () => setShowDeferredSections(true);
+    const timer = window.setTimeout(revealSections, 900);
+
+    window.addEventListener('scroll', revealSections, { passive: true, once: true });
+    window.addEventListener('pointerdown', revealSections, { passive: true, once: true });
+    window.addEventListener('keydown', revealSections, { passive: true, once: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('scroll', revealSections);
+      window.removeEventListener('pointerdown', revealSections);
+      window.removeEventListener('keydown', revealSections);
+    };
+  }, [showDeferredSections]);
+
+  useEffect(() => {
+    if (!showDeferredSections || !window.location.hash) return;
+
+    let attempts = 0;
+    let timer;
+    const scrollToHash = () => {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - HASH_SCROLL_OFFSET;
+        window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+        return;
+      }
+
+      attempts += 1;
+      if (attempts < 30) {
+        timer = window.setTimeout(scrollToHash, 100);
+      }
+    };
+
+    timer = window.setTimeout(scrollToHash, 0);
+    return () => window.clearTimeout(timer);
+  }, [showDeferredSections]);
 
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -95,24 +145,17 @@ function App() {
   return (
     <MotionPrefsContext.Provider value={prefersReducedMotion}>
       <div className="relative w-full min-h-screen overflow-x-hidden">
-        {booting && (
-          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-accent-dark text-primary-dark">
-            <div className="terminal-scan border border-accent-purple px-8 py-6 text-center">
-              <div className="text-[10px] font-black uppercase tracking-[0.45em] text-accent-purple">booting portfolio</div>
-              <div className="mt-4 text-4xl font-black tracking-tight" style={{ animation: 'stamp-in 720ms cubic-bezier(0.16,1,0.3,1) both' }}>
-                AKASH.TOMY
-              </div>
-              <div className="mt-3 font-mono text-xs text-primary-dark/60">loading the unglamorous backend bits...</div>
-            </div>
-          </div>
-        )}
         {easterEgg && (
           <div className="fixed bottom-24 left-1/2 z-[9999] -translate-x-1/2 rotate-[-2deg] border border-accent-dark bg-accent-purple px-5 py-3 text-sm font-black text-accent-dark shadow-[8px_8px_0_#151512]">
             You found the secret. Payment webhooks still scare me, respectfully.
           </div>
         )}
         <div id="scroll-progress" ref={progressRef} aria-hidden="true" />
-        <CustomCursor />
+        {showDeferredUi && (
+          <Suspense fallback={null}>
+            <CustomCursor />
+          </Suspense>
+        )}
         <AnimatedBackground />
         <div className="noise-overlay" aria-hidden="true" />
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:px-4 focus:py-2 focus:rounded-lg focus:bg-accent-dark focus:text-white focus:text-sm focus:font-semibold">
@@ -126,19 +169,25 @@ function App() {
             <>
               <main id="main" className="flex flex-col relative z-10">
                 <HeroSection />
-                <Suspense fallback={null}>
-                  <SystemArchitectureSection />
-                  <ProjectsSection />
-                  <EngineeringNotesSection />
-                  <NowSection />
-                  <AboutSection />
-                  <RecruiterFitSection />
-                  <SkillsSection />
-                  <AiPromptSection />
-                  <ContactSection />
-                </Suspense>
+                {showDeferredSections && (
+                  <Suspense fallback={null}>
+                    <SystemArchitectureSection />
+                    <ProjectsSection />
+                    <EngineeringNotesSection />
+                    <NowSection />
+                    <AboutSection />
+                    <RecruiterFitSection />
+                    <SkillsSection />
+                    <AiPromptSection />
+                    <ContactSection />
+                  </Suspense>
+                )}
               </main>
-              <AiChatWidget />
+              {showDeferredUi && (
+                <Suspense fallback={null}>
+                  <AiChatWidget />
+                </Suspense>
+              )}
             </>
           )}
         </ErrorBoundary>

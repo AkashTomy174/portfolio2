@@ -106,7 +106,7 @@ const AiPromptSection = () => {
                       <li key={item}>- {item}</li>
                     ))}
                   </ul>
-                  <div className="mt-4 text-primary-dark/40">psst: this panel is draggable.</div>
+                  <div className="mt-4 text-primary-dark/70">psst: this panel is draggable.</div>
                 </div>
               </div>
             </div>

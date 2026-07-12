@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/portfolioimage-640.avif"
+      imagesrcset="/images/portfolioimage-384.avif 384w, /images/portfolioimage-640.avif 640w, /images/portfolioimage-960.avif 960w"
+      imagesizes="(min-width: 1024px) 350px, (min-width: 768px) 45vw, calc(100vw - 4rem)"
+      type="image/avif"
+      fetchpriority="high"
+    />
 
-    <title>Akash Tomy — Full-Stack Developer</title>
+    <title>Akash Tomy - Full-Stack Developer</title>
     <meta name="description" content="Backend-focused Full Stack Developer specializing in Django and scalable system design. Built and deployed a production-grade e-commerce platform on AWS with 42% DB query reduction." />
     <meta name="author" content="Akash Tomy" />
     <meta name="keywords" content="Full-Stack Developer, Django, React, E-Commerce, Python, Redis, AWS" />
@@ -15,13 +22,13 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://akashtomy.com/" />
-    <meta property="og:title" content="Akash Tomy — Full-Stack Developer" />
+    <meta property="og:title" content="Akash Tomy - Full-Stack Developer" />
     <meta property="og:description" content="Building scalable e-commerce platforms with Django & React." />
     <meta property="og:image" content="https://akashtomy.com/og-image.png" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Akash Tomy — Full-Stack Developer" />
+    <meta name="twitter:title" content="Akash Tomy - Full-Stack Developer" />
     <meta name="twitter:description" content="Building scalable e-commerce platforms with Django, React & AWS." />
     <meta name="twitter:image" content="https://akashtomy.com/og-image.png" />
   </head>

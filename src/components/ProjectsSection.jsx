@@ -30,7 +30,7 @@ const EngineeringDecisionGrid = ({ decisions }) => (
 
 const ArchitectureDiagram = ({ flow }) => (
   <div className="border border-accent-dark bg-accent-dark p-5 text-primary-dark">
-    <div className="text-xs font-bold uppercase tracking-widest text-primary-dark/50">System path</div>
+    <div className="text-xs font-bold uppercase tracking-widest text-primary-dark/70">System path</div>
     <div className="mt-5 grid gap-3">
       {flow.map(([label, body], index) => (
         <div key={label} className="grid grid-cols-[4.5rem_1fr] items-center gap-3">
@@ -76,12 +76,27 @@ const ProjectVisual = ({ project, reduced }) => {
       transition={{ duration: 0.35 }}
       className="aspect-[16/10] overflow-hidden border border-accent-dark bg-white shadow-[10px_10px_0_rgba(21,21,18,0.16)]"
     >
-      <img
-        src={project.image}
-        alt={project.title}
-        loading="lazy"
-        className="h-full w-full object-cover object-top"
-      />
+      <picture>
+        <source
+          type="image/avif"
+          srcSet={project.image.avif}
+          sizes="(min-width: 1024px) 470px, calc(100vw - 4rem)"
+        />
+        <source
+          type="image/webp"
+          srcSet={project.image.webp}
+          sizes="(min-width: 1024px) 470px, calc(100vw - 4rem)"
+        />
+        <img
+          src={project.image.fallback}
+          alt={project.title}
+          width={project.image.width}
+          height={project.image.height}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover object-top"
+        />
+      </picture>
     </motion.div>
   );
 };
