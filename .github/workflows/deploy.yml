@@ -16,6 +16,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
+
           script: |
             set -euo pipefail
 
@@ -25,62 +26,80 @@ jobs:
                 echo "====================================="
                 echo "ai-akash diagnostics"
                 echo "====================================="
+
                 sudo systemctl --no-pager --full status ai-akash || true
-                sudo journalctl -u ai-akash -n 120 --no-pager || true
+                sudo journalctl -u ai-akash -n 150 --no-pager || true
               fi
               exit "$exit_code"
             }
+
             trap dump_ai_akash_logs EXIT
+
 
             echo "====================================="
             echo "Deploying AI Akash Backend"
             echo "====================================="
 
+
             cd /home/ec2-user
 
-            # Clone repository if it doesn't exist
+
             if [ ! -d "portfolio2/.git" ]; then
               echo "Cloning repository..."
               git clone https://github.com/AkashTomy174/portfolio2.git
             fi
 
+
             cd portfolio2
+
 
             echo "Updating repository..."
             git fetch origin
             git reset --hard origin/main
 
+
             cd backend
 
-            # Ensure Python 3.12 exists
+
             if ! command -v python3.12 >/dev/null 2>&1; then
-              echo "ERROR: Python 3.12 is required but was not found."
+              echo "ERROR: Python 3.12 not found"
               exit 1
             fi
 
+
             PYTHON_BIN="$(command -v python3.12)"
-            echo "Using Python: $($PYTHON_BIN --version)"
+
+            echo "Using:"
+            $PYTHON_BIN --version
+
 
             echo "Stopping backend..."
             sudo systemctl stop ai-akash || true
 
-            echo "Removing old virtual environment..."
-            rm -rf .venv
 
-            echo "Creating Python 3.12 virtual environment..."
-            "$PYTHON_BIN" -m venv .venv
+            echo "Creating/updating virtual environment..."
+
+            if [ ! -d ".venv" ]; then
+              "$PYTHON_BIN" -m venv .venv
+            fi
+
 
             source .venv/bin/activate
 
-            echo "Upgrading pip..."
-            python -m pip install --upgrade pip setuptools wheel
 
             echo "Installing dependencies..."
+
+            python -m pip install --upgrade pip setuptools wheel
+
             python -m pip install --no-cache-dir -r requirements.txt
+
 
             SERVICE_FILE=/etc/systemd/system/ai-akash.service
 
+
             echo "Writing systemd service..."
+
+
             printf '%s\n' \
               '[Unit]' \
               'Description=AI Akash FastAPI Backend' \
@@ -94,25 +113,57 @@ jobs:
               'ExecStart=/home/ec2-user/portfolio2/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000' \
               'Restart=always' \
               'RestartSec=5' \
+              'TimeoutStartSec=60' \
               '' \
               '[Install]' \
               'WantedBy=multi-user.target' \
               | sudo tee "$SERVICE_FILE" >/dev/null
 
+
             echo "Reloading systemd..."
+
             sudo systemctl daemon-reload
             sudo systemctl enable ai-akash
 
+
             echo "Starting backend..."
+
             sudo systemctl restart ai-akash
 
-            sleep 5
 
-            echo "Service status:"
-            sudo systemctl --no-pager --full status ai-akash
+            echo "Waiting for backend health..."
 
-            echo "Health check..."
-            curl --fail http://127.0.0.1:8000/docs >/dev/null
+            SUCCESS=false
+
+
+            for i in {1..15}; do
+
+              if curl --fail http://127.0.0.1:8000/health >/dev/null 2>&1; then
+
+                SUCCESS=true
+                echo "Backend healthy"
+                break
+
+              fi
+
+
+              echo "Waiting... attempt $i/15"
+              sleep 3
+
+            done
+
+
+            if [ "$SUCCESS" != "true" ]; then
+
+              echo "Health check failed"
+
+              sudo systemctl status ai-akash --no-pager
+              sudo journalctl -u ai-akash -n 150 --no-pager
+
+              exit 1
+
+            fi
+
 
             echo "====================================="
             echo "Deployment Successful!"
