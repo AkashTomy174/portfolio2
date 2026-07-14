@@ -12,14 +12,14 @@ class ActivityLogger:
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self._ip_hash_salt = ip_hash_salt
 
-    def log_visit(self, path: str, ip: str, user_agent: str | None = None) -> None:
+    def log_visit(self, path: str, ip_hash: str, user_agent: str | None = None) -> None:
         self._append_jsonl(
             "visits.jsonl",
             {
                 "type": "visit",
                 "timestamp": utc_now_iso(),
                 "path": path,
-                "ip_hash": hash_ip(ip, self._ip_hash_salt),
+                "ip_hash": ip_hash,
                 "user_agent": user_agent,
             },
         )
@@ -27,10 +27,7 @@ class ActivityLogger:
     def log_interaction(self, record: RequestRecord) -> None:
         self._append_jsonl(
             "ai_interactions.jsonl",
-            {
-                "type": "ai_interaction",
-                **record.__dict__,
-            },
+            {"type": "ai_interaction", **record.__dict__},
         )
 
     def read_recent(self, filename: str, limit: int = 50) -> list[dict[str, Any]]:
