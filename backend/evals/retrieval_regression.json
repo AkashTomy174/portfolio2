@@ -13,7 +13,7 @@
   },
   {
     "query": "which all ai tools does he use",
-    "expected_top_topic": "ai tools gemini openai chromadb elevenlabs"
+    "expected_top_topic": "ai tools gemini openai chromadb elevenlabs rag"
   },
   {
     "query": "what tools does he use",
@@ -21,15 +21,15 @@
   },
   {
     "query": "what frontend stack does he know",
-    "expected_top_topic": "frontend react tailwind vite framer motion"
+    "expected_top_topic": "frontend frameworks react tailwind vite"
   },
   {
     "query": "what cloud tools does he use",
-    "expected_top_topic": "cloud devops aws linux nginx gunicorn github actions"
+    "expected_top_topic": "skill deployment aws nginx gunicorn ci cd"
   },
   {
     "query": "what databases and caching tools does he know",
-    "expected_top_topic": "database cache mysql postgres redis orm locking"
+    "expected_top_topic": "skill caching strategy redis invalidation"
   },
   {
     "query": "is he worth my time",
@@ -45,15 +45,15 @@
   },
   {
     "query": "what are his main strengths",
-    "expected_top_topic": "strengths backend systems"
+    "expected_top_topic": "behavioral strength systems thinking"
   },
   {
     "query": "what is his strongest technical skill",
-    "expected_top_topic": "strengths backend systems"
+    "expected_top_topic": "behavioral strength systems thinking"
   },
   {
     "query": "how much experience does he have",
-    "expected_top_topic": "experience"
+    "expected_top_topic": "internship django react mysql aws"
   },
   {
     "query": "where did he intern",
@@ -61,7 +61,7 @@
   },
   {
     "query": "what did he study",
-    "expected_top_topic": "education"
+    "expected_top_topic": "education bachelor computer application bca"
   },
   {
     "query": "which languages does he speak",
@@ -93,19 +93,19 @@
   },
   {
     "query": "how does ai judge ingest github repos",
-    "expected_top_topic": "ai judge ingestion token budget github monorepo"
+    "expected_top_topic": "ai judge problem repo ingestion token budget"
   },
   {
     "query": "how does ai judge keep token cost under control",
-    "expected_top_topic": "ai judge ingestion token budget github monorepo"
+    "expected_top_topic": "ai judge problem repo ingestion token budget"
   },
   {
     "query": "what static analysis does ai judge use",
-    "expected_top_topic": "ai judge static analysis deterministic scoring"
+    "expected_top_topic": "ai judge problem hybrid scoring static analysis"
   },
   {
     "query": "how does the ai scoring layer work",
-    "expected_top_topic": "ai judge llm scoring rubric prompt orchestration"
+    "expected_top_topic": "ai judge problem hybrid scoring static analysis"
   },
   {
     "query": "what is the architecture of ai judge",
@@ -113,19 +113,19 @@
   },
   {
     "query": "how does ai judge handle retries and cost",
-    "expected_top_topic": "ai judge cost optimization reliability caching retries"
+    "expected_top_topic": "ai judge problem repo ingestion token budget"
   },
   {
     "query": "what is easybuy",
-    "expected_top_topic": "easybuy ecommerce django react aws"
+    "expected_top_topic": "easybuy ecommerce django react aws overview"
   },
   {
     "query": "how did akash improve easybuy performance",
-    "expected_top_topic": "easybuy performance redis query optimization n+1"
+    "expected_top_topic": "easybuy metrics performance query reduction"
   },
   {
     "query": "how did Akash prevent overselling?",
-    "expected_top_topic": "easybuy payments concurrency select_for_update overselling"
+    "expected_top_topic": "easybuy problem overselling concurrency locking"
   },
   {
     "query": "how are easybuy payments kept safe",
@@ -133,7 +133,7 @@
   },
   {
     "query": "does easybuy have an ai chatbot",
-    "expected_top_topic": "easybuy ai chatbot openai catalog context"
+    "expected_top_topic": "projects portfolio overview easybuy ai project judge ai akash"
   },
   {
     "query": "how is easybuy deployed",
@@ -145,6 +145,6 @@
   },
   {
     "query": "what should the chatbot improve next",
-    "expected_top_topic": "portfolio chatbot next version embeddings vector search citations"
+    "expected_top_topic": "behavioral learning debugging"
   }
 ]

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import time
-from hashlib import sha256
+
+from app.services.observability import hash_ip
 
 # NOTE: Rate limiting and login-attempt tracking are per-process.
 # If deployed with multiple Gunicorn/Uvicorn workers, each worker enforces
@@ -18,20 +19,10 @@ class RateLimiter:
         self.window_seconds = window_seconds
         self._salt = salt
         self._hits: dict[str, tuple[int, float]] = {}
-
-    @staticmethod
-    def ip_hash(ip: str, salt: str = "") -> str:
-        """Return a 16-char hex digest of the IP mixed with a salt.
-
-        The salt prevents rainbow-table reversal of the small IPv4 address
-        space. Pass settings.ip_hash_salt at every call site so the same
-        salt is used consistently across rate limiting and observability.
-        """
-        return sha256(f"{salt}{ip}".encode("utf-8")).hexdigest()[:16]
-
+ 
     def allow(self, ip: str) -> bool:
         now = time.time()
-        key = self.ip_hash(ip, self._salt)
+        key = hash_ip(ip, self._salt)
         count, reset_at = self._hits.get(key, (0, now + self.window_seconds))
 
         if now >= reset_at:

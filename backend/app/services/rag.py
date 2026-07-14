@@ -14,12 +14,42 @@ from google.genai import types
 
 logger = logging.getLogger("ai-akash")
 
+# ---------------------------------------------------------------------------
+# Relevance thresholds
+# ---------------------------------------------------------------------------
+# Chunks scoring below these values are considered noise and dropped before
+# being passed to the LLM.  The LLM receives an empty list → short-circuit
+# fallback fires in llm.py → no hallucination is possible.
+#
+# How to tune:
+#   Enable DEBUG logging and watch the "rag_search" log lines in production.
+#   Collect top_score values for:
+#     - Known on-topic queries  ("where did he intern", "what is easybuy")
+#     - Known off-topic queries ("what's the weather", "who is his mother")
+#   Pick the cutoff that cleanly separates the two distributions.
+#
+# A relative threshold is used to adapt to different query types.
+RELATIVE_THRESHOLD_RATIO: float = 0.8
+
+# Hybrid mode  (vector + keyword merged, _merge_results output):
+MIN_RELEVANCE_SCORE: float = 0.35
+# Keyword-only mode (no Gemini API key or ChromaDB available):
+MIN_KEYWORD_SCORE: float = 1.0
+
+
 @dataclass
 class RetrievedChunk:
+  id: str
   text: str
   source: str
-  topic: str
   score: float
+  category: str | None = None
+  project: str | None = None
+  type: str | None = None
+  importance: int = 1
+  status: str | None = None
+  tags: list[str] | None = None
+  aliases: list[str] | None = None
 
 
 class RagService:
@@ -79,10 +109,26 @@ class RagService:
     query = _normalize_query(query)
     keyword_results = self._keyword_search(query, top_k=max(top_k * 2, top_k))
     if not self.collection or not self.client:
-      return keyword_results[:top_k]
+      results = [c for c in keyword_results[:top_k] if c.score >= MIN_KEYWORD_SCORE]
+    else:
+      vector_results = self._vector_search(query, top_k=max(top_k * 2, 8))
+      merged = self._merge_results(keyword_results, vector_results, top_k)
+      if not merged:
+          results = []
+      else:
+          top_score = merged[0].score
+          min_score = max(MIN_RELEVANCE_SCORE, top_score * RELATIVE_THRESHOLD_RATIO)
+          results = [c for c in merged if c.score >= min_score]
 
-    vector_results = self._vector_search(query, top_k=max(top_k * 2, top_k))
-    return self._merge_results(keyword_results, vector_results, top_k)
+    top_score = results[0].score if results else 0.0
+    logger.debug(
+      "rag_search query=%r chunks_returned=%d top_score=%.3f threshold=%s",
+      query,
+      len(results),
+      top_score,
+      f"relative > {top_score * RELATIVE_THRESHOLD_RATIO:.2f}" if self.collection and self.client else f"keyword > {MIN_KEYWORD_SCORE}",
+    )
+    return results
 
   def _load_chunks(self) -> list[dict[str, Any]]:
     with self.knowledge_file.open("r", encoding="utf-8") as file:
@@ -130,8 +176,16 @@ class RagService:
     documents = [chunk["text"] for chunk in self.chunks]
     metadatas = [
       {
+        # ChromaDB metadata values must be str, int, float, or bool.
+        # We serialize lists into JSON strings.
         "source": chunk["source"],
-        "topic": chunk["topic"],
+        "category": chunk.get("category"),
+        "project": chunk.get("project"),
+        "type": chunk.get("type"),
+        "importance": chunk.get("importance", 1),
+        "status": chunk.get("status"),
+        "tags": json.dumps(chunk.get("tags", [])),
+        "aliases": json.dumps(chunk.get("aliases", [])),
       }
       for chunk in self.chunks
     ]
@@ -166,12 +220,21 @@ class RagService:
       chunk = self._chunks_by_id.get(chunk_id)
       if not chunk:
         continue
+      
+      # Safely deserialize tags and aliases from metadata
+      tags_str = (metadata or {}).get("tags", "[]")
+      aliases_str = (metadata or {}).get("aliases", "[]")
+      
       retrieved.append(
         RetrievedChunk(
+          id=chunk_id,
           text=document or chunk["text"],
           source=(metadata or {}).get("source", chunk["source"]),
-          topic=(metadata or {}).get("topic", chunk["topic"]),
           score=_distance_to_similarity(distance),
+          category=(metadata or {}).get("category"),
+          importance=(metadata or {}).get("importance", 1),
+          tags=json.loads(tags_str) if tags_str else [],
+          aliases=json.loads(aliases_str) if aliases_str else [],
         )
       )
     return retrieved
@@ -182,30 +245,30 @@ class RagService:
     vector_results: list[RetrievedChunk],
     top_k: int,
   ) -> list[RetrievedChunk]:
-    merged: dict[tuple[str, str, str], RetrievedChunk] = {}
-
-    for item in vector_results:
-      key = (item.text, item.source, item.topic)
-      merged[key] = RetrievedChunk(
-        text=item.text,
-        source=item.source,
-        topic=item.topic,
-        score=item.score * 0.7,
-      )
-
-    for item in keyword_results:
-      key = (item.text, item.source, item.topic)
-      if key in merged:
-        merged[key].score += item.score * 0.3
-      else:
-        merged[key] = RetrievedChunk(
-          text=item.text,
-          source=item.source,
-          topic=item.topic,
-          score=item.score * 0.3,
-        )
-
-    return sorted(merged.values(), key=lambda item: item.score, reverse=True)[:top_k]
+    # Reciprocal Rank Fusion (RRF)
+    # See: https://plg.uwaterloo.ca/~gvcormac/cormack_fusion.pdf
+    k = 60  # RRF constant, typically 60
+    
+    ranked_lists = [keyword_results, vector_results]
+    rrf_scores: dict[str, float] = {}
+    
+    for ranked_list in ranked_lists:
+        for rank, chunk in enumerate(ranked_list, start=1):
+            if chunk.id not in rrf_scores:
+                rrf_scores[chunk.id] = 0.0
+            rrf_scores[chunk.id] += 1 / (k + rank)
+            
+    # Create a unified set of chunks from both lists
+    all_chunks = {chunk.id: chunk for chunk in keyword_results}
+    all_chunks.update({chunk.id: chunk for chunk in vector_results})
+    
+    # Assign the new RRF score to each chunk
+    for chunk_id, score in rrf_scores.items():
+        if chunk_id in all_chunks:
+            all_chunks[chunk_id].score = score
+            
+    merged_chunks = list(all_chunks[chunk_id] for chunk_id in rrf_scores)
+    return sorted(merged_chunks, key=lambda c: c.score, reverse=True)[:top_k]
 
   def _keyword_search(self, query: str, top_k: int) -> list[RetrievedChunk]:
     query_terms = set(_terms(query))
@@ -213,20 +276,41 @@ class RagService:
     scored: list[RetrievedChunk] = []
 
     for chunk in self.chunks:
-      searchable = f"{chunk['id']} {chunk['source']} {chunk['topic']} {chunk['text']}"
+      tags = chunk.get("tags", [])
+      aliases = chunk.get("aliases", [])
+      searchable = f"{chunk['id']} {chunk['source']} {chunk.get('project', '')} {chunk.get('category', '')} {chunk.get('type', '')} {' '.join(tags)} {' '.join(aliases)} {chunk['text']}"
       searchable_lower = searchable.lower()
       chunk_terms = set(_terms(chunk["text"]))
-      metadata_terms = set(_terms(f"{chunk['id']} {chunk['source']} {chunk['topic']}"))
+      tag_terms = set(_terms(' '.join(tags)))
+      alias_terms = set(_terms(' '.join(aliases)))
+
       overlap = len(query_terms & chunk_terms)
-      metadata_overlap = len(query_terms & metadata_terms)
+      tag_overlap = len(query_terms & tag_terms)
+      alias_overlap = len(query_terms & alias_terms)
       phrase_boost = sum(3 for phrase in _phrases(query_text) if phrase in searchable_lower)
-      score = (overlap / math.sqrt(max(len(chunk_terms), 1))) + (metadata_overlap * 2) + phrase_boost
+      
+      # New scoring: heavily weight alias and tag matches
+      score = (
+          (overlap / math.sqrt(max(len(chunk_terms), 1)))  # Text overlap (normalized)
+          + (tag_overlap * 3)  # High weight for tag matches
+          + (alias_overlap * 5)  # Highest weight for alias matches
+          + phrase_boost
+          + (chunk.get("importance", 1) * 0.3) # Boost for importance
+      )
+      
       scored.append(
         RetrievedChunk(
-          text=chunk["text"],
-          source=chunk["source"],
-          topic=chunk["topic"],
-          score=score,
+            id=chunk["id"],
+            text=chunk["text"],
+            source=chunk["source"],
+            score=score,
+            category=chunk.get("category"),
+            project=chunk.get("project"),
+            type=chunk.get("type"),
+            importance=chunk.get("importance", 1),
+            status=chunk.get("status"),
+            tags=chunk.get("tags", []),
+            aliases=chunk.get("aliases", []),
         )
       )
 
@@ -239,22 +323,7 @@ def _terms(text: str) -> list[str]:
 
 
 def _phrases(text: str) -> list[str]:
-  aliases = {
-    "ai judge": ["ai project judge", "project judge", "evaluation system"],
-    "project judge": ["ai project judge", "repository evaluation"],
-    "token budget": ["token budgeting", "15k token", "ranked file selection"],
-    "repo ingestion": ["repository ingestion", "github ingestion", "monorepo"],
-    "static analysis": ["deterministic static analysis", "ruff", "eslint", "radon"],
-    "celery": ["async worker", "queue", "long-running"],
-    "redis": ["cache", "broker", "ttl"],
-    "backend judgment": ["select_for_update", "race condition", "query optimization"],
-    "easybuy": ["payment", "overselling", "e-commerce"],
-  }
-
   phrases = [text.strip()]
-  for key, values in aliases.items():
-    if key in text:
-      phrases.extend(values)
   return [phrase for phrase in phrases if phrase]
 
 
@@ -264,34 +333,18 @@ def _distance_to_similarity(distance: float | None) -> float:
   return 1 / (1 + max(distance, 0.0))
 
 
+def _load_query_aliases() -> dict[str, str]:
+    alias_path = Path(__file__).parent.parent.parent / "knowledge_base" / "query_aliases.json"
+    if not alias_path.exists():
+        return {}
+    with alias_path.open("r", encoding="utf-8") as f:
+        return json.load(f)
+
+_query_aliases = _load_query_aliases()
+
 def _normalize_query(query: str) -> str:
   normalized = " ".join(query.lower().split())
-  replacements = {
-    "heworth": "he worth",
-    "worth my time": "why should we hire akash",
-    "main strengths": "strongest technical skill",
-    "main strength": "strongest technical skill",
-    "free for a call": "availability",
-    "free for call": "availability",
-    "cloud tools": "aws nginx gunicorn github actions",
-    "databases and caching tools": "mysql postgres redis orm locking",
-    "where did he intern": "internship smec technologies",
-    "what did he study": "education bca coursework",
-    "where is akash based": "location alappuzha kerala",
-    "what is ai project judge": "ai project judge flagship evaluation system",
-    "explain about ai judge": "ai project judge flagship evaluation system",
-    "tell me about ai judge": "ai project judge flagship evaluation system",
-    "explain ai judge": "ai project judge flagship evaluation system",
-    "is ai project judge already shipped": "ai judge roadmap status",
-    "how does ai judge ingest github repos": "ai judge ingestion token budget github monorepo",
-    "how does ai judge keep token cost under control": "ai judge ingestion token budget github monorepo",
-    "what is the architecture of ai judge": "ai judge architecture fastapi celery redis postgres sse",
-    "what is easybuy": "easybuy ecommerce django react aws",
-    "how did akash improve easybuy performance": "easybuy performance redis query optimization n 1",
-    "does easybuy have an ai chatbot": "easybuy ai chatbot openai catalog context",
-    "how is easybuy deployed": "easybuy deployment aws nginx gunicorn ci cd",
-    "how does the portfolio chatbot work": "portfolio chatbot rag fastapi gemini retrieval cache",
-  }
+  replacements = _query_aliases
   for source, target in replacements.items():
     normalized = normalized.replace(source, target)
   return normalized

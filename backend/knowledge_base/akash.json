@@ -1,208 +1,216 @@
 {
   "chunks": [
     {
-      "id": "profile-summary",
-      "source": "about",
-      "topic": "profile backend systems ai judge",
-      "text": "Akash Tomy is a backend-focused full stack developer from Alappuzha, Kerala, India. He works with Django, FastAPI, Redis, Celery, relational databases, AWS, and React. His portfolio now emphasizes backend systems thinking: race conditions, cache invalidation, transactional integrity, query optimization, async workers, and AI evaluation architecture. He is actively looking for full-time backend, full-stack, Django, or AI infrastructure roles."
+      "id": "profile-summary", "source": "profile", "category": "biography", "project": "general", "type": "summary", "importance": 8, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["profile", "summary", "backend", "full-stack"],
+      "aliases": ["who is akash", "tell me about akash", "akash tomy overview"],
+      "text": "Akash Tomy is a backend-focused full stack developer from Alappuzha, Kerala. He builds reliable systems with a focus on concerns like race conditions, cache invalidation, transactional integrity, query optimization, and async workers. He is actively looking for full-time backend, full-stack, or AI infrastructure roles."
     },
     {
-      "id": "contact-info",
-      "source": "about",
-      "topic": "contact",
-      "text": "Akash Tomy's contact details: Email: akashtomy174@gmail.com, Phone: +91 9497634775, Location: Alappuzha, Kerala, India. LinkedIn: https://www.linkedin.com/in/akash-tomy-8b51a737b/, GitHub: https://github.com/AkashTomy174, Portfolio: https://akashtomy.com/, EasyBuy live demo: https://easybuy.akashtomy.com/."
+      "id": "location-availability", "source": "profile", "category": "recruiting", "project": "general", "type": "availability", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["location", "availability", "roles", "recruiting"],
+      "aliases": ["where is he based", "is he available for work", "what roles is he looking for"],
+      "text": "Akash Tomy is based in Alappuzha, Kerala, India. He is actively looking for full-time roles (remote or on-site) in backend engineering, Django development, full-stack product engineering, or AI infrastructure."
     },
     {
-      "id": "location-availability",
-      "source": "about",
-      "topic": "availability roles",
-      "text": "Akash Tomy is based in Alappuzha, Kerala, India. He is open to full-time roles, remote or on-site within India. He is especially interested in backend engineering, Django development, full-stack product engineering, and AI infrastructure work."
-    },
-    {
-      "id": "education",
-      "source": "education",
-      "topic": "education",
+      "id": "education", "source": "profile", "category": "biography", "project": "general", "type": "education", "importance": 4, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["education", "bca", "degree", "college"],
+      "aliases": ["what did he study", "college degree", "bachelor of computer application"],
       "text": "Akash Tomy completed his Bachelor of Computer Application (BCA) from Christ College Pulliyanmala, Kattapana, Idukki, Kerala from 2022 to 2025. His CGPA is 7.48. Relevant coursework includes Data Structures, DBMS, Cloud Computing Basics, and Design and Analysis of Algorithms."
     },
     {
-      "id": "internship-smec",
-      "source": "experience",
-      "topic": "internship django react mysql aws",
-      "text": "Akash Tomy worked as a Python Full Stack Developer Intern at SMEC Technologies from July 2024 to present. He reduced page-load database queries on high-traffic catalog and auth pages by adding Redis caching for catalog listings, header data, wishlist state, and auth-related lookups. He developed reusable React components across multiple views, designed normalized relational schemas in MySQL with foreign key constraints and indexing, deployed a Django application to AWS EC2 with Nginx and Gunicorn, and participated in daily code reviews using feature branch workflow and pull requests."
+      "id": "internship-smec", "source": "experience", "category": "work", "project": "general", "type": "role-summary", "importance": 9, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["internship", "django", "react", "mysql", "aws", "redis"],
+      "aliases": ["where did he intern", "smec technologies internship", "full stack developer intern"],
+      "text": "Akash Tomy worked as a Python Full Stack Developer Intern at SMEC Technologies from July 2024 to present. He reduced page-load database queries on high-traffic catalog and auth pages by adding Redis caching, developed reusable React components, designed normalized MySQL schemas, deployed a Django application to AWS EC2, and participated in daily code reviews."
     },
     {
-      "id": "ai-judge-overview",
-      "source": "projects",
-      "topic": "ai project judge flagship evaluation system",
-      "text": "AI Project Judge is Akash's upcoming flagship engineering project. It is designed as an AI-assisted repository evaluation system for hackathons, portfolios, and hiring screens. The goal is not to ask an LLM to guess a score from a repo. The system combines deterministic static analysis, repository ingestion, token budgeting, project-type classification, and LLM interpretation to produce more grounded, auditable evaluations."
+      "id": "projects-overview", "source": "projects", "category": "summary", "project": "all", "type": "overview", "importance": 8, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["projects", "easybuy", "ai-project-judge", "portfolio-chatbot"],
+      "aliases": ["what are his projects", "what has he built", "project portfolio"],
+      "text": "Akash's highlighted projects are EasyBuy (a production e-commerce site), AI Project Judge (a planned repository evaluation system), and AI Akash (this portfolio chatbot). These projects demonstrate his skills in backend development, system design, and AI integration."
     },
     {
-      "id": "projects-overview",
-      "source": "projects",
-      "topic": "projects portfolio overview easybuy ai project judge ai akash",
-      "text": "Akash's highlighted projects are EasyBuy, AI Project Judge, and AI Akash. EasyBuy is a deployed full-stack e-commerce platform with production backend work around caching, payments, concurrency, and AWS deployment. AI Project Judge is an architecture-first repository evaluation system in progress. AI Akash is the portfolio chatbot built with FastAPI, Gemini, ChromaDB retrieval, caching, rate limiting, and optional voice output."
+      "id": "ai-judge-overview", "source": "projects", "category": "summary", "project": "AI Project Judge", "type": "overview", "importance": 8, "status": "planned", "version": 1, "updated": "2026-07-14",
+      "tags": ["ai", "system-design", "llm", "static-analysis"],
+      "aliases": ["what is ai project judge", "repository evaluation system"],
+      "text": "AI Project Judge is Akash's upcoming flagship engineering project. It is an AI-assisted repository evaluation system for hackathons, portfolios, and hiring screens. It aims to produce grounded, auditable evaluations."
     },
     {
-      "id": "ai-judge-ingestion",
-      "source": "projects",
-      "topic": "ai judge ingestion token budget github monorepo",
-      "text": "The AI Project Judge ingestion plan handles GitHub repositories by detecting languages, filtering dependency folders and generated noise, ranking important files, chunking large files, and capping model context around a 15k token budget. This is meant to keep large monorepos from exploding cost or pushing irrelevant files into the evaluation prompt."
+      "id": "ai-judge-goals", "source": "projects", "category": "motivation", "project": "AI Project Judge", "type": "design-decision", "importance": 7, "status": "planned", "version": 1, "updated": "2026-07-14",
+      "tags": ["ai", "llm", "evaluation", "system-design"],
+      "aliases": ["why build ai project judge", "goal of ai judge"],
+      "text": "The goal of AI Project Judge is to move beyond naive LLM-based code scoring. Instead of just asking a model to guess a score, the system combines deterministic static analysis with LLM interpretation to provide a more reliable and fact-based evaluation."
     },
     {
-      "id": "ai-judge-static-layer",
-      "source": "projects",
-      "topic": "ai judge static analysis deterministic scoring",
-      "text": "AI Project Judge uses deterministic static checks before AI scoring so the model is grounded in facts. Planned signals include tests and coverage with pytest-cov, linting with Ruff or ESLint, complexity with Radon, security checks with Safety or npm audit, type checks with mypy or TypeScript, dependency health, CI presence, and README quality."
+      "id": "ai-judge-tech-stack", "source": "projects", "category": "architecture", "project": "AI Project Judge", "type": "tech-stack", "importance": 7, "status": "planned", "version": 1, "updated": "2026-07-14",
+      "tags": ["fastapi", "celery", "redis", "postgresql", "sse", "react"],
+      "aliases": ["ai judge tech stack", "ai judge architecture"],
+      "text": "AI Project Judge is planned with a FastAPI backend, Celery workers for evaluation tasks, Redis as a broker, PostgreSQL for storage, and a React frontend. It will use Server-Sent Events (SSE) for real-time updates."
     },
     {
-      "id": "ai-judge-ai-layer",
-      "source": "projects",
-      "topic": "ai judge llm scoring rubric prompt orchestration",
-      "text": "The AI layer in AI Project Judge is planned to interpret the static metrics and selected source snippets against a scoring rubric. It should evaluate code quality, maintainability, testing, security, architecture, and documentation in parallel criteria. The prompt should cite the evidence it used instead of giving vague praise."
+      "id": "portfolio-chatbot-overview", "source": "projects", "category": "summary", "project": "Portfolio Chatbot", "type": "overview", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["rag", "fastapi", "gemini", "chromadb", "retrieval"],
+      "aliases": ["how does this chatbot work", "portfolio bot architecture"],
+      "text": "The AI Akash portfolio chatbot is a RAG system with a FastAPI backend. It uses Gemini for embeddings and generation, ChromaDB for vector storage, and a hybrid retrieval strategy (vector + keyword) to find the most relevant information to answer questions."
     },
     {
-      "id": "ai-judge-architecture",
-      "source": "projects",
-      "topic": "ai judge architecture fastapi celery redis postgres sse",
-      "text": "AI Project Judge is planned around a FastAPI backend, Celery workers for long-running repository evaluation tasks, Redis as the broker/cache, PostgreSQL for persisted evaluations, GitHub API ingestion, server-sent events for live job state, and a React dashboard with radar charts, logs, and downloadable JSON or PDF reports."
+      "id": "easybuy-overview", "source": "projects", "category": "summary", "project": "EasyBuy", "type": "overview", "importance": 9, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["ecommerce", "django", "react", "aws", "full-stack"],
+      "aliases": ["what is easybuy", "e-commerce project"],
+      "text": "EasyBuy is a full-stack e-commerce platform with customer, seller, and admin roles. It is deployed on AWS and serves as a practical demonstration of Akash's backend skills in a production-like environment."
     },
     {
-      "id": "ai-judge-cost-reliability",
-      "source": "projects",
-      "topic": "ai judge cost optimization reliability caching retries",
-      "text": "AI Project Judge treats LLM cost and reliability as design constraints. Planned optimizations include ranked file selection, token caps, prompt caching, deterministic pre-scoring, retry handling, status transitions, and avoiding synchronous HTTP requests for long repo evaluations. Rough planning estimates compared a standard batch around Rs 3700 for 300 repos with an optimized path closer to Rs 950."
+      "id": "easybuy-goals", "source": "projects", "category": "motivation", "project": "EasyBuy", "type": "goals", "importance": 8, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["backend", "learning", "concurrency", "caching", "payments"],
+      "aliases": ["why did you build easybuy", "purpose of easybuy"],
+      "text": "Akash built EasyBuy to gain hands-on experience with the real-world challenges of backend development that go beyond simple CRUD apps. The project was a vehicle for learning about payment integration, concurrency control, performance optimization with caching, and cloud deployment."
     },
     {
-      "id": "ai-judge-status",
-      "source": "projects",
-      "topic": "ai judge roadmap status",
-      "text": "AI Project Judge is currently an architecture-first project and build roadmap, not a fully shipped production product yet. Akash is presenting it as a flagship systems direction because the interesting work is in the engineering decisions: ingestion, static analysis, token budgeting, queue processing, auditability, and cost control."
+      "id": "easybuy-tech-stack", "source": "projects", "category": "architecture", "project": "EasyBuy", "type": "tech-stack", "importance": 8, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["django", "react", "mysql", "redis", "celery", "aws", "nginx"],
+      "aliases": ["easybuy technologies", "easybuy tech"],
+      "text": "EasyBuy is built with a Django backend, React frontend, MySQL on AWS RDS, Redis for caching and message brokering, Celery for async tasks, Nginx as a reverse proxy, and Gunicorn as the application server. Payments are handled by Razorpay."
     },
     {
-      "id": "portfolio-ai-chat-backend",
-      "source": "projects",
-      "topic": "portfolio chatbot rag fastapi gemini retrieval cache",
-      "text": "The AI Akash portfolio chatbot is a FastAPI backend connected to a React widget. It validates chat requests, rate limits by IP, caches repeated answers with an LRU cache, retrieves curated knowledge chunks with Gemini embeddings plus keyword and topic overlap, stores vectors in ChromaDB, sends only retrieved context to a guarded Gemini prompt, and can optionally generate ElevenLabs voice audio."
+      "id": "easybuy-metrics", "source": "projects", "category": "achievement", "project": "EasyBuy", "type": "metric", "importance": 10, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["performance", "optimization", "metrics", "django-orm", "redis"],
+      "aliases": ["what was the impact", "measurable results", "query reduction"],
+      "evidence": ["github/easybuy/views.py", "query profiling logs"],
+      "text": "Measured backend improvements on EasyBuy include reducing database queries on a key page from 36 to 21 (a 42% reduction) using ORM optimization and keeping order confirmation response times under 300ms by offloading notification jobs to Celery workers."
     },
     {
-      "id": "portfolio-ai-chat-next",
-      "source": "projects",
-      "topic": "portfolio chatbot next version embeddings vector search citations",
-      "text": "The next version of the AI Akash chatbot should add chunk versioning, stronger source citations, and a regression prompt set to catch bad answers. That would make the chatbot feel less like a portfolio accessory and more like a small RAG system with measurable behavior."
+      "id": "easybuy-problem-overselling", "source": "projects", "category": "architecture", "project": "EasyBuy", "type": "problem-solution", "importance": 10, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["django", "concurrency", "select_for_update", "transactions", "database"],
+      "aliases": ["race condition", "database locking", "inventory consistency", "prevent overselling"],
+      "evidence": ["github/easybuy/checkout/views.py"],
+      "text": "A critical challenge in e-commerce is preventing overselling. In EasyBuy, this was solved by using a database-level row lock (`select_for_update`) within an atomic transaction. This ensures that checking and updating stock is an indivisible operation, guaranteeing inventory integrity under concurrent load."
     },
     {
-      "id": "easybuy-overview",
-      "source": "projects",
-      "topic": "easybuy ecommerce django react aws",
-      "text": "EasyBuy is Akash Tomy's featured full-stack e-commerce platform with Customer, Seller, and Admin roles. It is live at https://easybuy.akashtomy.com/ and the source code is at https://github.com/AkashTomy174/easybuy. It is built with Python, Django, React.js, Tailwind CSS, MySQL, AWS EC2/RDS/S3, Redis, Celery, Razorpay, GitHub Actions, Cloudflare Workers, and OpenAI API."
+      "id": "programming-languages", "source": "skills", "category": "technical", "project": "general", "type": "skill-summary", "importance": 9, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["python", "javascript", "es6", "programming"],
+      "aliases": ["what programming languages", "python skill", "js skill"],
+      "text": "Akash's primary programming language is Python for backend development. He also uses modern JavaScript (ES6+) for frontend work with React."
     },
     {
-      "id": "easybuy-performance",
-      "source": "projects",
-      "topic": "easybuy performance redis query optimization n+1",
-      "text": "In EasyBuy, Akash reduced database queries by 42%, from 36 queries to 21, using Redis caching and Django ORM optimization with select_related and prefetch_related. Celery async workers handle notifications and email delivery with a DB fallback, keeping order responses under 300ms by moving slow work out of the request path."
+      "id": "skill-concurrency", "source": "skills", "category": "technical", "project": "general", "type": "skill-summary", "importance": 10, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["concurrency", "locking", "transactions", "race-conditions", "django"],
+      "aliases": ["race condition handling", "row lock", "database lock", "inventory consistency", "overselling"],
+      "text": "To handle race conditions in concurrent environments, Akash uses database-level locking mechanisms like `select_for_update` and wraps critical operations in atomic transactions. This is crucial for features like inventory management to prevent overselling."
     },
     {
-      "id": "easybuy-payments",
-      "source": "projects",
-      "topic": "easybuy payments concurrency select_for_update overselling",
-      "text": "EasyBuy handles payments with Razorpay. Akash designed a concurrent-safe payment system using database locking with select_for_update to prevent duplicate transactions. He also prevented overselling under concurrent load using atomic DB transactions and select_for_update, ensuring inventory accuracy across simultaneous orders. HMAC webhook signature verification protects payment callbacks across all 3 user roles."
-    },
-    {
-      "id": "easybuy-ai-chatbot",
-      "source": "projects",
-      "topic": "easybuy ai chatbot openai catalog context",
-      "text": "EasyBuy includes a product-aware AI chatbot built using the OpenAI API and Cloudflare Workers. Live catalog context is injected per request so the chatbot has up-to-date product information when answering customer questions."
-    },
-    {
-      "id": "easybuy-deployment",
-      "source": "projects",
-      "topic": "easybuy deployment aws nginx gunicorn ci cd",
-      "text": "EasyBuy is deployed on AWS EC2 with automated CI/CD via GitHub Actions. Zero-downtime reloads are achieved using Gunicorn and Nginx with pre-flight migration checks before each deployment. The database runs on Amazon RDS and static files are served from AWS S3 via Cloudflare CDN."
-    },
-    {
-      "id": "backend-skills",
-      "source": "skills",
-      "topic": "backend django fastapi redis celery payments",
-      "text": "Akash's backend skills include Python, Django, Django REST Framework, FastAPI, REST APIs, WebSockets, Celery async workers, JWT authentication, OAuth 2.0 with Google, Razorpay payment integration with HMAC webhooks, OpenAI or Gemini API integration, concurrency control with select_for_update, and atomic transactions."
-    },
-    {
-      "id": "frontend-skills",
-      "source": "skills",
-      "topic": "frontend react tailwind vite framer motion",
-      "text": "Akash's frontend skills include React.js with hooks and context, JavaScript ES6+, Tailwind CSS, HTML5, and CSS3. His portfolio is built with React, Tailwind CSS, Vite, and Framer Motion."
-    },
-    {
-      "id": "cloud-devops",
-      "source": "skills",
-      "topic": "cloud devops aws linux nginx gunicorn github actions",
-      "text": "Akash works with AWS EC2, S3, and RDS, Linux Ubuntu, Nginx, Gunicorn, GitHub Actions CI/CD, Cloudflare CDN, and Cloudflare Workers. EasyBuy uses CI/CD through GitHub Actions to AWS EC2 with Gunicorn and Nginx."
-    },
-    {
-      "id": "database-cache",
-      "source": "skills",
-      "topic": "database cache mysql postgres redis orm locking",
-      "text": "Akash works with MySQL, Amazon RDS, Redis caching, Django ORM optimization using prefetch_related and select_related, database locking with select_for_update, and atomic transactions. He thinks about TTLs, stale cache risk, N+1 queries, and what should not be cached."
-    },
-    {
-      "id": "tools",
-      "source": "skills",
-      "topic": "tools git github postman linux reviews",
-      "text": "Akash's tools include Git, GitHub, Postman, Linux Ubuntu, and feature branch workflow with pull requests. He maintains clean Git history and participates in code reviews."
-    },
-    {
-      "id": "ai-tools",
-      "source": "skills",
-      "topic": "ai tools gemini openai chromadb elevenlabs",
-      "text": "Akash has worked with AI tooling including Gemini API, OpenAI API, ChromaDB for vector retrieval, and ElevenLabs for optional voice output. His portfolio chatbot uses Gemini for generation and embeddings, ChromaDB for retrieval, and ElevenLabs when voice mode is enabled."
-    },
-    {
-      "id": "languages-spoken",
-      "source": "about",
-      "topic": "languages",
+      "id": "languages-spoken", "source": "profile", "category": "biography", "project": "general", "type": "summary", "importance": 2, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["languages", "communication"],
+      "aliases": ["what languages does he speak", "multilingual"],
       "text": "Akash Tomy speaks English, Malayalam, Hindi, and Tamil."
     },
     {
-      "id": "qa-different",
-      "source": "qa",
-      "topic": "recruiter fit different",
-      "text": "What stands out about Akash is that he thinks past the happy path. He pays attention to things like safe payments under concurrency, measurable query reduction, async work, zero-downtime deployment, token budgeting, and the tradeoffs behind caching and consistency. He is not just trying to make features work; he is trying to make them hold up in production."
+      "id": "behavioral-strength", "source": "qa", "category": "behavioral", "project": "general", "type": "strength", "importance": 8, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["strength", "systems-thinking", "backend", "production"],
+      "aliases": ["what is his biggest strength", "main strength"],
+      "text": "Akash's main strength is his focus on systems thinking beyond just the happy path. He pays attention to production concerns like concurrency, performance, deployment, and cost. He's not just trying to make features work; he's trying to make them work reliably and efficiently."
     },
     {
-      "id": "qa-strongest-skill",
-      "source": "qa",
-      "topic": "strengths backend systems",
-      "text": "Akash's strongest area is backend engineering with systems awareness. He is comfortable designing Django and FastAPI APIs, tightening ORM queries, using Redis and Celery, handling payments safely under concurrency, deploying on AWS, and thinking through AI systems with cost and reliability in mind."
+      "id": "behavioral-learning", "source": "qa", "category": "behavioral", "project": "general", "type": "learning", "importance": 8, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["learning", "debugging", "race-conditions", "concurrency"],
+      "aliases": ["biggest learning experience", "what has he learned"],
+      "text": "A key learning experience for Akash was debugging e-commerce race conditions. It taught him that some problems only appear under concurrent load and led to a deeper understanding of database transactions and locking. It highlighted the importance of designing for concurrency from the start."
     },
     {
-      "id": "qa-experience",
-      "source": "qa",
-      "topic": "experience",
-      "text": "Akash has been building with Django and React since 2022. Since July 2024, he has been working as a Python Full Stack Developer Intern at SMEC Technologies. He also independently built and deployed EasyBuy on AWS and is now developing AI Project Judge as a systems-heavy AI evaluation pipeline."
+      "id": "interview-why-django", "source": "qa", "category": "system-design", "project": "general", "type": "design-decision", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["django", "backend", "framework-choice", "python"],
+      "aliases": ["why use django", "django vs fastapi"],
+      "text": "Akash uses Django for its 'batteries-included' philosophy, which is excellent for building complex applications like e-commerce platforms quickly and securely. The built-in ORM, admin, and authentication provide a robust foundation, letting him focus on business logic."
     },
     {
-      "id": "qa-hire",
-      "source": "qa",
-      "topic": "hire recruiter fit backend",
-      "text": "Akash is worth considering because he already has hands-on production experience from EasyBuy and a clear systems direction through AI Project Judge. He can speak concretely about query reduction, Redis caching, stale cache risk, select_for_update, payment safety, async workers, token budgeting, static analysis, and deployment. He learns quickly and is actively looking for full-time backend or full-stack roles."
+      "id": "interview-why-fastapi", "source": "qa", "category": "system-design", "project": "general", "type": "design-decision", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["fastapi", "backend", "framework-choice", "python", "async"],
+      "aliases": ["why use fastapi", "fastapi vs django"],
+      "text": "Akash uses FastAPI for services that require high performance and asynchronous I/O, like the AI Project Judge. Its modern features, automatic OpenAPI documentation, and Pydantic data validation make it ideal for building robust, high-throughput APIs."
     },
     {
-      "id": "qa-project-count",
-      "source": "qa",
-      "topic": "project count only one project portfolio breadth",
-      "text": "Akash's portfolio highlights multiple projects, not just one: EasyBuy, a deployed full-stack e-commerce platform with production backend work around caching, payments, concurrency, and AWS deployment; AI Project Judge, an architecture-first repository evaluation system in progress; and AI Akash, the portfolio chatbot itself. EasyBuy is the shipped flagship product, while AI Project Judge shows his systems thinking and AI infrastructure direction."
+      "id": "interview-why-celery", "source": "qa", "category": "system-design", "project": "general", "type": "design-decision", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["celery", "async", "background-tasks", "architecture"],
+      "aliases": ["why use celery", "purpose of celery"],
+      "text": "Akash uses Celery to handle asynchronous tasks because it's crucial for good web performance. For an action like placing an order, the user should get an immediate response. Slow side-effects like sending emails can be offloaded to a Celery worker, keeping the web server responsive."
     },
     {
-      "id": "qa-salary-availability",
-      "source": "qa",
-      "topic": "availability",
-      "text": "Akash is actively looking for full-time opportunities and can discuss availability directly. The easiest way to reach him is by email at akashtomy174@gmail.com or on LinkedIn at https://www.linkedin.com/in/akash-tomy-8b51a737b/."
+      "id": "interview-why-redis", "source": "qa", "category": "system-design", "project": "general", "type": "design-decision", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["redis", "caching", "message-broker", "performance"],
+      "aliases": ["why use redis", "purpose of redis"],
+      "text": "Akash uses Redis for two main purposes: as a fast in-memory cache to reduce database load for frequently read data, and as a message broker for Celery. Its speed and versatility make it a standard tool for improving the performance and scalability of web applications."
     },
     {
-      "id": "cv-download",
-      "source": "about",
-      "topic": "cv resume download curriculum vitae pdf",
-      "text": "Akash Tomy's resume, CV, and curriculum vitae PDF can be downloaded directly from https://akashtomy.com/AkashTomy-Resume.pdf. Click the Download CV button on the portfolio homepage or use this link to get the PDF resume."
+      "id": "interview-why-postgres-for-ai-judge", "source": "qa", "category": "system-design", "project": "AI Project Judge", "type": "design-decision", "importance": 6, "status": "planned", "version": 1, "updated": "2026-07-14",
+      "tags": ["postgresql", "database-choice", "jsonb", "sql"],
+      "aliases": ["why postgresql", "postgres vs mysql"],
+      "text": "For AI Project Judge, PostgreSQL was chosen over MySQL because of its superior support for complex queries and data types, particularly its robust JSONB capabilities. This is ideal for storing the structured, semi-structured results from AI evaluations and static analysis."
+    },
+    {
+      "id": "interview-why-mysql-for-easybuy", "source": "qa", "category": "system-design", "project": "EasyBuy", "type": "design-decision", "importance": 6, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["mysql", "database-choice", "sql", "aws-rds"],
+      "aliases": ["why mysql", "mysql vs postgres"],
+      "text": "For EasyBuy, MySQL was chosen because it's a reliable, widely-used relational database that is well-supported by Django and AWS RDS. For standard e-commerce transactional data (users, products, orders), its performance and simplicity are an excellent fit."
+    },
+    {
+      "id": "interview-why-gemini", "source": "qa", "category": "system-design", "project": "Portfolio Chatbot", "type": "design-decision", "importance": 6, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["gemini", "llm", "ai", "google-cloud"],
+      "aliases": ["why gemini", "gemini vs openai"],
+      "text": "The portfolio chatbot uses Google's Gemini models for embeddings and generation. Gemini offers a strong combination of performance, a generous free tier for a portfolio-scale project, and a simple, well-documented API, making it a practical choice."
+    },
+    {
+      "id": "interview-why-chromadb", "source": "qa", "category": "system-design", "project": "Portfolio Chatbot", "type": "design-decision", "importance": 6, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["chromadb", "vector-database", "rag", "embeddings"],
+      "aliases": ["why chromadb", "vector db choice"],
+      "text": "ChromaDB was chosen as the vector store for this RAG system because it's open-source, lightweight, and can be run in-process or as a standalone server. For a small to medium-sized knowledge base, it's very easy to set up and provides all the necessary functionality for embedding storage and retrieval."
+    },
+    {
+      "id": "debug-cors-issues", "source": "debugging", "category": "frontend", "project": "Portfolio Chatbot", "type": "debugging-story", "importance": 7, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["cors", "fastapi", "frontend", "debugging", "networking"],
+      "aliases": ["difficult bug", "cors error", "tell me about a bug"],
+      "text": "A common but tricky bug I've debugged is a CORS (Cross-Origin Resource Sharing) error. The frontend on `akashtomy.com` was blocked from calling the backend API. The fix was in the FastAPI backend, ensuring the `CORSMiddleware` was configured to explicitly allow the frontend's origin. It's a reminder that browser security rules are strict and require correct server-side configuration."
+    },
+    {
+      "id": "debug-gunicorn-startup", "source": "debugging", "category": "deployment", "project": "EasyBuy", "type": "debugging-story", "importance": 7, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["gunicorn", "nginx", "deployment", "debugging", "linux"],
+      "aliases": ["gunicorn bug", "502 bad gateway", "deployment issue"],
+      "text": "I once faced a 502 Bad Gateway error after a deployment. After checking Nginx logs, I found it couldn't connect to the Gunicorn socket. The issue was that the Gunicorn service failed to start because of a syntax error in a settings file. This taught me to always check the application service status (`systemctl status gunicorn`) first before debugging the web server."
+    },
+    {
+      "id": "debug-razorpay-webhooks", "source": "debugging", "category": "backend", "project": "EasyBuy", "type": "debugging-story", "importance": 8, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["webhooks", "razorpay", "payments", "debugging", "hmac"],
+      "aliases": ["payment bug", "webhook issue", "difficult bug with payments"],
+      "text": "Debugging Razorpay webhooks was challenging. Orders were not being marked as paid because the HMAC signature verification was failing. The root cause was subtle: the raw request body was being parsed by middleware before my verification function could access it, altering the content used for the signature. The fix was to access the raw, unparsed request body directly to compute a matching signature."
+    },
+    {
+      "id": "debug-github-actions-cache", "source": "debugging", "category": "devops", "project": "EasyBuy", "type": "debugging-story", "importance": 7, "status": "production", "version": 1, "updated": "2026-07-14",
+      "tags": ["github-actions", "ci-cd", "caching", "debugging", "deployment"],
+      "aliases": ["ci/cd bug", "github actions failure"],
+      "text": "In a GitHub Actions CI/CD pipeline, builds were slow because the dependency cache wasn't working. I found the cache key was too specific, including commit hashes, causing a cache miss on every run. I changed the key to be based only on the `requirements.txt` lockfile. Now, the cache is only invalidated when dependencies actually change, speeding up deployments significantly."
+    },
+    {
+      "id": "contact-email", "source": "contact", "category": "contact", "project": "general", "type": "contact-detail", "importance": 5, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["email", "contact"],
+      "aliases": ["what is his email", "email address"],
+      "text": "Akash's email is akashtomy174@gmail.com."
+    },
+    {
+      "id": "contact-linkedin", "source": "contact", "category": "contact", "project": "general", "type": "contact-detail", "importance": 5, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["linkedin", "contact", "social"],
+      "aliases": ["what is his linkedin", "linkedin profile"],
+      "text": "Akash's LinkedIn profile is https://www.linkedin.com/in/akash-tomy-8b51a737b/."
+    },
+    {
+      "id": "contact-github", "source": "contact", "category": "contact", "project": "general", "type": "contact-detail", "importance": 5, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["github", "contact", "code"],
+      "aliases": ["what is his github", "github profile"],
+      "text": "Akash's GitHub profile is https://github.com/AkashTomy174."
+    },
+    {
+      "id": "cv-download", "source": "profile", "category": "recruiting", "project": "general", "type": "link", "importance": 6, "status": "live", "version": 1, "updated": "2026-07-14",
+      "tags": ["cv", "resume", "download", "pdf"],
+      "aliases": ["download resume", "get his cv", "curriculum vitae"],
+      "text": "Akash Tomy's resume can be downloaded directly from https://akashtomy.com/AkashTomy-Resume.pdf."
     }
   ]
 }

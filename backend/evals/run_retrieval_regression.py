@@ -35,10 +35,10 @@ def main() -> int:
   failures: list[str] = []
   for case in cases:
     results = rag.search(case["query"], top_k=1)
-    actual = results[0].topic if results else "<none>"
-    expected = case["expected_top_topic"]
+    actual = results[0].id if results else "<none>"
+    expected = case["expected_top_id"]
     status = "PASS" if actual == expected else "FAIL"
-    print(f"{status} | {case['query']} | expected={expected} | actual={actual}")
+    print(f"{status:4} | {case['query']:<40} | expected={expected:<25} | actual={actual:<25}")
     if actual != expected:
       failures.append(case["query"])
 
