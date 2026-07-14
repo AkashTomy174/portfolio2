@@ -38,7 +38,7 @@ jobs:
 
             cd /home/ec2-user
 
-            # Clone only if repository doesn't exist
+            # Clone repository if it doesn't exist
             if [ ! -d "portfolio2/.git" ]; then
               echo "Cloning repository..."
               git clone https://github.com/AkashTomy174/portfolio2.git
@@ -52,26 +52,30 @@ jobs:
 
             cd backend
 
-            if ! command -v python3 >/dev/null 2>&1; then
-              echo "ERROR: python3 is required on the EC2 instance but was not found."
-              echo "Install Python 3 before running deployment again."
+            # Ensure Python 3.12 exists
+            if ! command -v python3.12 >/dev/null 2>&1; then
+              echo "ERROR: Python 3.12 is required but was not found."
               exit 1
             fi
 
-            PYTHON_BIN="$(command -v python3)"
+            PYTHON_BIN="$(command -v python3.12)"
             echo "Using Python: $($PYTHON_BIN --version)"
 
-            echo "Stopping backend before rebuilding environment..."
+            echo "Stopping backend..."
             sudo systemctl stop ai-akash || true
 
-            echo "Creating Python virtual environment..."
+            echo "Removing old virtual environment..."
             rm -rf .venv
+
+            echo "Creating Python 3.12 virtual environment..."
             "$PYTHON_BIN" -m venv .venv
 
             source .venv/bin/activate
 
-            echo "Installing dependencies..."
+            echo "Upgrading pip..."
             python -m pip install --upgrade pip setuptools wheel
+
+            echo "Installing dependencies..."
             python -m pip install --no-cache-dir -r requirements.txt
 
             SERVICE_FILE=/etc/systemd/system/ai-akash.service
@@ -93,22 +97,22 @@ jobs:
               '' \
               '[Install]' \
               'WantedBy=multi-user.target' \
-              | sudo tee "$SERVICE_FILE" > /dev/null
+              | sudo tee "$SERVICE_FILE" >/dev/null
 
+            echo "Reloading systemd..."
             sudo systemctl daemon-reload
             sudo systemctl enable ai-akash
 
-            echo "Restarting backend..."
-            sudo systemctl daemon-reload
+            echo "Starting backend..."
             sudo systemctl restart ai-akash
 
             sleep 5
 
-            echo "Checking service status..."
+            echo "Service status:"
             sudo systemctl --no-pager --full status ai-akash
 
-            echo "Checking backend health..."
-            curl http://127.0.0.1:8000/docs > /dev/null
+            echo "Health check..."
+            curl --fail http://127.0.0.1:8000/docs >/dev/null
 
             echo "====================================="
             echo "Deployment Successful!"
