@@ -50,7 +50,7 @@ class Settings:
 
     allowed_origins: list[str] = _csv(
         "ALLOWED_ORIGINS",
-        "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174,https://akashtomy.com",
+        "http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174,https://akashtomy.com,https://www.akashtomy.com,https://akashtomy.vercel.app,https://www.akashtomy.vercel.app",
     )
     max_requests_per_ip: int = _int("MAX_REQUESTS_PER_IP", 10)
     rate_limit_window_seconds: int = _int("RATE_LIMIT_WINDOW_SECONDS", 86400)
