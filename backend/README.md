@@ -324,7 +324,73 @@ ELEVENLABS_VOICE_ID=...
 
 This keeps repeated spoken answers from being regenerated.
 
-## Regression Checks
+## Observability
+
+### Structured request logging
+
+Every `/api/ai-chat` request emits one JSON log line via `app/services/observability.py`.
+
+Fields logged per request:
+
+| Field | Description |
+| --- | --- |
+| `request_id` | 12-char hex UUID |
+| `timestamp` | ISO-8601 UTC |
+| `ip_hash` | sha256[:16] of client IP — no PII stored |
+| `session_id` | client-supplied session identifier |
+| `original_query` | raw user message |
+| `normalized_query` | after `normalize_query()` |
+| `intent_route` | shortcut name or null |
+| `matched_alias` | exact alias that fired |
+| `similarity_score` | 1.0 for exact, ratio for similarity |
+| `match_type` | `"exact"` \| `"similarity"` \| null |
+| `cache_hit` | boolean |
+| `cache_lookup_ms` | time to check cache |
+| `retrieval_latency_ms` | RAG search time |
+| `llm_latency_ms` | Gemini generation time |
+| `tts_latency_ms` | ElevenLabs time (null if voice=false) |
+| `total_latency_ms` | end-to-end |
+| `retrieved_chunks` | number of RAG chunks used |
+| `response_sources` | source tags in the response |
+| `response_length` | character count of answer |
+| `status` | `"ok"` \| `"rate_limited"` \| `"error"` |
+| `error` | error message if status=error |
+
+### Metrics
+
+`MetricsCollector` maintains in-process counters and a latency reservoir (last 2,000 samples).
+
+Metrics available:
+
+- `total_requests`, `shortcut_hits`, `rag_hits`, `cache_hits`, `rate_limited`
+- `llm_failures`, `embedding_failures`, `tts_failures`, `errors`
+- `shortcut_hit_rate`, `rag_hit_rate`, `cache_hit_ratio`
+- `avg_latency_ms`, `p95_latency_ms`, `p99_latency_ms`
+- `avg_retrieved_chunks`, `avg_prompt_tokens`
+
+Exposed at `GET /metrics` (Prometheus format) and `GET /metrics/json`.
+
+## Conversation Memory
+
+Session-scoped conversation history enables follow-up questions.
+
+### How it works
+
+1. The frontend generates a `session_id` (any opaque string) and sends it with each request.
+2. The backend stores `{role, content}` pairs per session.
+3. On each RAG+LLM request, the history is prepended to the Gemini prompt.
+4. Sessions expire after `SESSION_TTL_SECONDS` of inactivity.
+5. History is capped at `SESSION_MAX_HISTORY` turns (user+assistant pairs).
+
+### Storage backends
+
+| Backend | When used |
+| --- | --- |
+| `InMemorySessionStore` | Default. Zero dependencies. Process-local. |
+| `RedisSessionStore` | When `REDIS_URL` is set and Redis is reachable. |
+
+If Redis is configured but unreachable, the service logs a warning and falls back to in-memory automatically.
+
 
 The backend includes lightweight regression scripts under [`evals/`](evals/).
 
@@ -381,15 +447,34 @@ The test cases live in [`evals/generation_quality_regression.json`](evals/genera
 
 ### `GET /health`
 
-Returns:
+Returns component-level readiness:
 
 ```json
 {
   "ok": true,
   "rag_ready": true,
-  "tts_enabled": false
+  "tts_enabled": false,
+  "vector_db": { "ok": true, "detail": null },
+  "llm": { "ok": true, "detail": null },
+  "cache": { "ok": true, "detail": "12/256 items" },
+  "memory": { "ok": true, "detail": "InMemorySessionStore sessions=3" }
 }
 ```
+
+### `GET /metrics`
+
+Prometheus-compatible text exposition. Protected by `X-Admin-Token` when `ADMIN_ACCESS_TOKEN` is set.
+
+```
+# HELP ai_akash_requests_total Total requests received
+# TYPE ai_akash_requests_total counter
+ai_akash_requests_total 142
+...
+```
+
+### `GET /metrics/json`
+
+Same data as `/metrics` but as a JSON object. Useful for dashboards.
 
 ### `POST /api/ai-chat`
 
@@ -398,7 +483,8 @@ Request body:
 ```json
 {
   "message": "What is AI Project Judge?",
-  "voice": false
+  "voice": false,
+  "session_id": "optional-opaque-string"
 }
 ```
 
@@ -411,6 +497,13 @@ Response body:
   "sources": ["projects"],
   "cached": false
 }
+```
+
+The optional `session_id` field enables conversation memory. When provided, the backend stores the conversation history for that session and passes it to the LLM so follow-up questions resolve correctly:
+
+```
+User: Tell me about EasyBuy.
+User: What technologies did you use?   ← resolved without repeating "EasyBuy"
 ```
 
 ### `GET /audio/{filename}`
@@ -479,6 +572,12 @@ RESPONSE_CACHE_MAX_ITEMS=256
 
 CHROMA_DIR=./data/chroma
 AUDIO_DIR=./data/audio
+
+# Conversation memory
+# Leave REDIS_URL blank to use in-memory session storage (default).
+REDIS_URL=
+SESSION_MAX_HISTORY=6
+SESSION_TTL_SECONDS=3600
 ```
 
 ## Current Design Tradeoffs

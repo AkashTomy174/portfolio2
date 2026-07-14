@@ -27,7 +27,7 @@ class TtsService:
       return None
 
     self.audio_dir.mkdir(parents=True, exist_ok=True)
-    filename = f"{hashlib.md5(text.encode('utf-8')).hexdigest()}.mp3"
+    filename = f"{hashlib.sha256(text.encode('utf-8')).hexdigest()}.mp3"
     path = self.audio_dir / filename
     if path.exists():
       return f"/audio/{filename}"

@@ -6,3 +6,7 @@ python-dotenv==1.0.1
 httpx==0.28.1
 chromadb==0.5.23
 jinja2==3.1.6
+itsdangerous==2.2.0
+python-multipart==0.0.32
+# Optional: set REDIS_URL in .env to enable Redis-backed session memory
+redis>=5.0.0

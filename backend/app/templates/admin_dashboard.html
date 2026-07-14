@@ -3,54 +3,116 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin Dashboard</title>
+    <title>AI Akash — Admin</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+      integrity="sha256-DiMmxoaAcr7BWSdgxnKQQ8ruopYKK0bO5qIZKqxqv/A="
+      crossorigin="anonymous"
+    ></script>
     <style>
-      body { font-family: Arial, sans-serif; margin: 24px; background: #0f172a; color: #f8fafc; }
-      .card { background: #111827; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
-      h1, h2 { margin-top: 0; }
-      .summary-row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 20px; }
-      .summary-card { text-align: center; }
-      .summary-card p { font-size: 2rem; margin: 8px 0 0; color: #f8fafc; }
+      *, *::before, *::after { box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; margin: 0; padding: 24px; background: #0f172a; color: #f8fafc; }
+      h1 { margin: 0 0 4px; font-size: 1.5rem; }
+      .subtitle { color: #94a3b8; margin: 0 0 24px; font-size: 0.9rem; }
+      .grid-4 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 24px; }
+      .grid-2 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); margin-bottom: 24px; }
+      .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; }
+      .stat-card { text-align: center; }
+      .stat-card .label { font-size: 0.78rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+      .stat-card .value { font-size: 2rem; font-weight: 700; margin: 6px 0 0; color: #f8fafc; }
+      .stat-card .value.accent { color: #38bdf8; }
+      h2 { margin: 0 0 14px; font-size: 1rem; color: #cbd5e1; }
       form { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-      label { color: #cbd5e1; font-size: 0.92rem; }
-      select, input { background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 8px; padding: 8px 10px; }
-      button { background: #2563eb; border: none; border-radius: 8px; color: white; padding: 8px 14px; cursor: pointer; }
+      label { color: #cbd5e1; font-size: 0.88rem; }
+      select, input[type=number] { background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 8px; padding: 7px 10px; font-size: 0.88rem; }
+      button { background: #2563eb; border: none; border-radius: 8px; color: white; padding: 8px 16px; cursor: pointer; font-size: 0.88rem; }
       button:hover { background: #1d4ed8; }
-      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-      th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #1f2937; }
-      th { color: #cbd5e1; font-size: 0.92rem; letter-spacing: 0.02em; }
-      td { color: #e2e8f0; font-size: 0.92rem; }
-      tr:hover { background: rgba(148, 163, 184, 0.08); }
-      .row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-      .pagination { display: flex; gap: 10px; margin-top: 12px; }
-      .pagination a { color: #cbd5e1; background: #0f172a; border: 1px solid #334155; padding: 8px 10px; border-radius: 8px; text-decoration: none; }
-      .muted { color: #94a3b8; }
+      table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.85rem; }
+      th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid #1f2937; }
+      th { color: #94a3b8; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      td { color: #e2e8f0; }
+      tr:hover td { background: rgba(148,163,184,0.06); }
+      .pagination { display: flex; gap: 8px; margin-top: 12px; }
+      .pagination a { color: #94a3b8; background: #0f172a; border: 1px solid #334155; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; }
+      .pagination a:hover { border-color: #64748b; color: #f8fafc; }
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+      .badge-green { background: #14532d; color: #86efac; }
+      .badge-blue  { background: #1e3a5f; color: #93c5fd; }
+      .badge-gray  { background: #1f2937; color: #9ca3af; }
+      canvas { max-height: 220px; }
+      .chart-row { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 24px; }
     </style>
   </head>
   <body>
-    <h1>Admin Dashboard</h1>
-    <p class="muted">Protected view for recent site visits and AI interactions.</p>
+    <h1>AI Akash — Admin Dashboard</h1>
+    <p class="subtitle">Production observability for the portfolio AI backend. <a href="/admin/logout" style="color:#64748b;font-size:0.82rem;margin-left:8px">Sign out</a></p>
 
-    <div class="summary-row">
-      <div class="card summary-card">
-        <h3>Total visits</h3>
-        <p>{{ summary.visit_count }}</p>
+    <!-- Summary stats -->
+    <div class="grid-4">
+      <div class="card stat-card">
+        <div class="label">Total visits</div>
+        <div class="value">{{ summary.visit_count }}</div>
       </div>
-      <div class="card summary-card">
-        <h3>AI interactions</h3>
-        <p>{{ summary.interaction_count }}</p>
+      <div class="card stat-card">
+        <div class="label">AI interactions</div>
+        <div class="value accent">{{ summary.interaction_count }}</div>
       </div>
-      <div class="card summary-card">
-        <h3>Cached responses</h3>
-        <p>{{ summary.cached_count }}</p>
+      <div class="card stat-card">
+        <div class="label">Cached responses</div>
+        <div class="value">{{ summary.cached_count }}</div>
       </div>
-      <div class="card summary-card">
-        <h3>Avg AI latency</h3>
-        <p>{{ summary.average_latency_ms or 'N/A' }} ms</p>
+      <div class="card stat-card">
+        <div class="label">Shortcut hits</div>
+        <div class="value">{{ summary.shortcut_count }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="label">RAG responses</div>
+        <div class="value">{{ summary.rag_count }}</div>
+      </div>
+      <div class="card stat-card">
+        <div class="label">Avg latency</div>
+        <div class="value">{{ summary.average_latency_ms or '—' }}<span style="font-size:1rem;color:#94a3b8"> ms</span></div>
+      </div>
+      <div class="card stat-card">
+        <div class="label">p95 latency</div>
+        <div class="value">{{ summary.p95_latency_ms or '—' }}<span style="font-size:1rem;color:#94a3b8"> ms</span></div>
+      </div>
+      <div class="card stat-card">
+        <div class="label">Active sessions</div>
+        <div class="value">{{ summary.active_sessions }}</div>
       </div>
     </div>
 
-    <div class="card">
+    <!-- Charts row 1 -->
+    <div class="chart-row">
+      <div class="card">
+        <h2>Requests over time (last 24 h)</h2>
+        <canvas id="chartHourly"></canvas>
+      </div>
+      <div class="card">
+        <h2>Intent distribution</h2>
+        <canvas id="chartIntent"></canvas>
+      </div>
+      <div class="card">
+        <h2>Source usage</h2>
+        <canvas id="chartSources"></canvas>
+      </div>
+    </div>
+
+    <!-- Charts row 2 -->
+    <div class="chart-row">
+      <div class="card">
+        <h2>Shortcut vs RAG vs Cache</h2>
+        <canvas id="chartRouting"></canvas>
+      </div>
+      <div class="card">
+        <h2>Top queries</h2>
+        <canvas id="chartTopQueries"></canvas>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card" style="margin-bottom:24px">
       <h2>Filters</h2>
       <form method="get">
         <label>
@@ -63,71 +125,144 @@
         </label>
         <label>
           Per page:
-          <input type="number" name="per_page" value="{{ per_page }}" min="1" max="100" />
+          <input type="number" name="per_page" value="{{ per_page }}" min="1" max="100" style="width:70px" />
         </label>
         <button type="submit">Apply</button>
       </form>
     </div>
 
-    <div class="row">
+    <!-- Tables -->
+    <div class="grid-2">
       <div class="card">
-        <h2>Recent Visits</h2>
-        <p class="muted">Showing page {{ visits_page }} of {{ (total_visits // per_page) + (1 if total_visits % per_page else 0) }}</p>
+        <h2>Recent Visits
+          <span style="font-size:0.78rem;color:#64748b;font-weight:400">
+            — page {{ visits_page }} / {{ ((total_visits - 1) // per_page + 1) if total_visits else 1 }}
+          </span>
+        </h2>
         <table>
           <thead>
-            <tr>
-              <th>Time</th>
-              <th>Path</th>
-              <th>IP</th>
-              <th>User Agent</th>
-            </tr>
+            <tr><th>Time</th><th>Path</th><th>IP hash</th><th>User Agent</th></tr>
           </thead>
           <tbody>
-            {% for visit in visits %}
+            {% for v in visits %}
             <tr>
-              <td>{{ visit.timestamp }}</td>
-              <td>{{ visit.path }}</td>
-              <td>{{ visit.ip }}</td>
-              <td>{{ visit.user_agent or '—' }}</td>
+              <td>{{ v.timestamp }}</td>
+              <td>{{ v.path }}</td>
+              <td style="font-family:monospace;font-size:0.78rem">{{ v.ip_hash }}</td>
+              <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ v.user_agent }}">{{ v.user_agent or '—' }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
         <div class="pagination">
-          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ max(1, visits_page - 1) }}&interactions_page={{ interactions_page }}">Previous</a>
-          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page + 1 }}&interactions_page={{ interactions_page }}">Next</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ [1, visits_page - 1] | max }}&interactions_page={{ interactions_page }}">← Prev</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page + 1 }}&interactions_page={{ interactions_page }}">Next →</a>
         </div>
       </div>
+
       <div class="card">
-        <h2>Recent AI Interactions</h2>
-        <p class="muted">Showing page {{ interactions_page }} of {{ (total_interactions // per_page) + (1 if total_interactions % per_page else 0) }}</p>
+        <h2>Recent AI Interactions
+          <span style="font-size:0.78rem;color:#64748b;font-weight:400">
+            — page {{ interactions_page }} / {{ ((total_interactions - 1) // per_page + 1) if total_interactions else 1 }}
+          </span>
+        </h2>
         <table>
           <thead>
-            <tr>
-              <th>Time</th>
-              <th>Message</th>
-              <th>Cached</th>
-              <th>Sources</th>
-              <th>Latency ms</th>
-            </tr>
+            <tr><th>Time</th><th>Message</th><th>Route</th><th>Cached</th><th>Sources</th><th>ms</th></tr>
           </thead>
           <tbody>
-            {% for event in interactions %}
+            {% for e in interactions %}
             <tr>
-              <td>{{ event.timestamp }}</td>
-              <td>{{ event.message }}</td>
-              <td>{{ event.cached }}</td>
-              <td>{{ event.response_sources | join(', ') }}</td>
-              <td>{{ event.response_time_ms or '—' }}</td>
+              <td style="white-space:nowrap">{{ e.timestamp }}</td>
+              <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="{{ e.message }}">{{ e.message }}</td>
+              <td>
+                {% if e.intent_route %}
+                  <span class="badge badge-blue">{{ e.intent_route }}</span>
+                {% elif e.cached %}
+                  <span class="badge badge-gray">cache</span>
+                {% else %}
+                  <span class="badge badge-green">rag</span>
+                {% endif %}
+              </td>
+              <td>{{ '✓' if e.cached else '' }}</td>
+              <td>{{ e.response_sources | join(', ') }}</td>
+              <td>{{ e.response_time_ms or '—' }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
         <div class="pagination">
-          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ max(1, interactions_page - 1) }}">Previous</a>
-          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ interactions_page + 1 }}">Next</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ [1, interactions_page - 1] | max }}">← Prev</a>
+          <a href="?cached_filter={{ cached_filter }}&per_page={{ per_page }}&visits_page={{ visits_page }}&interactions_page={{ interactions_page + 1 }}">Next →</a>
         </div>
       </div>
     </div>
+
+    <script>
+      const PALETTE = [
+        '#38bdf8','#818cf8','#34d399','#fb923c','#f472b6',
+        '#a78bfa','#facc15','#4ade80','#f87171','#60a5fa',
+      ];
+
+      function makeChart(id, type, labels, data, opts = {}) {
+        const ctx = document.getElementById(id);
+        if (!ctx) return;
+        new Chart(ctx, {
+          type,
+          data: {
+            labels,
+            datasets: [{
+              data,
+              backgroundColor: PALETTE.slice(0, data.length),
+              borderColor: type === 'line' ? '#38bdf8' : PALETTE.slice(0, data.length),
+              borderWidth: type === 'line' ? 2 : 1,
+              fill: type === 'line',
+              tension: 0.3,
+              pointRadius: 3,
+            }],
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: type !== 'bar' && type !== 'line', labels: { color: '#94a3b8', boxWidth: 12 } },
+              tooltip: { callbacks: { labelColor: () => ({ backgroundColor: '#38bdf8' }) } },
+            },
+            scales: (type === 'bar' || type === 'line') ? {
+              x: { ticks: { color: '#64748b' }, grid: { color: '#1f2937' } },
+              y: { ticks: { color: '#64748b' }, grid: { color: '#1f2937' }, beginAtZero: true },
+            } : undefined,
+            ...opts,
+          },
+        });
+      }
+
+      // Requests over time
+      const hourlyData = {{ hourly_requests | tojson }};
+      const hourlyLabels = Object.keys(hourlyData).sort();
+      makeChart('chartHourly', 'line', hourlyLabels, hourlyLabels.map(k => hourlyData[k]));
+
+      // Intent distribution
+      const intentData = {{ intent_counts | tojson }};
+      makeChart('chartIntent', 'doughnut', Object.keys(intentData), Object.values(intentData));
+
+      // Source usage
+      const sourceData = {{ source_counts | tojson }};
+      makeChart('chartSources', 'bar', Object.keys(sourceData), Object.values(sourceData));
+
+      // Routing breakdown
+      const shortcut = {{ summary.shortcut_count }};
+      const rag      = {{ summary.rag_count }};
+      const cached   = {{ summary.cached_count }};
+      makeChart('chartRouting', 'doughnut', ['Shortcut', 'RAG', 'Cache'], [shortcut, rag, cached]);
+
+      // Top queries
+      const topQueries = {{ top_queries | tojson }};
+      makeChart(
+        'chartTopQueries', 'bar',
+        topQueries.map(q => q[0].length > 30 ? q[0].slice(0, 30) + '…' : q[0]),
+        topQueries.map(q => q[1]),
+        { indexAxis: 'y' }
+      );
+    </script>
   </body>
 </html>

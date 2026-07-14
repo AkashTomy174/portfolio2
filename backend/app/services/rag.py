@@ -90,7 +90,11 @@ class RagService:
     return data["chunks"]
 
   def _embed(self, text: str) -> list[float]:
-    assert self.client is not None
+    if self.client is None:
+      raise RuntimeError(
+        "RagService._embed called but Gemini client is not initialised. "
+        "Call initialize() first and ensure GEMINI_API_KEY is set."
+      )
     response = self.client.models.embed_content(
       model=self.embedding_model,
       contents=text,
@@ -99,7 +103,11 @@ class RagService:
     return response.embeddings[0].values
 
   def _embed_many(self, texts: list[str]) -> list[list[float]]:
-    assert self.client is not None
+    if self.client is None:
+      raise RuntimeError(
+        "RagService._embed_many called but Gemini client is not initialised. "
+        "Call initialize() first and ensure GEMINI_API_KEY is set."
+      )
     response = self.client.models.embed_content(
       model=self.embedding_model,
       contents=texts,
@@ -108,7 +116,11 @@ class RagService:
     return [item.values for item in response.embeddings]
 
   def _sync_collection(self) -> None:
-    assert self.collection is not None
+    if self.collection is None:
+      raise RuntimeError(
+        "RagService._sync_collection called but ChromaDB collection is not "
+        "initialised. Call initialize() first."
+      )
     ids = [chunk["id"] for chunk in self.chunks]
     existing_ids = set(self.collection.get().get("ids", []))
     stale_ids = sorted(existing_ids - set(ids))
@@ -132,7 +144,11 @@ class RagService:
     )
 
   def _vector_search(self, query: str, top_k: int) -> list[RetrievedChunk]:
-    assert self.collection is not None
+    if self.collection is None:
+      raise RuntimeError(
+        "RagService._vector_search called but ChromaDB collection is not "
+        "initialised. Call initialize() first."
+      )
     query_embedding = self._embed(query)
     results = self.collection.query(
       query_embeddings=[query_embedding],

@@ -28,7 +28,7 @@
       "id": "internship-smec",
       "source": "experience",
       "topic": "internship django react mysql aws",
-      "text": "Akash Tomy worked as a Python Full Stack Developer Intern at SMEC Technologies from July 2024 to present. He reduced database queries by 41.7% on high-traffic pages by adding caching for catalog, header, wishlist, and auth-related lookups. He developed reusable React components across multiple views, designed normalized relational schemas in MySQL with foreign key constraints and indexing, deployed a Django application to AWS EC2 with Nginx and Gunicorn, and participated in daily code reviews using feature branch workflow and pull requests."
+      "text": "Akash Tomy worked as a Python Full Stack Developer Intern at SMEC Technologies from July 2024 to present. He reduced page-load database queries on high-traffic catalog and auth pages by adding Redis caching for catalog listings, header data, wishlist state, and auth-related lookups. He developed reusable React components across multiple views, designed normalized relational schemas in MySQL with foreign key constraints and indexing, deployed a Django application to AWS EC2 with Nginx and Gunicorn, and participated in daily code reviews using feature branch workflow and pull requests."
     },
     {
       "id": "ai-judge-overview",
@@ -190,7 +190,7 @@
       "id": "qa-project-count",
       "source": "qa",
       "topic": "project count only one project portfolio breadth",
-      "text": "No. Akash's portfolio highlights multiple projects: EasyBuy, a deployed full-stack e-commerce platform; AI Project Judge, an architecture-first repository evaluation system in progress; and AI Akash, the portfolio chatbot itself. EasyBuy is the shipped flagship product, while AI Project Judge shows his systems thinking and AI infrastructure direction."
+      "text": "Akash's portfolio highlights multiple projects, not just one: EasyBuy, a deployed full-stack e-commerce platform with production backend work around caching, payments, concurrency, and AWS deployment; AI Project Judge, an architecture-first repository evaluation system in progress; and AI Akash, the portfolio chatbot itself. EasyBuy is the shipped flagship product, while AI Project Judge shows his systems thinking and AI infrastructure direction."
     },
     {
       "id": "qa-salary-availability",

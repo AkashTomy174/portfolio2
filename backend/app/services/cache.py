@@ -27,3 +27,6 @@ class LruCache:
     self._items.move_to_end(key)
     while len(self._items) > self.max_items:
       self._items.popitem(last=False)
+
+  def clear(self) -> None:
+    self._items.clear()
