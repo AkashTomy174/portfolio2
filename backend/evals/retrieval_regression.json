@@ -145,6 +145,6 @@
   },
   {
     "query": "what should the chatbot improve next",
-    "expected_top_topic": "behavioral learning debugging"
+    "expected_top_topic": "roadmap metadata retrieval intent detection voice elevenlabs"
   }
 ]

@@ -19,7 +19,15 @@ class RateLimiter:
         self.window_seconds = window_seconds
         self._salt = salt
         self._hits: dict[str, tuple[int, float]] = {}
- 
+
+    @staticmethod
+    def ip_hash(ip: str, salt: str = "") -> str:
+        """Public alias for hash_ip, kept on RateLimiter so callers that key
+        rate-limit-style buckets (e.g. login-attempt tracking in main.py)
+        have a single obvious entry point without importing observability
+        directly."""
+        return hash_ip(ip, salt)
+
     def allow(self, ip: str) -> bool:
         now = time.time()
         key = hash_ip(ip, self._salt)

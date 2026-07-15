@@ -74,7 +74,7 @@ class ActivityLogger:
         )
         self._append_jsonl(
             "ai_interactions.jsonl",
-            {"type": "ai_interaction", **record.__dict__},
+            {"type": "ai_interaction", "message": message, "cached": cached, **record.__dict__},
         )
 
     def read_recent(self, filename: str, limit: int = 50) -> list[dict[str, Any]]:

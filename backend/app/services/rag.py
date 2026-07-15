@@ -288,14 +288,21 @@ class RagService:
       tag_overlap = len(query_terms & tag_terms)
       alias_overlap = len(query_terms & alias_terms)
       phrase_boost = sum(3 for phrase in _phrases(query_text) if phrase in searchable_lower)
-      
+
+      # Importance is only a tie-breaker among chunks that already have some
+      # genuine relevance signal. Applying it unconditionally let off-topic
+      # queries (zero term/tag/alias overlap) surface high-importance chunks
+      # purely on importance, defeating the "empty context -> no hallucination"
+      # guarantee in llm.py.
+      has_match = overlap > 0 or tag_overlap > 0 or alias_overlap > 0 or phrase_boost > 0
+
       # New scoring: heavily weight alias and tag matches
       score = (
           (overlap / math.sqrt(max(len(chunk_terms), 1)))  # Text overlap (normalized)
           + (tag_overlap * 3)  # High weight for tag matches
           + (alias_overlap * 5)  # Highest weight for alias matches
           + phrase_boost
-          + (chunk.get("importance", 1) * 0.3) # Boost for importance
+          + (chunk.get("importance", 1) * 0.3 if has_match else 0.0)  # Boost for importance, only on real matches
       )
       
       scored.append(
@@ -318,8 +325,30 @@ class RagService:
     return [item for item in scored[:top_k] if item.score > 0]
 
 
+# Common function words excluded from term overlap scoring. Without this,
+# short high-frequency words (what/is/the/...) appear in nearly every chunk's
+# text, so any query containing them scores overlap > 0 against everything —
+# defeating the relevance threshold for genuinely off-topic questions.
+_STOPWORDS = frozenset({
+  "a", "an", "the", "is", "are", "was", "were", "be", "been", "being",
+  "what", "who", "whom", "which", "where", "when", "why", "how",
+  "do", "does", "did", "doing",
+  "he", "him", "his", "she", "her", "hers", "it", "its", "they", "them", "their",
+  "i", "you", "we", "us", "our", "your",
+  "to", "of", "in", "on", "at", "by", "for", "with", "about", "against",
+  "and", "or", "but", "if", "so", "than", "as", "not", "no",
+  "this", "that", "these", "those",
+  "can", "could", "will", "would", "should", "may", "might", "must",
+  "have", "has", "had",
+  "me", "my", "mine",
+})
+
+
 def _terms(text: str) -> list[str]:
-  return [term for term in re.findall(r"[a-z0-9]+", text.lower()) if len(term) >= 2]
+  return [
+    term for term in re.findall(r"[a-z0-9]+", text.lower())
+    if len(term) >= 2 and term not in _STOPWORDS
+  ]
 
 
 def _phrases(text: str) -> list[str]:
