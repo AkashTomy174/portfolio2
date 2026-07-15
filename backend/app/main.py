@@ -633,12 +633,14 @@ async def ai_chat(payload: ChatRequest, request: Request):
     # history already resolved above (before cache lookup)
 
     retrieval_start = time.perf_counter()
+    retrieval_failed = False
     try:
         chunks = rag.search(payload.message, top_k=4)
     except Exception as exc:
         logger.error('"rag_error" request_id=%s error=%r', request_id, str(exc))
         metrics.record_embedding_failure()
         chunks = []
+        retrieval_failed = True
     record.retrieval_latency_ms = _elapsed_ms(retrieval_start)
     record.retrieved_chunks = len(chunks)
 
@@ -672,7 +674,7 @@ async def ai_chat(payload: ChatRequest, request: Request):
 
     sources = sorted({chunk.source for chunk in chunks})
     response = ChatResponse(text=text, audio_url=audio_url, sources=sources, cached=False)
-    if cacheable:
+    if cacheable and not retrieval_failed:
         response_cache.set(cache_key, response.model_dump())
 
     # Update conversation memory

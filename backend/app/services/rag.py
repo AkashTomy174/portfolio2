@@ -31,8 +31,16 @@ logger = logging.getLogger("ai-akash")
 # A relative threshold is used to adapt to different query types.
 RELATIVE_THRESHOLD_RATIO: float = 0.8
 
-# Hybrid mode  (vector + keyword merged, _merge_results output):
-MIN_RELEVANCE_SCORE: float = 0.35
+# Hybrid mode (vector + keyword merged, _merge_results output):
+# RRF (Reciprocal Rank Fusion) scores are 1/(k+rank) per list with k=60, so
+# even a chunk ranked #1 in BOTH keyword and vector search only scores
+# ~0.033 (2/61). The old value of 0.35 was ~10x higher than that theoretical
+# maximum, so no query could ever clear this floor in hybrid mode -- every
+# hybrid search silently returned zero chunks regardless of relevance. This
+# floor now sits below a single-list rank-1 hit (1/61 ~= 0.0164) so a chunk
+# that's a strong match in only one retrieval method can still pass, while
+# chunks that only show up at low rank in one list are still filtered out.
+MIN_RELEVANCE_SCORE: float = 0.01
 # Keyword-only mode (no Gemini API key or ChromaDB available):
 MIN_KEYWORD_SCORE: float = 1.0
 
