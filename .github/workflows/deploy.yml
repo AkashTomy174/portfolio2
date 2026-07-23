@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Deploy Docker Backend to EC2
         uses: appleboy/ssh-action@v1.0.3
+
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -24,56 +25,87 @@ jobs:
             echo "Deploying AI Akash Backend (Docker)"
             echo "====================================="
 
+
             cd /home/ec2-user
+
 
             if [ ! -d "portfolio2/.git" ]; then
               echo "Cloning repository..."
               git clone https://github.com/AkashTomy174/portfolio2.git
             fi
 
+
             cd portfolio2
+
 
             echo "Updating repository..."
             git fetch origin
             git reset --hard origin/main
 
-            echo "Building and starting container..."
+
+            echo "Stopping old systemd service if exists..."
+            sudo systemctl stop ai-akash || true
+            sudo systemctl disable ai-akash || true
+
+
+            echo "Stopping existing Docker containers..."
+            docker compose down || true
+
+
+            echo "Building and starting Docker container..."
             docker compose up -d --build
+
 
             echo "Waiting for backend health..."
 
+
             SUCCESS=false
 
-            # health check loop here
-
-            if [ "$SUCCESS" != "true" ]; then
-            docker compose ps
-            docker compose logs --tail=150
-            exit 1
-            fi
-
-            echo "Cleaning unused images..."
-            docker image prune -f
 
             for i in {1..15}; do
+
               if curl --fail http://127.0.0.1:8000/health >/dev/null 2>&1; then
+
                 SUCCESS=true
                 echo "Backend healthy"
                 break
+
               fi
+
 
               echo "Waiting... attempt $i/15"
               sleep 3
+
             done
 
+
             if [ "$SUCCESS" != "true" ]; then
+
               echo "Health check failed"
 
+              echo "====================================="
+              echo "Docker status"
+              echo "====================================="
+
               docker compose ps
+
+
+              echo "====================================="
+              echo "Docker logs"
+              echo "====================================="
+
               docker compose logs --tail=150
 
+
               exit 1
+
             fi
+
+
+            echo "Cleaning unused Docker images..."
+
+            docker image prune -f
+
 
             echo "====================================="
             echo "Docker Deployment Successful!"
