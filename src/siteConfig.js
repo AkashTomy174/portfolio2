@@ -3,6 +3,6 @@ export const SITE = {
   initials: 'AT',
   email: 'akashtomy174@gmail.com',
   github: 'https://github.com/AkashTomy174',
-  linkedin: 'https://www.linkedin.com/in/akash-tomy-8b51a737b/',
+  linkedin: 'https://www.linkedin.com/in/akash-tomy/',
   url: 'https://akashtomy.com/',
 };

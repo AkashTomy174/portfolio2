@@ -457,7 +457,7 @@ def _handle_availability(_query: str) -> ShortcutResult:
             "Akash is actively looking for full-time opportunities and can discuss "
             "availability directly. The easiest way to reach him is by email at "
             "akashtomy174@gmail.com or on LinkedIn at "
-            "https://www.linkedin.com/in/akash-tomy-8b51a737b/."
+            "https://www.linkedin.com/in/akash-tomy/."
         ),
         sources=("qa",),
     )
@@ -474,7 +474,7 @@ def _handle_contact(_query: str) -> ShortcutResult:
     return ShortcutResult(
         text=(
             "You can reach Akash at: akashtomy174@gmail.com | "
-            "LinkedIn: https://www.linkedin.com/in/akash-tomy-8b51a737b/ | "
+            "LinkedIn: https://www.linkedin.com/in/akash-tomy/ | "
             "GitHub: https://github.com/AkashTomy174"
         ),
         sources=("about",),
