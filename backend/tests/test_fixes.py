@@ -344,3 +344,9 @@ class TestLoginAttemptsEviction(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+def test_strip_markdown_for_plain_text_widget():
+    from app.services.llm import _strip_markdown
+    raw = "## Projects\n* **EasyBuy**: shop\n* __AI Akash__: bot\nkeep 2*3 and a-b"
+    assert _strip_markdown(raw) == "Projects\n- EasyBuy: shop\n- AI Akash: bot\nkeep 2*3 and a-b"

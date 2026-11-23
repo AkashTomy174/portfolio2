@@ -558,7 +558,7 @@ uvicorn app.main:app --reload --port 8001
 ```env
 GEMINI_API_KEY=your-gemini-api-key
 GEMINI_FALLBACK_API_KEY=your-second-gemini-api-key
-GEMINI_CHAT_MODEL=gemini-2.0-flash-lite
+GEMINI_CHAT_MODEL=gemini-3.5-flash-lite
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
 
 ELEVENLABS_API_KEY=

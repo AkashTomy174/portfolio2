@@ -40,7 +40,7 @@ class Settings:
     gemini_fallback_api_key: str | None = os.getenv("GEMINI_FALLBACK_API_KEY")
     gemini_chat_model: str = os.getenv(
         "GEMINI_CHAT_MODEL",
-        os.getenv("OPENAI_CHAT_MODEL", "gemini-2.0-flash-lite"),
+        os.getenv("OPENAI_CHAT_MODEL", "gemini-3.5-flash-lite"),
     )
     gemini_embedding_model: str = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
 
