@@ -1,0 +1,40 @@
+# Render Blueprint for the AI Akash backend (the frontend stays on Vercel).
+# Render > New > Blueprint > pick this repo. Values marked sync:false are
+# asked for once in the dashboard and never stored in git.
+services:
+  - type: web
+    name: ai-akash-backend
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    healthCheckPath: /health
+    # Only rebuild when backend code changes, not on frontend-only pushes.
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_FALLBACK_API_KEY
+        sync: false
+      - key: GEMINI_CHAT_MODEL
+        value: gemini-3.5-flash-lite
+      - key: ALLOWED_ORIGINS
+        value: https://akashtomy.com,https://www.akashtomy.com,http://localhost:5173
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"
+      - key: MAX_REQUESTS_PER_IP
+        value: "10"
+      - key: DEV_MODE
+        value: "false"
+      - key: ENABLE_TTS
+        value: "false"
+      # Generated once by Render; read ADMIN_ACCESS_TOKEN from the dashboard to log in at /admin.
+      - key: ADMIN_ACCESS_TOKEN
+        generateValue: true
+      - key: ADMIN_COOKIE_SECRET
+        generateValue: true
+      - key: IP_HASH_SALT
+        generateValue: true
