@@ -11,15 +11,15 @@ const EngineeringDecisionGrid = ({ decisions }) => (
         <div className="text-xs font-black uppercase tracking-widest text-accent-dark">{label}</div>
         <div className="mt-4 space-y-4">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray/55">Problem</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray">Problem</div>
             <p className="mt-1 text-sm leading-relaxed text-accent-gray">{problem}</p>
           </div>
           <div>
-            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray/55">Decision</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray">Decision</div>
             <p className="mt-1 text-sm leading-relaxed text-accent-gray">{decision}</p>
           </div>
           <div>
-            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray/55">Evidence</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-accent-gray">Evidence</div>
             <p className="mt-1 text-sm font-semibold leading-relaxed text-accent-dark">{evidence}</p>
           </div>
         </div>

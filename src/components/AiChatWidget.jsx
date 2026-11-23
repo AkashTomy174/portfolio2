@@ -91,7 +91,7 @@ const ChatMessage = ({ message, onPlayAudio, isPlaying }) => {
             : 'border-accent-dark/20 bg-primary-dark text-accent-dark'
         }`}
       >
-        <p>{isUser ? message.text : linkify(message.text)}</p>
+        <p className="whitespace-pre-line">{isUser ? message.text : linkify(message.text)}</p>
         {!isUser && message.sources?.length > 0 && (
           <p className="mt-3 border-t border-accent-dark/10 pt-2 font-mono text-[10px] uppercase tracking-widest text-accent-gray">
             sources: {message.sources.join(', ')}
@@ -335,7 +335,7 @@ const AiChatWidget = () => {
                   rows={1}
                   maxLength={500}
                   placeholder="Ask about Akash..."
-                  className="max-h-24 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-sm text-accent-dark outline-none placeholder:text-accent-gray/55"
+                  className="max-h-24 min-h-10 flex-1 resize-none bg-transparent px-2 py-2 text-base sm:text-sm text-accent-dark outline-none placeholder:text-accent-gray/55"
                   aria-label="Message AI Akash"
                 />
                 <button
@@ -357,12 +357,13 @@ const AiChatWidget = () => {
         onClick={() => setIsOpen((open) => !open)}
         whileHover={reduced ? {} : { y: -2, scale: 1.03 }}
         whileTap={reduced ? {} : { scale: 0.96 }}
-        className="interactive hover-scrape flex items-center gap-3 border border-accent-dark bg-accent-dark px-5 py-4 text-sm font-black uppercase tracking-wider text-primary-dark transition-colors hover:bg-accent-purple hover:text-accent-dark"
+        className="interactive hover-scrape flex items-center gap-3 border border-accent-dark bg-accent-dark p-4 sm:px-5 text-sm font-black uppercase tracking-wider text-primary-dark transition-colors hover:bg-accent-purple hover:text-accent-dark"
         aria-expanded={isOpen}
         aria-controls="ai-akash-chat"
+        aria-label="Ask AI Akash"
       >
         <MessageSquareIcon className="h-5 w-5" aria-hidden="true" />
-        ask ai akash
+        <span className="hidden sm:inline">ask ai akash</span>
       </motion.button>
     </div>
   );

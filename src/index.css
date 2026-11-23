@@ -107,7 +107,7 @@ body::after {
 .glass-card,
 .glass-card-elevated,
 .glass-card-dark {
-  background: rgba(244, 241, 232, 0.88);
+  background: var(--color-primary-dark);
   border: 1px solid rgba(21, 21, 18, 0.18);
   box-shadow: 8px 8px 0 rgba(21,21,18,0.12);
   backdrop-filter: none;
@@ -175,10 +175,13 @@ body::after {
 .will-animate { will-change: transform, opacity; }
 .gpu { transform: translateZ(0); backface-visibility: hidden; }
 
-.hard-panel {
-  border: 1px solid rgba(21,21,18,0.22);
-  background: rgba(244,241,232,0.88);
-  box-shadow: 10px 10px 0 rgba(21,21,18,0.14);
+/* In a layer so utilities like bg-accent-dark can override the default background. */
+@layer components {
+  .hard-panel {
+    border: 1px solid rgba(21,21,18,0.22);
+    background: rgba(244,241,232,0.88);
+    box-shadow: 10px 10px 0 rgba(21,21,18,0.14);
+  }
 }
 
 .hover-scrape {
@@ -188,6 +191,7 @@ body::after {
   transform: translate(-3px, -3px) rotate(-0.5deg);
   box-shadow: 12px 12px 0 #151512;
   background-color: #ccff00;
+  color: #151512; /* dark buttons keep cream text otherwise: unreadable on lime */
 }
 
 .terminal-scan {

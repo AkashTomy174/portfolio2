@@ -13,7 +13,7 @@ const COMMANDS = [
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen overflow-hidden pt-24">
+    <section className="relative min-h-screen overflow-hidden pt-24 pb-16">
       <div className="container relative z-10 mx-auto max-w-6xl px-6">
         <div className="grid min-h-[calc(100vh-6rem)] grid-cols-1 items-center gap-10 lg:grid-cols-[1.25fr_0.75fr]">
           <div className="relative">
@@ -97,7 +97,7 @@ const HeroSection = () => {
               </div>
             </div>
 
-            <div className="absolute -bottom-6 -left-6 rotate-[-5deg] border border-accent-dark bg-accent-purple px-4 py-3 text-xs font-black uppercase tracking-widest shadow-[6px_6px_0_#151512]">
+            <div className="absolute -bottom-6 -left-2 md:-left-6 rotate-[-5deg] border border-accent-dark bg-accent-purple px-4 py-3 text-xs font-black uppercase tracking-widest shadow-[6px_6px_0_#151512]">
               flagship: ai judge
             </div>
           </div>

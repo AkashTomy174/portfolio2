@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { useReducedMotion } from '../contexts/MotionPrefsContext';
 
 const CustomCursor = () => {
-  const [pos, setPos] = useState({ x: 0, y: 0 });
+  const [pos, setPos] = useState({ x: -100, y: -100 });
   const [trail, setTrail] = useState([]);
   const [hovering, setHovering] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     let raf;
-    let raw = { x: 0, y: 0 };
+    let raw = { x: -100, y: -100 };
 
     const onMove = (event) => {
       raw = { x: event.clientX, y: event.clientY };

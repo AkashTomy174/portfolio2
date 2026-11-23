@@ -32,6 +32,8 @@ const AiPromptSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: '-80px' });
   const reduced = useReducedMotion();
+  // Dragging sets touch-action: none, which blocks page scrolling on phones.
+  const canDrag = window.matchMedia('(pointer: fine)').matches;
 
   const openChat = (prompt) => window.dispatchEvent(new CustomEvent('open-ai-akash', { detail: { prompt } }));
 
@@ -40,7 +42,7 @@ const AiPromptSection = () => {
       <div className="container mx-auto max-w-6xl px-6">
         <motion.div
           ref={ref}
-          drag
+          drag={canDrag}
           dragConstraints={{ top: -10, left: -10, right: 10, bottom: 10 }}
           dragElastic={0.08}
           initial={{ opacity: 0, rotate: reduced ? 0 : 1.5, y: reduced ? 0 : 44 }}
@@ -106,7 +108,7 @@ const AiPromptSection = () => {
                       <li key={item}>- {item}</li>
                     ))}
                   </ul>
-                  <div className="mt-4 text-primary-dark/70">psst: this panel is draggable.</div>
+                  {canDrag && <div className="mt-4 text-primary-dark/70">psst: this panel is draggable.</div>}
                 </div>
               </div>
             </div>

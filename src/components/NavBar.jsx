@@ -143,7 +143,7 @@ const NavBar = () => {
         {/* Mobile hamburger */}
         <button
           onClick={() => setMenuOpen((o) => !o)}
-          className="interactive md:hidden p-2 rounded-lg text-accent-gray hover:text-accent-dark transition-colors"
+          className="interactive md:hidden p-3 -mr-3 rounded-lg text-accent-gray hover:text-accent-dark transition-colors"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
