@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import hmac
 import os
 import logging
@@ -232,14 +233,15 @@ def _require_admin(request: Request) -> None:
 
 
 @app.get("/health", response_model=HealthMinimalResponse)
-async def health() -> HealthMinimalResponse:
+async def health():
     """Public minimal health check — returns only the top-level ok flag.
 
-    Internal stack details (component breakdown, cache fill, session counts)
-    are available on /health/detailed, which requires admin auth.
+    503 when not ok, so Docker HEALTHCHECK, the deploy script's `curl --fail`
+    and host uptime checks actually notice a broken backend.
+    Internal stack details are on /health/detailed, which requires admin auth.
     """
-    llm_ok = len(llm.clients) > 0
-    return HealthMinimalResponse(ok=rag.ready and llm_ok)
+    ok = rag.ready and len(llm.clients) > 0
+    return JSONResponse({"ok": ok}, status_code=200 if ok else 503)
 
 
 @app.get("/health/detailed", response_model=HealthResponse)
@@ -635,7 +637,9 @@ async def ai_chat(payload: ChatRequest, request: Request):
     retrieval_start = time.perf_counter()
     retrieval_failed = False
     try:
-        chunks = rag.search(payload.message, top_k=4)
+        # Gemini SDK calls are blocking; run them off the event loop so one slow
+        # request doesn't stall every other request (and /health).
+        chunks = await asyncio.to_thread(rag.search, payload.message, top_k=4)
     except Exception as exc:
         logger.error('"rag_error" request_id=%s error=%r', request_id, str(exc))
         metrics.record_embedding_failure()
@@ -646,7 +650,7 @@ async def ai_chat(payload: ChatRequest, request: Request):
 
     llm_start = time.perf_counter()
     try:
-        text = llm.answer(payload.message, chunks, history=history)
+        text = await asyncio.to_thread(llm.answer, payload.message, chunks, history=history)
     except Exception as exc:
         logger.error('"llm_error" request_id=%s error=%r', request_id, str(exc))
         metrics.record_llm_failure()
@@ -726,9 +730,12 @@ def _client_ip(request: Request) -> str:
     hit directly (bypassing Nginx/Cloudflare), any caller could forge the
     header. Checking the peer address closes that gap.
 
-    X-Forwarded-For is not used because Cloudflare appends to it rather than
-    overwriting, making the first entry spoofable by a client injecting a fake
-    IP before the request reaches Cloudflare.
+    X-Forwarded-For: every proxy appends the address it saw, so only the
+    entries added by OUR proxies are trustworthy. The leftmost entry is
+    whatever the client sent and is freely spoofable. We take the entry
+    TRUSTED_PROXY_HOPS from the right (1 = one proxy in front of the app,
+    e.g. Nginx, Render or Railway). Set it to 0 if the app is exposed
+    directly, so the header is ignored.
     """
     peer = request.client.host if request.client else None
     # Only trust CF-Connecting-IP when the request came through Nginx on loopback.
@@ -736,10 +743,13 @@ def _client_ip(request: Request) -> str:
         cf_ip = request.headers.get("cf-connecting-ip")
         if cf_ip:
             return cf_ip.strip()
-    # Fallback for local dev (no Cloudflare) and direct EC2 health checks.
+    hops = settings.trusted_proxy_hops
     forwarded = request.headers.get("x-forwarded-for")
-    if forwarded:
-        return forwarded.split(",")[0].strip()
+    if forwarded and hops > 0:
+        entries = [e.strip() for e in forwarded.split(",") if e.strip()]
+        if entries:
+            # Fewer entries than hops: a proxy didn't append; leftmost is the best we have.
+            return entries[-hops] if len(entries) >= hops else entries[0]
     return peer or "unknown"
 
 

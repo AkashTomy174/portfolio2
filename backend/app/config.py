@@ -55,6 +55,8 @@ class Settings:
     max_requests_per_ip: int = _int("MAX_REQUESTS_PER_IP", 10)
     rate_limit_window_seconds: int = _int("RATE_LIMIT_WINDOW_SECONDS", 86400)
     response_cache_max_items: int = _int("RESPONSE_CACHE_MAX_ITEMS", 256)
+    # Number of reverse proxies in front of the app that append to X-Forwarded-For.
+    trusted_proxy_hops: int = _int("TRUSTED_PROXY_HOPS", 1)
     admin_access_token: str | None = os.getenv("ADMIN_ACCESS_TOKEN")
     cookie_secret: str = (
         os.getenv("ADMIN_COOKIE_SECRET")

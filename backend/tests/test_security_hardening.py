@@ -216,6 +216,34 @@ class TestClientIpSpoofingProtection(unittest.TestCase):
         req = self._make_request("::1", {"cf-connecting-ip": "5.6.7.8"})
         self.assertEqual(_client_ip(req), "5.6.7.8")
 
+    def test_spoofed_leftmost_forwarded_for_is_ignored(self):
+        # Client sends "X-Forwarded-For: 6.6.6.6"; our one proxy appends the real IP.
+        from app.main import _client_ip
+        req = self._make_request("172.17.0.1", {"x-forwarded-for": "6.6.6.6, 9.9.9.9"})
+        self.assertEqual(_client_ip(req), "9.9.9.9")
+
+    def test_proxy_hops_setting(self):
+        from unittest.mock import patch
+        from app.main import _client_ip, settings
+        req = self._make_request("172.17.0.1", {"x-forwarded-for": "6.6.6.6, 9.9.9.9, 10.0.0.2"})
+        with patch.object(settings, "trusted_proxy_hops", 2):
+            self.assertEqual(_client_ip(req), "9.9.9.9")
+        with patch.object(settings, "trusted_proxy_hops", 0):
+            self.assertEqual(_client_ip(req), "172.17.0.1")
+
+
+class TestHealthStatusCode(unittest.TestCase):
+
+    def test_unhealthy_returns_503(self):
+        import asyncio
+        from unittest.mock import patch
+        from app import main
+        with patch.object(main.llm, "clients", []):
+            self.assertEqual(asyncio.run(main.health()).status_code, 503)
+        with patch.object(main.llm, "clients", [object()]), \
+             patch.object(type(main.rag), "ready", property(lambda self: True)):
+            self.assertEqual(asyncio.run(main.health()).status_code, 200)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
